@@ -3,6 +3,29 @@
 
 ## ✅ TERMINÉ (DONE)
 
+### 🎨 Améliorations Interface Sidebar & Corrections IndexedDB (v1.6) - 2024-01-17
+- [x] **Optimisation de la sidebar**
+  - [x] Réduction de la largeur de la sidebar pour s'adapter au contenu (w-fit)
+  - [x] Centrage horizontal du texte "Votre boîte à outils numérique"
+  - [x] Amélioration de l'ergonomie et de l'espace d'affichage
+- [x] **Correction des erreurs IndexedDB**
+  - [x] Résolution du conflit de version IndexedDB (version 12 vs 150)
+  - [x] Mise à jour de la version de base de données à 151
+  - [x] Élimination des 3 erreurs console liées à IndexedDB
+  - [x] Stabilisation du système de sauvegarde hors ligne
+
+### 🐛 Correction des Erreurs React Hooks (v1.5) - 2024-01-17
+- [x] **Résolution des erreurs React hooks**
+  - [x] Correction de l'erreur "Invalid hook call" dans ThemeContext.tsx
+  - [x] Résolution de "Cannot read properties of null (reading 'useState')"
+  - [x] Suppression et réinstallation complète des node_modules
+  - [x] Nettoyage du cache Vite (.vite directory)
+  - [x] Validation du bon fonctionnement de l'application sans erreurs console
+- [x] **Amélioration de la stabilité**
+  - [x] Élimination des conflits de dépendances React
+  - [x] Assurance de la compatibilité entre React et React DOM
+  - [x] Application fonctionnelle sans erreurs de hooks
+
 ### 🧹 Nettoyage des Composants Dupliqués (v1.4) - 2024-01-17
 - [x] **Suppression des composants dupliqués**
   - [x] Suppression de `TodoList.tsx` (remplacé par `TodoListEnhanced`)

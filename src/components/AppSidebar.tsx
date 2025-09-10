@@ -60,7 +60,7 @@ export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps)
   const filteredMenuItems = user ? menuItems : menuItems.filter(item => item.id !== "profile");
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="w-fit">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-2">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-teal-600 p-1">
@@ -70,9 +70,10 @@ export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps)
               className="w-full h-full object-contain sidebar-logo-animation"
             />
           </div>
-          <div className="grid flex-1 text-left text-sm leading-tight">
-            <span className="truncate font-semibold">Outils Pratiques</span>
-            <span className="truncate text-xs text-gray-500">Plateforme complète</span>
+          <div className="grid flex-1 text-center text-sm leading-tight">
+            <span className="truncate font-semibold">À votre service</span>
+            <span className="truncate text-xs text-gray-500">Votre boîte à</span>
+            <span className="truncate text-xs text-gray-500">outils numérique</span>
           </div>
         </div>
       </SidebarHeader>
@@ -105,7 +106,8 @@ export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps)
       <SidebarFooter>
         <div className="p-2 text-center space-y-1">
           <p className="text-xs text-gray-500">v1.5.8</p>
-          <p className="text-xs text-gray-400">Tous droits réservés - Geoffroy Streit</p>
+          <p className="text-xs text-gray-400">Tous droits réservés :</p>
+          <p className="text-xs text-gray-400">Geoffroy Streit</p>
         </div>
       </SidebarFooter>
     </Sidebar>

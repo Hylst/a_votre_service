@@ -103,14 +103,15 @@
 /* Custom animations */
 @keyframes gentle-sway {
   0%, 100% {
-    transform: rotate(-3deg);
+    transform: translateY(0px);
   }
   50% {
-    transform: rotate(3deg);
+    transform: translateY(-8px);
   }
 }
 
 .sidebar-logo-animation {
-  animation: gentle-sway 4s ease-in-out infinite;
-  transform-origin: center;
+  animation: gentle-sway 3s ease-in-out infinite !important;
+  transform-origin: center !important;
+  display: inline-block;
 }

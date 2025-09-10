@@ -78,7 +78,7 @@ export const useUniversalExportImport = () => {
       const exportData: UniversalExportData = {
         version: "2.1.0",
         exportDate: new Date().toISOString(),
-        application: "Outils Pratiques",
+        application: "à votre service",
         tools: toolsToExport,
         preferences: options.includePreferences ? (allToolsData.preferences || {}) : {},
         metadata: {

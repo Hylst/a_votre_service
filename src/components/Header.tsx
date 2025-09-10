@@ -25,7 +25,7 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
       case "color-generator": return "Générateur de Couleurs";
       case "bmi-calculator": return "Calculateur IMC";
       case "text-utils": return "Utilitaires Texte";
-      default: return "Boîte à Outils Pratiques";
+      default: return "à votre service";
     }
   };
 
@@ -63,7 +63,7 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
         <div className="flex items-center space-x-4">
           <div className="hidden md:flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400">
             <span>🛠️</span>
-            <span>Outils Pratiques</span>
+            <span>à votre service</span>
           </div>
           
           <ThemeToggle />

@@ -40,7 +40,7 @@ export const Sidebar = ({ isOpen, onClose, activeSection, setActiveSection }: Si
       `}>
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-800">Outils Pratiques</h2>
+            <h2 className="text-xl font-bold text-gray-800">à votre service</h2>
             <Button
               variant="ghost"
               size="sm"
@@ -79,7 +79,7 @@ export const Sidebar = ({ isOpen, onClose, activeSection, setActiveSection }: Si
         
         <div className="absolute bottom-4 left-4 right-4 p-4 bg-gradient-to-r from-blue-50 to-teal-50 rounded-lg">
           <p className="text-sm text-gray-600 text-center">
-            🛠️ Plateforme d'outils pratiques
+🛠️ Plateforme à votre service
           </p>
         </div>
       </div>

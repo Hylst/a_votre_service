@@ -97,7 +97,7 @@ const Auth = () => {
             Retour à l'accueil
           </Button>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-            Outils Pratiques
+            à votre service
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
             Connectez-vous pour synchroniser vos données

@@ -61,11 +61,6 @@ const Settings = () => {
               </div>
               
               <div className="ml-auto flex items-center gap-2 px-4">
-                <div className="hidden lg:flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                  <span>🛠️</span>
-                  <span>Outils Pratiques</span>
-                </div>
-                
                 <ThemeToggle />
                 
                 {user ? (

@@ -47,7 +47,7 @@ export const About = () => {
             </div>
           </div>
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-            Boîte à Outils Pratiques
+            à votre service
           </CardTitle>
           <p className="text-lg text-gray-600 dark:text-gray-300 mt-2">
             Une collection complète d'outils utiles pour votre quotidien

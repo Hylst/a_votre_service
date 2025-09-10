@@ -63,7 +63,7 @@ const Index = () => {
       case "settings": return "Paramètres";
       case "profile": return "Mon Profil";
       case "about": return "À propos";
-      default: return "Boîte à Outils Pratiques";
+      default: return "À votre service";
     }
   };
 
@@ -169,9 +169,9 @@ const Index = () => {
         return (
           <div className="space-y-0">
             {/* Hero Section */}
-            <Section spacing="xl">
+            <Section spacing="sm">
               <Container variant="narrow">
-                <div className="flex flex-col lg:flex-row items-center justify-center gap-8 mb-8">
+                <div className="flex flex-col lg:flex-row items-center justify-center gap-8 mb-4">
                   {/* Logo - larger and positioned to the left */}
                   <div className="flex-shrink-0">
                     <img 
@@ -184,7 +184,7 @@ const Index = () => {
                   {/* Text content block */}
                   <div className="text-center lg:text-left flex-1">
                     <Heading level={1} gradient className="mb-4">
-                      Boîte à Outils Pratiques
+                      À votre service
                     </Heading>
                     <Text size="xl" color="muted" className="max-w-2xl">
                       Une collection d'outils utiles pour votre quotidien. Convertisseurs, calculatrices, 
@@ -192,35 +192,12 @@ const Index = () => {
                     </Text>
                   </div>
                 </div>
-                
-                {!loading && !user && (
-                  <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 mt-6">
-                    <Button 
-                      onClick={() => navigate('/auth')}
-                      className="bg-gradient-to-r from-blue-600 to-teal-600 w-full sm:w-auto"
-                      size="lg"
-                    >
-                      Se connecter
-                    </Button>
-                    <Button 
-                      variant="outline"
-                      onClick={() => navigate('/auth')}
-                      className="w-full sm:w-auto"
-                      size="lg"
-                    >
-                      Créer un compte
-                    </Button>
-                  </div>
-                )}
               </Container>
             </Section>
             
             {/* Tools Grid */}
-            <Section spacing="lg">
+            <Section spacing="sm">
               <Container>
-                <Heading level={2} size="2xl" className="text-center mb-8">
-                  Outils Disponibles
-                </Heading>
                 
                 <Grid variant="responsive" gap="lg">
                   <ToolCard
@@ -340,11 +317,6 @@ const Index = () => {
               </div>
               
               <div className="ml-auto flex items-center gap-2 px-4">
-                <div className="hidden lg:flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
-                  <span>🛠️</span>
-                  <span>Outils Pratiques</span>
-                </div>
-                
                 <ThemeToggle />
                 
                 {user ? (

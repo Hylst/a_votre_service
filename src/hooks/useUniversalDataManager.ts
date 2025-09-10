@@ -47,7 +47,7 @@ export const useUniversalDataManager = () => {
       const universalData: UniversalData = {
         version: "2.2.0",
         exportDate: new Date().toISOString(),
-        application: "Outils Pratiques",
+        application: "à votre service",
         tools: filteredData,
         metadata: {
           totalSize: stats?.estimatedSize || 0,
