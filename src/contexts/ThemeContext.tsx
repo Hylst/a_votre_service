@@ -20,21 +20,38 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const stored = localStorage.getItem('theme') as Theme;
-    return stored || 'system';
-  });
-
+  // Initialize state without accessing localStorage immediately
+  const [theme, setTheme] = useState<Theme>('system');
   const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('light');
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Load theme from localStorage after component mounts
+  useEffect(() => {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const stored = localStorage.getItem('theme') as Theme;
+        if (stored && ['light', 'dark', 'system'].includes(stored)) {
+          setTheme(stored);
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to load theme from localStorage:', error);
+    } finally {
+      setIsInitialized(true);
+    }
+  }, []);
 
   useEffect(() => {
-    const root = window.document.documentElement;
+    if (!isInitialized) return;
+    
+    const root = window?.document?.documentElement;
+    if (!root) return;
     
     const updateTheme = () => {
       let resolvedTheme: 'light' | 'dark';
       
       if (theme === 'system') {
-        resolvedTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        resolvedTheme = window?.matchMedia?.('(prefers-color-scheme: dark)')?.matches ? 'dark' : 'light';
       } else {
         resolvedTheme = theme;
       }
@@ -47,15 +64,25 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     updateTheme();
     
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    mediaQuery.addEventListener('change', updateTheme);
-    
-    return () => mediaQuery.removeEventListener('change', updateTheme);
-  }, [theme]);
+    const mediaQuery = window?.matchMedia?.('(prefers-color-scheme: dark)');
+    if (mediaQuery) {
+      mediaQuery.addEventListener('change', updateTheme);
+      return () => mediaQuery.removeEventListener('change', updateTheme);
+    }
+  }, [theme, isInitialized]);
 
+  // Save theme to localStorage with error handling
   useEffect(() => {
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+    if (!isInitialized) return;
+    
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('theme', theme);
+      }
+    } catch (error) {
+      console.warn('Failed to save theme to localStorage:', error);
+    }
+  }, [theme, isInitialized]);
 
   const value = {
     theme,
