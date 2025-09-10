@@ -7,7 +7,7 @@ import { Section } from '@/components/ui/section';
 interface ToolContainerProps {
   children: React.ReactNode;
   variant?: 'default' | 'narrow' | 'wide';
-  spacing?: 'sm' | 'md' | 'lg' | 'xl';
+  spacing?: 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   background?: 'default' | 'muted' | 'accent';
   className?: string;
 }

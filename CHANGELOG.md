@@ -3,6 +3,32 @@
 
 ## ✅ TERMINÉ (DONE)
 
+### 🎨 Optimisation Espacement Convertisseur d'Unités (v1.8) - 2024-01-17
+- [x] **Réduction des marges pour interface plus compacte**
+  - [x] Ajout d'une option d'espacement 'xxs' (py-2, 8px) au composant Section
+  - [x] Ajout d'une option d'espacement 'xs' (py-4, 16px) au composant Section
+  - [x] Mise à jour du convertisseur d'unités pour utiliser spacing="xxs"
+  - [x] Correction de l'interface ToolContainer pour supporter les nouveaux espacements
+  - [x] Réduction significative de l'espacement vertical autour du bloc principal
+  - [x] Interface plus dense et compacte tout en préservant la lisibilité
+- [x] **Amélioration de l'expérience utilisateur**
+  - [x] Espacement vertical réduit de 64px (py-16) à 8px (py-2)
+  - [x] Meilleure utilisation de l'espace d'écran disponible
+  - [x] Interface plus moderne et épurée
+
+### 🐛 Correction Structure Header Dupliquée (v1.7) - 2024-01-17
+- [x] **Résolution du problème de header dupliqué**
+  - [x] Analyse de la structure de header conflictuelle dans Index.tsx
+  - [x] Suppression du composant Header séparé causant les conflits de layout
+  - [x] Intégration de la fonctionnalité Header directement dans SidebarInset
+  - [x] Préservation de l'icône balance, bouton info et badges pour le convertisseur d'unités
+  - [x] Correction de l'affichage des titres de section et contrôles sans conflits
+  - [x] Test et validation du fonctionnement sur toutes les sections
+- [x] **Amélioration de la structure de layout**
+  - [x] Élimination des doublons de header (SidebarTrigger + Header component)
+  - [x] Optimisation de l'espace d'affichage et de la cohérence visuelle
+  - [x] Maintien de toutes les fonctionnalités existantes (navigation, thème, authentification)
+
 ### 🎨 Améliorations Interface Sidebar & Corrections IndexedDB (v1.6) - 2024-01-17
 - [x] **Optimisation de la sidebar**
   - [x] Réduction de la largeur de la sidebar pour s'adapter au contenu (w-fit)

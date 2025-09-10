@@ -23,6 +23,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Scale, Info, Home } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { UnitConverterInfoModal } from "@/components/modals/UnitConverterInfoModal";
 
 // New design system components
 import { Container } from "@/components/ui/container";
@@ -37,6 +40,7 @@ const Index = () => {
   const [searchParams] = useSearchParams();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
   // Gérer la navigation via URL params (depuis Settings)
   useEffect(() => {
@@ -307,32 +311,63 @@ const Index = () => {
           
           <SidebarInset>
             {/* Header */}
-            <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
-              <div className="flex items-center gap-2 px-4">
+            <div className="flex h-16 shrink-0 items-center gap-2 border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10 px-4">
+              <div className="flex items-center gap-2">
                 <SidebarTrigger className="-ml-1" />
                 <div className="h-4 w-px bg-gray-200 dark:bg-gray-700" />
-                <Heading level={1} size="lg" className="truncate">
-                  {getSectionTitle()}
-                </Heading>
               </div>
               
-              <div className="ml-auto flex items-center gap-2 px-4">
-                <ThemeToggle />
+              <div className="flex items-center justify-between flex-1">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    {activeSection === "unit-converter" && (
+                      <Scale className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    )}
+                    <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
+                      {getSectionTitle()}
+                    </h1>
+                    {activeSection === "unit-converter" && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsInfoModalOpen(true)}
+                          className="p-1 h-8 w-8 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900"
+                        >
+                          <Info className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        </Button>
+                        <div className="hidden lg:flex items-center gap-1 ml-2">
+                          <Badge variant="secondary" className="text-xs">12 types d'unités</Badge>
+                          <Badge variant="secondary" className="text-xs">Standards SI</Badge>
+                          <Badge variant="secondary" className="text-xs">Temps réel</Badge>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
                 
-                {user ? (
-                  <UserMenu onProfileClick={handleProfileClick} />
-                ) : (
-                  <Button 
-                    variant="outline" 
-                    onClick={() => navigate('/auth')}
-                    className="hidden sm:flex"
-                    size="sm"
-                  >
-                    Connexion
-                  </Button>
-                )}
+                <div className="flex items-center space-x-4">
+                  <ThemeToggle />
+                  
+                  {user ? (
+                    <UserMenu />
+                  ) : (
+                    <Button 
+                      variant="outline" 
+                      onClick={() => window.location.href = '/auth'}
+                      className="hidden sm:flex"
+                    >
+                      Connexion
+                    </Button>
+                  )}
+                </div>
               </div>
-            </header>
+              
+              <UnitConverterInfoModal 
+                isOpen={isInfoModalOpen} 
+                onClose={() => setIsInfoModalOpen(false)} 
+              />
+            </div>
             
             {/* Main Content */}
             <main className="flex-1">

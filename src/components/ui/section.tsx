@@ -5,7 +5,7 @@ import { designSystem } from '@/lib/design-system';
 
 interface SectionProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
-  spacing?: 'sm' | 'md' | 'lg' | 'xl';
+  spacing?: 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   background?: 'default' | 'muted' | 'accent';
 }
 
@@ -17,6 +17,8 @@ export const Section: React.FC<SectionProps> = ({
   ...props
 }) => {
   const spacingClasses = {
+    xxs: 'py-2',
+    xs: 'py-4',
     sm: 'py-8',
     md: 'py-12',
     lg: 'py-16',
