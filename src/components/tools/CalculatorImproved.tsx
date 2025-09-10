@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Calculator, Zap, History, Code, TrendingUp } from "lucide-react";
-import { ToolHeader } from "@/components/ui/tool-header";
 import { ToolContainer } from "@/components/ui/tool-container";
 import { ToolTabSystem } from "@/components/ui/tool-tab-system";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -63,26 +62,15 @@ export const CalculatorImproved = () => {
 
   return (
     <TooltipProvider>
-      <ToolContainer variant="wide" spacing="lg">
-        <div className="space-y-6">
-          <ToolHeader
-            title="Calculatrices Professionnelles"
-            subtitle="5 types de calculatrices disponibles"
-            description="Effectuez vos calculs avec précision grâce à nos calculatrices avancées. Support complet du clavier, fonctions scientifiques étendues, calculs binaires et hexadécimaux, graphiques interactifs, avec historique intelligent."
-            icon={<Calculator className="w-8 h-8" />}
-            badges={["Saisie clavier", "50+ fonctions", "Binaire & Hex", "Graphiques", "Mémoire", "Copie/Coller"]}
-            gradient="blue"
-          />
-
-          <ToolTabSystem
-            tabs={calculatorTabs}
-            defaultTab="basic"
-            orientation="horizontal"
-            size="md"
-            className="w-full"
-            tabsListClassName="grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"
-          />
-        </div>
+      <ToolContainer variant="wide" spacing="xxs">
+        <ToolTabSystem
+          tabs={calculatorTabs}
+          defaultTab="basic"
+          orientation="horizontal"
+          size="md"
+          className="w-full"
+          tabsListClassName="grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"
+        />
       </ToolContainer>
     </TooltipProvider>
   );

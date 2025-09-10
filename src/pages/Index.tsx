@@ -23,9 +23,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Scale, Info, Home } from "lucide-react";
+import { Scale, Info, Home, Calculator, Brain, Palette, Heart } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { UnitConverterInfoModal } from "@/components/modals/UnitConverterInfoModal";
+import { CalculatorInfoModal } from "@/components/modals/CalculatorInfoModal";
+import { ProductivityInfoModal } from "@/components/modals/ProductivityInfoModal";
+import { CreativityInfoModal } from "@/components/modals/CreativityInfoModal";
+import { HealthInfoModal } from "@/components/modals/HealthInfoModal";
 
 // New design system components
 import { Container } from "@/components/ui/container";
@@ -41,6 +45,10 @@ const Index = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const [isCalculatorInfoModalOpen, setIsCalculatorInfoModalOpen] = useState(false);
+  const [isProductivityInfoModalOpen, setIsProductivityInfoModalOpen] = useState(false);
+  const [isCreativityInfoModalOpen, setIsCreativityInfoModalOpen] = useState(false);
+  const [isHealthInfoModalOpen, setIsHealthInfoModalOpen] = useState(false);
 
   // Gérer la navigation via URL params (depuis Settings)
   useEffect(() => {
@@ -59,9 +67,10 @@ const Index = () => {
       case "date-calculator-advanced": return "Dates & Temps Avancés";
       case "productivity-suite": return "Suite Productivité";
       case "password-generator-advanced": return "Générateur de Mots de Passe";
-      case "color-generator": return "Générateur de Couleurs";
+      case "color-generator": return "Créativité";
+      case "health": return "Santé";
+      case "health-wellness-suite": return "Santé";
       case "bmi-calculator": return "Calculateur IMC";
-      case "health-wellness-suite": return "Suite Santé & Bien-être";
       case "text-utils-advanced": return "Utilitaires Texte Avancés";
       case "data-manager": return "Gestionnaire de Données";
       case "settings": return "Paramètres";
@@ -125,6 +134,12 @@ const Index = () => {
             <ColorGenerator />
           </Suspense>
         );
+      case "health":
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <HealthWellnessSuite spacing="xxs" />
+          </Suspense>
+        );
       case "bmi-calculator":
         return (
           <Suspense fallback={<LoadingFallback />}>
@@ -134,7 +149,7 @@ const Index = () => {
       case "health-wellness-suite":
         return (
           <Suspense fallback={<LoadingFallback />}>
-            <HealthWellnessSuite />
+            <HealthWellnessSuite spacing="xxs" />
           </Suspense>
         );
       case "text-utils-advanced":
@@ -323,6 +338,18 @@ const Index = () => {
                     {activeSection === "unit-converter" && (
                       <Scale className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     )}
+                    {activeSection === "calculator" && (
+                      <Calculator className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    )}
+                    {activeSection === "productivity-suite" && (
+                      <Brain className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                    )}
+                    {activeSection === "color-generator" && (
+                      <Palette className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                    )}
+                    {(activeSection === "health" || activeSection === "health-wellness-suite") && (
+                      <Heart className="w-6 h-6 text-red-600 dark:text-red-400" />
+                    )}
                     <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
                       {getSectionTitle()}
                     </h1>
@@ -340,6 +367,81 @@ const Index = () => {
                           <Badge variant="secondary" className="text-xs">12 types d'unités</Badge>
                           <Badge variant="secondary" className="text-xs">Standards SI</Badge>
                           <Badge variant="secondary" className="text-xs">Temps réel</Badge>
+                        </div>
+                      </>
+                    )}
+                    {activeSection === "calculator" && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsCalculatorInfoModalOpen(true)}
+                          className="p-1 h-8 w-8 rounded-full hover:bg-green-100 dark:hover:bg-green-900"
+                        >
+                          <Info className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        </Button>
+                        <div className="hidden lg:flex items-center gap-1 ml-2">
+                          <Badge variant="secondary" className="text-xs">Saisie clavier</Badge>
+                          <Badge variant="secondary" className="text-xs">50+ fonctions</Badge>
+                          <Badge variant="secondary" className="text-xs">4 calculatrices</Badge>
+                          <Badge variant="secondary" className="text-xs">Graphiques</Badge>
+                        </div>
+                      </>
+                    )}
+                    {activeSection === "productivity-suite" && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsProductivityInfoModalOpen(true)}
+                          className="p-1 h-8 w-8 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-900"
+                        >
+                          <Info className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                        </Button>
+                        <div className="hidden lg:flex items-center gap-1 ml-2">
+                          <Badge variant="secondary" className="text-xs">To-do avancée</Badge>
+                          <Badge variant="secondary" className="text-xs">Technique Pomodoro</Badge>
+                          <Badge variant="secondary" className="text-xs">Notes SMART</Badge>
+                          <Badge variant="secondary" className="text-xs">Objectifs</Badge>
+                          <Badge variant="secondary" className="text-xs">Statistiques</Badge>
+                        </div>
+                      </>
+                    )}
+                    {activeSection === "color-generator" && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsCreativityInfoModalOpen(true)}
+                          className="p-1 h-8 w-8 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900"
+                        >
+                          <Info className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        </Button>
+                        <div className="hidden lg:flex items-center gap-1 ml-2">
+                          <Badge variant="secondary" className="text-xs">Couleurs avancées</Badge>
+                          <Badge variant="secondary" className="text-xs">Palettes intelligentes</Badge>
+                          <Badge variant="secondary" className="text-xs">Dégradés dynamiques</Badge>
+                          <Badge variant="secondary" className="text-xs">Typographie</Badge>
+                          <Badge variant="secondary" className="text-xs">Filtres image</Badge>
+                        </div>
+                      </>
+                    )}
+                    {(activeSection === "health" || activeSection === "health-wellness-suite") && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsHealthInfoModalOpen(true)}
+                          className="p-1 h-8 w-8 rounded-full hover:bg-red-100 dark:hover:bg-red-900"
+                        >
+                          <Info className="w-4 h-4 text-red-600 dark:text-red-400" />
+                        </Button>
+                        <div className="hidden lg:flex items-center gap-1 ml-2">
+                          <Badge variant="secondary" className="text-xs">Mesures</Badge>
+                          <Badge variant="secondary" className="text-xs">Nutrition</Badge>
+                          <Badge variant="secondary" className="text-xs">Bien-être</Badge>
+                          <Badge variant="secondary" className="text-xs">Fitness</Badge>
+                          <Badge variant="secondary" className="text-xs">Santé</Badge>
                         </div>
                       </>
                     )}
@@ -366,6 +468,22 @@ const Index = () => {
               <UnitConverterInfoModal 
                 isOpen={isInfoModalOpen} 
                 onClose={() => setIsInfoModalOpen(false)} 
+              />
+              <CalculatorInfoModal 
+                isOpen={isCalculatorInfoModalOpen} 
+                onClose={() => setIsCalculatorInfoModalOpen(false)} 
+              />
+              <ProductivityInfoModal 
+                isOpen={isProductivityInfoModalOpen} 
+                onClose={() => setIsProductivityInfoModalOpen(false)} 
+              />
+              <CreativityInfoModal 
+                isOpen={isCreativityInfoModalOpen} 
+                onClose={() => setIsCreativityInfoModalOpen(false)} 
+              />
+              <HealthInfoModal 
+                isOpen={isHealthInfoModalOpen} 
+                onClose={() => setIsHealthInfoModalOpen(false)} 
               />
             </div>
             

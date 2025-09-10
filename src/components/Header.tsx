@@ -1,10 +1,14 @@
 
-import { Menu, Home, Scale, Info } from "lucide-react";
+import { Menu, Home, Scale, Info, Calculator, Brain, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 import { UnitConverterInfoModal } from "@/components/modals/UnitConverterInfoModal";
+import { CalculatorInfoModal } from "@/components/modals/CalculatorInfoModal";
+import { ProductivityInfoModal } from "@/components/modals/ProductivityInfoModal";
+import { CreativityInfoModal } from "@/components/modals/CreativityInfoModal";
+
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 
@@ -17,6 +21,10 @@ interface HeaderProps {
 export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderProps) => {
   const { user } = useAuth();
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const [isCalculatorInfoModalOpen, setIsCalculatorInfoModalOpen] = useState(false);
+  const [isProductivityInfoModalOpen, setIsProductivityInfoModalOpen] = useState(false);
+  const [isCreativityInfoModalOpen, setIsCreativityInfoModalOpen] = useState(false);
+
   
   const getSectionTitle = () => {
     switch (activeSection) {
@@ -24,9 +32,11 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
       case "calculator": return "Calculatrices";
       case "date-calculator": return "Calculateurs de Dates";
       case "todo": return "Productivité";
+      case "productivity-suite": return "Suite Productivité";
       case "password-generator": return "Générateur de Mots de Passe";
       case "qr-code": return "Générateur QR Code";
-      case "color-generator": return "Générateur de Couleurs";
+      case "color-generator": return "Créativité";
+
       case "bmi-calculator": return "Calculateur IMC";
       case "text-utils": return "Utilitaires Texte";
       default: return "à votre service";
@@ -62,6 +72,16 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
               {activeSection === "unit-converter" && (
                 <Scale className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               )}
+              {activeSection === "calculator" && (
+                <Calculator className="w-6 h-6 text-green-600 dark:text-green-400" />
+              )}
+              {activeSection === "productivity-suite" && (
+                <Brain className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+              )}
+              {activeSection === "color-generator" && (
+                <Palette className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              )}
+
               <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
                 {getSectionTitle()}
               </h1>
@@ -82,6 +102,63 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
                   </div>
                 </>
               )}
+              {activeSection === "calculator" && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsCalculatorInfoModalOpen(true)}
+                    className="p-1 h-8 w-8 rounded-full hover:bg-green-100 dark:hover:bg-green-900"
+                  >
+                    <Info className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  </Button>
+                  <div className="hidden lg:flex items-center gap-1 ml-2">
+                    <Badge variant="secondary" className="text-xs">5 types</Badge>
+                    <Badge variant="secondary" className="text-xs">50+ fonctions</Badge>
+                    <Badge variant="secondary" className="text-xs">Graphiques</Badge>
+                    <Badge variant="secondary" className="text-xs">Scientifique</Badge>
+                  </div>
+                </>
+              )}
+              {activeSection === "productivity-suite" && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsProductivityInfoModalOpen(true)}
+                    className="p-1 h-8 w-8 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-900"
+                  >
+                    <Info className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  </Button>
+                  <div className="hidden lg:flex items-center gap-1 ml-2">
+                    <Badge variant="secondary" className="text-xs">To-do avancée</Badge>
+                    <Badge variant="secondary" className="text-xs">Technique Pomodoro</Badge>
+                    <Badge variant="secondary" className="text-xs">Notes SMART</Badge>
+                    <Badge variant="secondary" className="text-xs">Objectifs</Badge>
+                    <Badge variant="secondary" className="text-xs">Statistiques</Badge>
+                  </div>
+                </>
+              )}
+              {activeSection === "color-generator" && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsCreativityInfoModalOpen(true)}
+                    className="p-1 h-8 w-8 rounded-full hover:bg-purple-100 dark:hover:bg-purple-900"
+                  >
+                    <Info className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                  </Button>
+                  <div className="hidden lg:flex items-center gap-1 ml-2">
+                    <Badge variant="secondary" className="text-xs">Couleurs avancées</Badge>
+                    <Badge variant="secondary" className="text-xs">Palettes intelligentes</Badge>
+                    <Badge variant="secondary" className="text-xs">Dégradés dynamiques</Badge>
+                    <Badge variant="secondary" className="text-xs">Typographie</Badge>
+                    <Badge variant="secondary" className="text-xs">Filtres image</Badge>
+                  </div>
+                </>
+              )}
+
             </div>
           </div>
         </div>
@@ -112,6 +189,19 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
         isOpen={isInfoModalOpen} 
         onClose={() => setIsInfoModalOpen(false)} 
       />
+      <CalculatorInfoModal 
+        isOpen={isCalculatorInfoModalOpen} 
+        onClose={() => setIsCalculatorInfoModalOpen(false)} 
+      />
+      <ProductivityInfoModal 
+        isOpen={isProductivityInfoModalOpen} 
+        onClose={() => setIsProductivityInfoModalOpen(false)} 
+      />
+      <CreativityInfoModal 
+        isOpen={isCreativityInfoModalOpen} 
+        onClose={() => setIsCreativityInfoModalOpen(false)} 
+      />
+
     </header>
   );
 };

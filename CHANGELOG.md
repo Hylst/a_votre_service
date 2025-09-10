@@ -3,6 +3,58 @@
 
 ## ✅ TERMINÉ (DONE)
 
+### 🏥 Restructuration Section Santé (v2.1) - 2024-01-17
+- [x] **Modification du layout de la section Santé**
+  - [x] Changement du titre de "Suite Santé & Bien-être" vers "Santé"
+  - [x] Ajout d'un bouton info avec modal HealthInfoModal après le titre
+  - [x] Ajout des mots-clés à droite : "Mesures", "Nutrition", "Bien-être", "Fitness", "Santé"
+  - [x] Restructuration du layout : passage de xl:grid-cols-4 à une colonne unique
+  - [x] Déplacement des blocs de droite (DataImportExport et Conseils Santé) sous le panneau principal
+  - [x] Suppression complète des cartes "Vue d'ensemble" et "Catégories"
+  - [x] Organisation en grille md:grid-cols-2 pour les blocs du bas
+- [x] **Amélioration de l'expérience utilisateur**
+  - [x] Interface plus claire et moins encombrée
+  - [x] Meilleure utilisation de l'espace vertical
+  - [x] Accès direct aux informations via le modal dédié
+  - [x] Layout responsive adapté aux différentes tailles d'écran
+
+### 🏥 Compactage Section Santé & Bien-être (v2.0) - 2024-01-17
+- [x] **Application de la procédure de compactage à la section Santé**
+  - [x] Création du modal HealthInfoModal.tsx dans src/components/modals/
+  - [x] Détails complets des 8 fonctionnalités santé (IMC, Nutrition, Fitness, Sommeil, Médicaments, Métriques, Bien-être Mental, Objectifs)
+  - [x] Modification de Header.tsx pour ajouter l'icône Heart avant le titre "Santé & Bien-être"
+  - [x] Ajout du bouton info (i) après le titre qui ouvre le modal HealthInfoModal
+  - [x] Ajout des badges à droite : "IMC", "Nutrition", "Bien-être", "Fitness", "Santé"
+  - [x] Modification de Index.tsx pour ajouter le case "health" dans renderContent()
+  - [x] Import des icônes Heart et Info, et du composant HealthInfoModal
+  - [x] Ajout de l'état du modal santé et gestion de l'ouverture/fermeture
+  - [x] Modification de HealthWellnessSuite.tsx pour supporter l'espacement compact
+  - [x] Ajout de l'interface HealthWellnessSuiteProps avec prop spacing
+  - [x] Application de l'espacement "xxs" pour une interface plus compacte
+- [x] **Amélioration de l'expérience utilisateur**
+  - [x] Interface plus dense et compacte similaire aux autres sections
+  - [x] Accès rapide aux informations via le modal dédié
+  - [x] Meilleure utilisation de l'espace d'écran disponible
+  - [x] Cohérence visuelle avec les autres sections compactées
+  - [x] Navigation fluide vers la section santé avec activeSection="health"
+
+### 🧮 Compactage Section Calculatrices (v1.9) - 2024-01-17
+- [x] **Application de la procédure de compactage à la section Calculatrices**
+  - [x] Modification de Header.tsx pour ajouter l'icône Calculator avant le titre "Calculatrices"
+  - [x] Ajout du bouton info (i) après le titre qui ouvre le modal CalculatorInfoModal
+  - [x] Ajout des mots-clés à droite : "5 types", "50+ fonctions", "Graphiques", "Scientifique"
+  - [x] Création du modal CalculatorInfoModal.tsx dans src/components/modals/
+  - [x] Détails complets des 5 types de calculatrices (basique, scientifique, programmeur, graphique, historique)
+  - [x] Documentation des 4 catégories d'opérations (base, scientifique, programmation, graphique)
+  - [x] Modification de CalculatorImproved.tsx pour supprimer complètement le ToolHeader
+  - [x] Changement de l'espacement de "lg" à "xxs" dans ToolContainer
+  - [x] Conservation uniquement du ToolTabSystem pour une interface plus compacte
+- [x] **Amélioration de l'expérience utilisateur**
+  - [x] Interface plus dense et compacte similaire au convertisseur d'unités
+  - [x] Accès rapide aux informations via le modal dédié
+  - [x] Meilleure utilisation de l'espace d'écran disponible
+  - [x] Cohérence visuelle avec les autres sections compactées
+
 ### 🎨 Optimisation Espacement Convertisseur d'Unités (v1.8) - 2024-01-17
 - [x] **Réduction des marges pour interface plus compacte**
   - [x] Ajout d'une option d'espacement 'xxs' (py-2, 8px) au composant Section

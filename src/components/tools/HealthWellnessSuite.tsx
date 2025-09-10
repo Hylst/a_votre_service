@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { Heart, Droplets, Moon, Dumbbell, Apple, Brain, Timer, Target, Activity, Scale } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Heart, Droplets, Moon, Dumbbell, Apple, Brain, Timer, Target, Activity, Scale, Info } from 'lucide-react';
+import { HealthInfoModal } from '@/components/modals/HealthInfoModal';
 import { BMICalculatorAdvanced } from './health/BMICalculatorAdvanced';
 import { WaterTracker } from './health/WaterTracker';
 import { SleepTracker } from './health/SleepTracker';
@@ -14,10 +16,14 @@ import { MedicationReminder } from './health/MedicationReminder';
 import { FitnessGoals } from './health/FitnessGoals';
 import { HealthMetrics } from './health/HealthMetrics';
 import { WeightTracker } from './health/WeightTracker';
-import { DataImportExport } from './common/DataImportExport';
+// DataImportExport removed as requested
 import { useOfflineDataManager } from '@/hooks/useOfflineDataManager';
 
-export const HealthWellnessSuite = () => {
+interface HealthWellnessSuiteProps {
+  spacing?: 'xxs' | 'xs' | 'sm' | 'md' | 'lg';
+}
+
+export const HealthWellnessSuite = ({ spacing = 'md' }: HealthWellnessSuiteProps) => {
   console.log('HealthWellnessSuite component loading...');
   
   const {
@@ -35,6 +41,7 @@ export const HealthWellnessSuite = () => {
   });
 
   const [activeTab, setActiveTab] = useState('bmi');
+  const [showInfoModal, setShowInfoModal] = useState(false);
 
   const handleDataChange = (toolName: string, newData: any) => {
     console.log(`Data change for ${toolName}:`, newData);
@@ -124,137 +131,157 @@ export const HealthWellnessSuite = () => {
 
   console.log('HealthWellnessSuite rendering with tabs:', tabs.length);
 
+  // Apply compact spacing based on prop
+  const getSpacingClass = () => {
+    switch (spacing) {
+      case 'xxs': return 'space-y-1';
+      case 'xs': return 'space-y-2';
+      case 'sm': return 'space-y-3';
+      case 'lg': return 'space-y-6 lg:space-y-8';
+      default: return 'space-y-4 lg:space-y-6';
+    }
+  };
+
+  const getGridGapClass = () => {
+    switch (spacing) {
+      case 'xxs': return 'gap-1';
+      case 'xs': return 'gap-2';
+      case 'sm': return 'gap-3';
+      case 'lg': return 'gap-6 lg:gap-8';
+      default: return 'gap-4 lg:gap-6';
+    }
+  };
+
   return (
-    <div className="space-y-4 lg:space-y-6">
-      {/* Header */}
-      <Card className="border-2 border-green-200 dark:border-green-800">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg lg:text-xl">
-            <Heart className="w-5 h-5 text-green-600" />
-            Suite Santé & Bien-être
+    <div className={getSpacingClass()}>
+      {/* Main Tools Panel */}
+      <Card>
+        <CardContent className="p-0">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-10 h-auto p-1 gap-1">
+              {tabs.map((tab) => {
+                const IconComponent = tab.icon;
+                return (
+                  <TabsTrigger
+                    key={tab.id}
+                    value={tab.id}
+                    className="flex flex-col items-center gap-1 p-2 text-xs min-h-16"
+                  >
+                    <IconComponent className="w-4 h-4 flex-shrink-0" />
+                    <span className="text-center leading-tight">{tab.label}</span>
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+            
+            {tabs.map((tab) => {
+              const TabComponent = tab.component;
+              return (
+                <TabsContent key={tab.id} value={tab.id} className="p-3 lg:p-6">
+                  <TabComponent
+                    data={healthData?.[tab.id] || {}}
+                    onDataChange={(data: any) => handleDataChange(tab.id, data)}
+                  />
+                </TabsContent>
+              );
+            })}
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      {/* Enhanced Health Tips Section */}
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            💡 Conseils Santé Complets
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Suivez votre santé physique et mentale avec des outils complets de monitoring et d'analyse.
-          </p>
-          <div className="flex flex-wrap gap-2 mt-3">
-            {categories.map(category => (
-              <Badge key={category} variant="outline" className="text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300">
-                {category}
-              </Badge>
-            ))}
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Nutrition */}
+          <div className="space-y-2">
+            <h4 className="font-medium text-green-700 dark:text-green-300 flex items-center gap-2">
+              <Apple className="w-4 h-4" />
+              Nutrition
+            </h4>
+            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1 ml-6">
+              <li>• Consommez 5 portions de fruits et légumes par jour</li>
+              <li>• Buvez au moins 1,5L d'eau quotidiennement</li>
+              <li>• Privilégiez les céréales complètes et les protéines maigres</li>
+              <li>• Limitez les sucres ajoutés et les aliments ultra-transformés</li>
+            </ul>
+          </div>
+
+          {/* Activité Physique */}
+          <div className="space-y-2">
+            <h4 className="font-medium text-blue-700 dark:text-blue-300 flex items-center gap-2">
+              <Dumbbell className="w-4 h-4" />
+              Activité Physique
+            </h4>
+            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1 ml-6">
+              <li>• 150 minutes d'activité modérée par semaine minimum</li>
+              <li>• Intégrez des exercices de renforcement musculaire 2x/semaine</li>
+              <li>• Marchez 10 000 pas par jour si possible</li>
+              <li>• Alternez cardio, force et flexibilité</li>
+            </ul>
+          </div>
+
+          {/* Sommeil */}
+          <div className="space-y-2">
+            <h4 className="font-medium text-purple-700 dark:text-purple-300 flex items-center gap-2">
+              <Moon className="w-4 h-4" />
+              Sommeil
+            </h4>
+            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1 ml-6">
+              <li>• Dormez 7-9 heures par nuit régulièrement</li>
+              <li>• Maintenez des horaires de coucher constants</li>
+              <li>• Évitez les écrans 1h avant le coucher</li>
+              <li>• Créez un environnement calme et sombre</li>
+            </ul>
+          </div>
+
+          {/* Bien-être Mental */}
+          <div className="space-y-2">
+            <h4 className="font-medium text-pink-700 dark:text-pink-300 flex items-center gap-2">
+              <Brain className="w-4 h-4" />
+              Bien-être Mental
+            </h4>
+            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1 ml-6">
+              <li>• Pratiquez la méditation ou la relaxation quotidiennement</li>
+              <li>• Maintenez des liens sociaux de qualité</li>
+              <li>• Gérez le stress par des techniques de respiration</li>
+              <li>• N'hésitez pas à consulter un professionnel si nécessaire</li>
+            </ul>
+          </div>
+
+          {/* Prévention */}
+          <div className="space-y-2">
+            <h4 className="font-medium text-red-700 dark:text-red-300 flex items-center gap-2">
+              <Heart className="w-4 h-4" />
+              Prévention
+            </h4>
+            <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1 ml-6">
+              <li>• Effectuez des bilans de santé réguliers</li>
+              <li>• Maintenez vos vaccinations à jour</li>
+              <li>• Surveillez votre tension artérielle et votre poids</li>
+              <li>• Évitez le tabac et limitez l'alcool</li>
+            </ul>
+          </div>
+          </div>
+
+          <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+            <p className="text-xs text-yellow-800 dark:text-yellow-200 font-medium">
+              ⚠️ Important : Ces conseils sont informatifs. Consultez toujours un professionnel de santé pour des recommandations personnalisées.
+            </p>
           </div>
         </CardContent>
       </Card>
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-6">
-        {/* Tools Panel */}
-        <div className="xl:col-span-3">
-          <Card>
-            <CardContent className="p-0">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-10 h-auto p-1 gap-1">
-                  {tabs.map((tab) => {
-                    const IconComponent = tab.icon;
-                    return (
-                      <TabsTrigger
-                        key={tab.id}
-                        value={tab.id}
-                        className="flex flex-col items-center gap-1 p-2 text-xs min-h-16"
-                      >
-                        <IconComponent className="w-4 h-4 flex-shrink-0" />
-                        <span className="text-center leading-tight">{tab.label}</span>
-                      </TabsTrigger>
-                    );
-                  })}
-                </TabsList>
-                
-                {tabs.map((tab) => {
-                  const TabComponent = tab.component;
-                  return (
-                    <TabsContent key={tab.id} value={tab.id} className="p-3 lg:p-6">
-                      <TabComponent
-                        data={healthData?.[tab.id] || {}}
-                        onDataChange={(data: any) => handleDataChange(tab.id, data)}
-                      />
-                    </TabsContent>
-                  );
-                })}
-              </Tabs>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Side Panel */}
-        <div className="space-y-4">
-          {/* Import/Export */}
-          <DataImportExport
-            onExport={exportData}
-            onImport={importData}
-            onReset={resetData}
-            isOnline={isOnline}
-            isSyncing={isSyncing}
-            lastSyncTime={lastSyncTime}
-            toolName="health-wellness-suite"
-          />
-
-          {/* Quick Stats */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium">Vue d'ensemble</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="text-center p-3 bg-green-50 dark:bg-green-950 rounded-lg">
-                <div className="text-lg font-bold text-green-600">{tabs.length}</div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">Outils santé</div>
-              </div>
-              <div className="text-center p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                <div className="text-xs font-medium text-blue-600">{activeTab.replace('-', ' ')}</div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">Outil actif</div>
-              </div>
-              <div className="text-center p-3 bg-purple-50 dark:bg-purple-950 rounded-lg">
-                <div className="text-lg font-bold text-purple-600">{categories.length}</div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">Catégories</div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Category Guide */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium">🏥 Catégories</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {categories.map(category => {
-                const categoryTabs = tabs.filter(tab => tab.category === category);
-                return (
-                  <div key={category} className="text-xs">
-                    <div className="font-medium text-gray-700 dark:text-gray-300">{category}</div>
-                    <div className="text-gray-500 dark:text-gray-400 ml-2">
-                      {categoryTabs.length} outil{categoryTabs.length > 1 ? 's' : ''}
-                    </div>
-                  </div>
-                );
-              })}
-            </CardContent>
-          </Card>
-
-          {/* Health Tips */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium">💡 Conseils Santé</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                Utilisez ces outils quotidiennement pour maintenir une bonne santé. 
-                Consultez toujours un professionnel de santé pour des conseils médicaux personnalisés.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      {/* Info Modal */}
+      <HealthInfoModal 
+        isOpen={showInfoModal} 
+        onClose={() => setShowInfoModal(false)} 
+      />
     </div>
   );
 };
