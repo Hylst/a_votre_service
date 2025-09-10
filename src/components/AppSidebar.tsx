@@ -63,8 +63,12 @@ export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps)
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-2">
-          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-teal-600 text-white">
-            🛠️
+          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-teal-600 p-1">
+            <img 
+              src="/images/majordome-hero.png" 
+              alt="Majordome Logo" 
+              className="w-full h-full object-contain sidebar-logo-animation"
+            />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">
             <span className="truncate font-semibold">Outils Pratiques</span>

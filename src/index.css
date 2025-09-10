@@ -99,3 +99,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom animations */
+@keyframes gentle-sway {
+  0%, 100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+.sidebar-logo-animation {
+  animation: gentle-sway 4s ease-in-out infinite;
+  transform-origin: center;
+}

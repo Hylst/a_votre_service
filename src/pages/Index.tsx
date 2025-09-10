@@ -169,18 +169,32 @@ const Index = () => {
         return (
           <div className="space-y-0">
             {/* Hero Section */}
-            <Section spacing="xl" className="text-center">
+            <Section spacing="xl">
               <Container variant="narrow">
-                <Heading level={1} gradient className="mb-6">
-                  Boîte à Outils Pratiques
-                </Heading>
-                <Text size="xl" color="muted" className="mb-8 max-w-2xl mx-auto">
-                  Une collection d'outils utiles pour votre quotidien. Convertisseurs, calculatrices, 
-                  outils de productivité et bien plus encore !
-                </Text>
+                <div className="flex flex-col lg:flex-row items-center justify-center gap-8 mb-8">
+                  {/* Logo - larger and positioned to the left */}
+                  <div className="flex-shrink-0">
+                    <img 
+                      src="/images/majordome-hero.png" 
+                      alt="Majordome Logo" 
+                      className="h-32 w-auto md:h-40 lg:h-48 object-contain"
+                    />
+                  </div>
+                  
+                  {/* Text content block */}
+                  <div className="text-center lg:text-left flex-1">
+                    <Heading level={1} gradient className="mb-4">
+                      Boîte à Outils Pratiques
+                    </Heading>
+                    <Text size="xl" color="muted" className="max-w-2xl">
+                      Une collection d'outils utiles pour votre quotidien. Convertisseurs, calculatrices, 
+                      outils de productivité et bien plus encore !
+                    </Text>
+                  </div>
+                </div>
                 
                 {!loading && !user && (
-                  <div className="flex flex-col sm:flex-row justify-center gap-4">
+                  <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 mt-6">
                     <Button 
                       onClick={() => navigate('/auth')}
                       className="bg-gradient-to-r from-blue-600 to-teal-600 w-full sm:w-auto"
