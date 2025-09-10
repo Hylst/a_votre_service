@@ -3,6 +3,25 @@
 
 ## ✅ TERMINÉ (DONE)
 
+### 🧹 Nettoyage des Composants Dupliqués (v1.4) - 2024-01-17
+- [x] **Suppression des composants dupliqués**
+  - [x] Suppression de `TodoList.tsx` (remplacé par `TodoListEnhanced`)
+  - [x] Suppression de `ProductivitySuite.tsx` (remplacé par `ProductivitySuiteModular`)
+  - [x] Suppression de `TextUtils.tsx` (remplacé par `TextUtilsAdvanced`)
+  - [x] Suppression de `UnitConverterFixed.tsx` et `UnitConverterImproved.tsx` (remplacés par `UnitConverterAdvanced`)
+  - [x] Suppression de `PasswordGenerator.tsx`, `PasswordGeneratorAdvanced.tsx`, `PasswordGeneratorUltimate.tsx` (remplacés par `PasswordGeneratorAdvancedEnhanced`)
+  - [x] Suppression de `DateCalculator.tsx` (remplacé par `DateCalculatorAdvanced`)
+- [x] **Nettoyage des composants legacy**
+  - [x] Suppression de `PasswordHistoryLegacy.tsx` et `PasswordSettingsLegacy.tsx`
+  - [x] Vérification et nettoyage des sous-répertoires `passwordGenerator` et `dateCalculator`
+- [x] **Validation des imports**
+  - [x] Vérification que tous les imports restants sont valides
+  - [x] Aucun import cassé détecté après suppression des doublons
+- [x] **Optimisation de la structure**
+  - [x] Réduction de la taille du projet en supprimant 8 fichiers dupliqués
+  - [x] Amélioration de la maintenabilité du code
+  - [x] Conservation uniquement des versions les plus avancées de chaque outil
+
 ### ⚡ Optimisations Performance & Sécurité (v1.3) - 2024-01-17
 - [x] **Optimisations de performance**
   - [x] Installation de mathjs pour l'évaluation sécurisée d'expressions mathématiques
