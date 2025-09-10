@@ -60,7 +60,7 @@ export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps)
   const filteredMenuItems = user ? menuItems : menuItems.filter(item => item.id !== "profile");
 
   return (
-    <Sidebar collapsible="icon" className="w-fit">
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-2">
           <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-teal-600 p-1">
@@ -72,8 +72,7 @@ export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps)
           </div>
           <div className="grid flex-1 text-center text-sm leading-tight">
             <span className="truncate font-semibold">À votre service</span>
-            <span className="truncate text-xs text-gray-500">Votre boîte à</span>
-            <span className="truncate text-xs text-gray-500">outils numérique</span>
+            <span className="truncate text-xs text-gray-500 text-center">Votre boîte à outils numérique</span>
           </div>
         </div>
       </SidebarHeader>
