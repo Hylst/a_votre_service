@@ -3,7 +3,7 @@
 
 ## ✅ Fonctionnalités Existantes (Front-end uniquement)
 
-### Suite Productivité
+### Organisation productive
 - [x] **TodoListEnhanced** - Gestionnaire de tâches avec localStorage
 - [x] **TaskManagerEnhanced** - Tâches avancées avec import/export JSON
 - [x] **GoalManagerEnhanced** - Objectifs avec milestones et progression

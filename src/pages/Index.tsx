@@ -69,7 +69,7 @@ const Index = () => {
       case "unit-converter": return "Convertisseurs d'Unités";
       case "calculator": return "Calculatrices";
       case "date-calculator-advanced": return "Dates & Temps";
-      case "productivity-suite": return "Suite Productivité";
+      case "productivity-suite": return "Organisation productive";
       case "password-generator-advanced": return "Générateur de Mots de Passe";
       case "color-generator": return "Créativité";
       case "health": return "Santé";
@@ -248,7 +248,7 @@ const Index = () => {
                   />
                   
                   <ToolCard
-                    title="Suite Productivité Complète"
+                    title="Organisation productive Complète"
                     description="Tâches avancées, notes, Pomodoro et to-do list intégrés"
                     icon="🚀"
                     tools={["Tâches intelligentes", "To-do list améliorée", "Notes avec tags", "Pomodoro", "Statistiques", "Synchronisation"]}

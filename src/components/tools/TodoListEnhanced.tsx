@@ -202,46 +202,7 @@ export const TodoListEnhanced = () => {
   };
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6">
-      {/* En-tête avec statistiques */}
-      <Card className="shadow-lg border-2 border-blue-200 dark:border-blue-800">
-        <CardHeader className="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950/50 dark:via-indigo-950/50 dark:to-purple-950/50">
-          <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl">
-                <CheckSquare2 className="w-6 h-6 lg:w-8 lg:h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-xl lg:text-2xl font-bold text-gray-800 dark:text-gray-200">
-                  Gestionnaire de Tâches Avancé
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  Organisez efficacement vos tâches avec priorités et catégories
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex flex-wrap gap-2">
-              <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200">
-                <Target className="w-3 h-3 mr-1" />
-                {stats.total} total
-              </Badge>
-              <Badge className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200">
-                ✅ {stats.completed} terminées
-              </Badge>
-              <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900/50 dark:text-orange-200">
-                ⏳ {stats.active} actives
-              </Badge>
-              {stats.overdue > 0 && (
-                <Badge className="bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200">
-                  ⚠️ {stats.overdue} en retard
-                </Badge>
-              )}
-            </div>
-          </CardTitle>
-        </CardHeader>
-      </Card>
-
+    <div className="w-full space-y-6">
       <Tabs defaultValue="list" className="space-y-4">
         <TabsList className="grid w-full grid-cols-2 lg:grid-cols-3">
           <TabsTrigger value="list" className="flex items-center gap-2">

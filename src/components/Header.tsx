@@ -32,7 +32,7 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
       case "calculator": return "Calculatrices";
       case "date-calculator": return "Calculateurs de Dates";
       case "todo": return "Productivité";
-      case "productivity-suite": return "Suite Productivité";
+      case "productivity-suite": return "Organisation productive";
       case "password-generator": return "Générateur de Mots de Passe";
       case "qr-code": return "Générateur QR Code";
       case "color-generator": return "Créativité";

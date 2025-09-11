@@ -45,7 +45,7 @@ export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps)
     { id: "unit-converter", label: "Convertisseurs", icon: Calculator },
     { id: "calculator", label: "Calculatrices", icon: Calculator },
     { id: "date-calculator-advanced", label: "Dates & Temps", icon: Calendar },
-    { id: "productivity-suite", label: "Suite Productivité", icon: CheckSquare },
+    { id: "productivity-suite", label: "Organisation productive", icon: CheckSquare },
     { id: "password-generator-advanced", label: "Sécurité Avancée", icon: Shield },
     { id: "color-generator", label: "Créativité", icon: Palette },
     { id: "health-wellness-suite", label: "Santé", icon: Heart },

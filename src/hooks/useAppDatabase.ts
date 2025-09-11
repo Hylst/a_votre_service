@@ -4,7 +4,7 @@ import { useIndexedDBManager } from './useIndexedDBManager';
 // Configuration complète de la base de données pour tous les outils
 const APP_DATABASE_CONFIG = {
   dbName: 'ToolsAppDatabase',
-  version: 153, // Version mise à jour pour résoudre le conflit avec la version existante 152
+  version: 155, // Version mise à jour pour résoudre le conflit avec la version existante 154
   stores: [
     // Productivité
     {
