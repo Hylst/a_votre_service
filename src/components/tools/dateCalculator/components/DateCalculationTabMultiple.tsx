@@ -1,6 +1,5 @@
-
 /**
- * DateCalculationTabEnhancedV2.tsx
+ * DateCalculationTabMultiple.tsx
  * Enhanced date calculator component that supports multiple successive operations
  * Allows users to chain multiple add/subtract operations on dates with intermediate results
  */
@@ -31,7 +30,7 @@ interface CalculationStep {
   formattedResult: string;
 }
 
-export const DateCalculationTabEnhancedV2 = () => {
+export const DateCalculationTabMultiple = () => {
   const { toast } = useToast();
   const { calculateNewDate } = useDateCalculationsEnhanced();
   const [baseDate, setBaseDate] = useState("");

@@ -3,6 +3,35 @@
 
 ## ✅ TERMINÉ (DONE)
 
+### v2.6 - 2024-01-17
+**Amélioration des Calculs de Dates - Opérations Successives Multiples**
+- ✅ Ajout de la fonctionnalité d'opérations multiples dans DateCalculationTabEnhancedV2
+- ✅ Interface intuitive avec lignes d'opérations dynamiques (ajout/suppression)
+- ✅ Calculs en chaîne avec affichage des résultats intermédiaires
+- ✅ Validation des entrées et gestion d'erreurs robuste
+- ✅ Fonction "Effacer toutes les opérations" pour réinitialisation rapide
+- ✅ Localisation française maintenue pour tous les éléments
+- ✅ Interface étape par étape claire et professionnelle
+- ✅ Support pour opérations d'addition et soustraction successives
+- ✅ Affichage des étapes de calcul pour transparence
+
+### 📅 Opérations Successives Multiples - Calculs de Dates (v2.5) - 2024-01-17
+- [x] **Amélioration du Calculateur de Dates Avancé (DateCalculationTabEnhancedV2)**
+  - [x] Ajout de la fonctionnalité d'opérations successives multiples sur les dates
+  - [x] Interface permettant d'ajouter/supprimer des lignes d'opérations dynamiquement
+  - [x] Chaque ligne d'opération inclut : type (ajouter/soustraire), quantité et unité (jours/mois/années)
+  - [x] Calcul en chaîne où chaque opération s'applique au résultat de la précédente
+  - [x] Affichage des résultats intermédiaires pour chaque étape de calcul
+  - [x] Validation complète des entrées avec gestion d'erreurs en français
+  - [x] Bouton "Effacer tout" pour réinitialiser toutes les opérations
+  - [x] Conservation du style français et des notifications toast existantes
+- [x] **Fonctionnalités avancées des opérations multiples**
+  - [x] Interface intuitive pour construire des calculs de dates complexes étape par étape
+  - [x] Gestion des états de validation pour chaque ligne d'opération
+  - [x] Synchronisation automatique des calculs lors des modifications
+  - [x] Affichage du résultat final avec formatage français complet
+  - [x] Maintien de la compatibilité avec l'interface existante
+
 ### 🎨 Redesign Interface Dates & Temps (v2.4) - 2024-01-17
 - [x] **Redesign complet du menu à onglets DateCalculatorAdvanced**
   - [x] Remplacement du système d'onglets par des cartes modernes avec design gradient
