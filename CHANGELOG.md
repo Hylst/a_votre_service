@@ -3,6 +3,54 @@
 
 ## ✅ TERMINÉ (DONE)
 
+### v2.8.1 - 2025-01-17
+**Correction Critique des Plantages Navigateur - Outil Fuseaux Horaires**
+- ✅ **Résolution des crashes SelectItem** : Correction des erreurs "A <Select.Item /> must have a value prop that is not an empty string"
+- ✅ **TimeZoneSearchTab.tsx** : Remplacement des valeurs vides par "all" dans les composants Select
+- ✅ **TimeZoneFavoritesTab.tsx** : Remplacement des valeurs vides par "all" et "ungrouped" pour les filtres de groupe
+- ✅ **Mise à jour logique de filtrage** : Adaptation des conditions pour gérer les nouvelles valeurs significatives
+- ✅ **Stabilité navigateur** : Élimination complète des plantages dans les onglets Recherche et Favoris
+- ✅ **Tests de validation** : Vérification du bon fonctionnement sans erreurs console
+
+### v2.9 - 2024-01-17
+**Correction Critique des Onglets Fuseaux Horaires**
+- ✅ **Correction des plantages navigateur** : Résolution des erreurs SelectItem avec valeurs vides
+- ✅ **TimeZoneSearchTab.tsx** : Remplacement des `value=""` par `value="all"` dans les filtres
+- ✅ **TimeZoneFavoritesTab.tsx** : Remplacement de `value=""` par `value="none"` pour l'option "Aucun groupe"
+- ✅ **Mise à jour logique de filtrage** : Adaptation des conditions pour gérer les nouvelles valeurs non-vides
+- ✅ **Initialisation des filtres** : Configuration par défaut avec "all" au lieu de chaînes vides
+- ✅ **Tests de validation** : Vérification du bon fonctionnement sans erreurs console
+- ✅ **Stabilité améliorée** : Élimination complète des erreurs "A <Select.Item /> must have a value prop that is not an empty string"
+
+### v2.8 - 2024-01-17
+**Amélioration Majeure de l'Outil Fuseaux Horaires - 5 Nouvelles Fonctions**
+- ✅ Remplacement de TimeZoneTab par TimeZoneAdvanced avec navigation à onglets moderne
+- ✅ **Onglet Horloges** : Affichage des horloges mondiales (fonctionnalité existante améliorée)
+- ✅ **Onglet Convertisseur** : Conversion de temps entre fuseaux avec sélecteur date/heure
+- ✅ **Onglet Comparaison** : Vue côte à côte des fuseaux avec calcul des différences
+- ✅ **Onglet Réunions** : Planificateur de réunions multi-fuseaux avec participants
+- ✅ **Onglet Recherche** : Recherche avancée et découverte de fuseaux horaires
+- ✅ **Onglet Favoris** : Gestion des favoris avec organisation en groupes
+- ✅ Contexte partagé TimeZoneContext pour la gestion d'état entre onglets
+- ✅ Interface moderne avec icônes et design responsive
+- ✅ Localisation française complète pour tous les nouveaux composants
+- ✅ Fonctionnalités de copie et notifications toast intégrées
+- ✅ Mise à jour de DateCalculatorAdvanced.tsx pour utiliser le nouveau composant
+
+### v2.7 - 2024-01-17
+**Calculateur de Jours Ouvrables Français**
+- ✅ Ajout du nouvel onglet "Jours Ouvrables" dans la section Dates & Temps
+- ✅ Calcul précis des jours travaillés entre deux dates selon le calendrier français
+- ✅ Intégration complète des jours fériés français (Jour de l'An, Pâques, Fête du Travail, Victoire 1945, Ascension, Pentecôte, Fête Nationale, Assomption, Toussaint, Armistice, Noël)
+- ✅ Paramètres personnalisables : sélection des jours ouvrables (Lundi-Vendredi par défaut)
+- ✅ Presets de dates prédéfinis (mois actuel, trimestre, année, etc.)
+- ✅ Affichage détaillé des résultats : total des jours, jours ouvrables, week-ends, jours fériés
+- ✅ Vue calendrier interactive avec codage couleur (vert=travail, rouge=férié, gris=week-end)
+- ✅ Fonctionnalité de copie des résultats avec notifications toast
+- ✅ Validation complète des entrées et gestion d'erreurs en français
+- ✅ Interface moderne avec icône Briefcase et design cohérent
+- ✅ Optimisation responsive pour tous les écrans
+
 ### v2.6 - 2024-01-17
 **Amélioration des Calculs de Dates - Opérations Successives Multiples**
 - ✅ Ajout de la fonctionnalité d'opérations multiples dans DateCalculationTabEnhancedV2

@@ -7,15 +7,16 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Calendar, Calculator, Clock, MapPin, History, Users } from 'lucide-react';
+import { Calendar, Calculator, Clock, MapPin, History, Users, Briefcase } from 'lucide-react';
 
 // Import components with named imports
 import { DateCalculationTabEnhancedV2 } from './dateCalculator/components/DateCalculationTabEnhancedV2';
 import { AgeCalculatorTabEnhanced } from './dateCalculator/components/AgeCalculatorTabEnhanced';
 import { DateDifferenceTab } from './dateCalculator/components/DateDifferenceTab';
 import EventPlannerTabEnhanced from './dateCalculator/components/EventPlannerTabEnhanced';
-import { TimeZoneTab } from './dateCalculator/components/TimeZoneTab';
+import { TimeZoneAdvanced } from './dateCalculator/components/TimeZoneAdvanced';
 import { CalculationHistoryTab } from './dateCalculator/components/CalculationHistoryTab';
+import WorkingDaysTab from './dateCalculator/components/WorkingDaysTab';
 
 const DateCalculatorAdvanced: React.FC = () => {
   const [activeTab, setActiveTab] = useState("calculations");
@@ -24,8 +25,9 @@ const DateCalculatorAdvanced: React.FC = () => {
     { id: "calculations", label: "Calculs", icon: Calculator, component: DateCalculationTabEnhancedV2 },
     { id: "age", label: "Âge", icon: Users, component: AgeCalculatorTabEnhanced },
     { id: "difference", label: "Différence", icon: Calendar, component: DateDifferenceTab },
+    { id: "working-days", label: "Jours Ouvrables", icon: Briefcase, component: WorkingDaysTab },
     { id: "planning", label: "Planning", icon: Calendar, component: EventPlannerTabEnhanced },
-    { id: "timezone", label: "Fuseaux", icon: MapPin, component: TimeZoneTab },
+    { id: "timezone", label: "Fuseaux", icon: MapPin, component: TimeZoneAdvanced },
     { id: "history", label: "Historique", icon: History, component: CalculationHistoryTab },
   ];
 
@@ -34,7 +36,7 @@ const DateCalculatorAdvanced: React.FC = () => {
   return (
     <div className="w-full max-w-7xl mx-auto space-y-8">
       {/* Modern Card-Based Tab Navigation */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 p-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 p-6">
         {tabs.map((tab) => {
           const IconComponent = tab.icon;
           const isActive = activeTab === tab.id;
