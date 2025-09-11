@@ -1,8 +1,13 @@
 
-import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, Calculator, Clock, MapPin } from 'lucide-react';
+/**
+ * DateCalculatorAdvanced.tsx
+ * Modern card-based date calculator with enhanced tab navigation and comprehensive date/time tools
+ */
+
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Calendar, Calculator, Clock, MapPin, History, Users } from 'lucide-react';
 
 // Import components with named imports
 import { DateCalculationTabEnhancedV2 } from './dateCalculator/components/DateCalculationTabEnhancedV2';
@@ -13,75 +18,57 @@ import { TimeZoneTab } from './dateCalculator/components/TimeZoneTab';
 import { CalculationHistoryTab } from './dateCalculator/components/CalculationHistoryTab';
 
 const DateCalculatorAdvanced: React.FC = () => {
+  const [activeTab, setActiveTab] = useState("calculations");
+
+  const tabs = [
+    { id: "calculations", label: "Calculs", icon: Calculator, component: DateCalculationTabEnhancedV2 },
+    { id: "age", label: "Âge", icon: Users, component: AgeCalculatorTabEnhanced },
+    { id: "difference", label: "Différence", icon: Calendar, component: DateDifferenceTab },
+    { id: "planning", label: "Planning", icon: Calendar, component: EventPlannerTabEnhanced },
+    { id: "timezone", label: "Fuseaux", icon: MapPin, component: TimeZoneTab },
+    { id: "history", label: "Historique", icon: History, component: CalculationHistoryTab },
+  ];
+
+  const ActiveComponent = tabs.find(tab => tab.id === activeTab)?.component || DateCalculationTabEnhancedV2;
+
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="w-6 h-6 text-blue-600" />
-            Suite Avancée de Dates & Temps
-          </CardTitle>
-          <p className="text-muted-foreground">
-            Calculateur de dates complet avec planning d'événements, fuseaux horaires, et historique.
-          </p>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="calculations" className="w-full">
-            <TabsList className="grid w-full grid-cols-6">
-              <TabsTrigger value="calculations" className="flex items-center gap-2">
-                <Calculator className="w-4 h-4" />
-                Calculs
-              </TabsTrigger>
-              <TabsTrigger value="age" className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                Âge
-              </TabsTrigger>
-              <TabsTrigger value="difference" className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                Différence
-              </TabsTrigger>
-              <TabsTrigger value="planning" className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                Planning
-              </TabsTrigger>
-              <TabsTrigger value="timezone" className="flex items-center gap-2">
-                <Clock className="w-4 h-4" />
-                Fuseaux
-              </TabsTrigger>
-              <TabsTrigger value="history" className="flex items-center gap-2">
-                <Calculator className="w-4 h-4" />
-                Historique
-              </TabsTrigger>
-            </TabsList>
+    <div className="w-full max-w-7xl mx-auto space-y-8">
+      {/* Modern Card-Based Tab Navigation */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 p-6">
+        {tabs.map((tab) => {
+          const IconComponent = tab.icon;
+          const isActive = activeTab === tab.id;
+          return (
+            <Card 
+              key={tab.id}
+              className={`cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg ${
+                isActive 
+                  ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-xl border-0' 
+                  : 'bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-600'
+              }`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <CardContent className="p-4 text-center">
+                <div className={`mb-2 flex justify-center ${
+                  isActive ? 'text-white' : 'text-gray-600 dark:text-gray-300'
+                }`}>
+                  <IconComponent className="w-6 h-6" />
+                </div>
+                <div className={`text-sm font-medium ${
+                  isActive ? 'text-white' : 'text-gray-700 dark:text-gray-200'
+                }`}>
+                  {tab.label}
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
 
-            <div className="mt-6">
-              <TabsContent value="calculations">
-                <DateCalculationTabEnhancedV2 />
-              </TabsContent>
-
-              <TabsContent value="age">
-                <AgeCalculatorTabEnhanced />
-              </TabsContent>
-
-              <TabsContent value="difference">
-                <DateDifferenceTab />
-              </TabsContent>
-
-              <TabsContent value="planning">
-                <EventPlannerTabEnhanced />
-              </TabsContent>
-
-              <TabsContent value="timezone">
-                <TimeZoneTab />
-              </TabsContent>
-
-              <TabsContent value="history">
-                <CalculationHistoryTab />
-              </TabsContent>
-            </div>
-          </Tabs>
-        </CardContent>
-      </Card>
+      {/* Active Tab Content */}
+      <div className="px-4">
+        <ActiveComponent />
+      </div>
     </div>
   );
 };

@@ -23,13 +23,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Scale, Info, Home, Calculator, Brain, Palette, Heart } from "lucide-react";
+import { Scale, Info, Home, Calculator, Brain, Palette, Heart, Calendar } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { UnitConverterInfoModal } from "@/components/modals/UnitConverterInfoModal";
 import { CalculatorInfoModal } from "@/components/modals/CalculatorInfoModal";
 import { ProductivityInfoModal } from "@/components/modals/ProductivityInfoModal";
 import { CreativityInfoModal } from "@/components/modals/CreativityInfoModal";
 import { HealthInfoModal } from "@/components/modals/HealthInfoModal";
+import { DateTimeInfoModal } from "@/components/modals/DateTimeInfoModal";
 
 // New design system components
 import { Container } from "@/components/ui/container";
@@ -46,6 +47,7 @@ const Index = () => {
   const navigate = useNavigate();
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isCalculatorInfoModalOpen, setIsCalculatorInfoModalOpen] = useState(false);
+  const [isDateTimeInfoModalOpen, setIsDateTimeInfoModalOpen] = useState(false);
   const [isProductivityInfoModalOpen, setIsProductivityInfoModalOpen] = useState(false);
   const [isCreativityInfoModalOpen, setIsCreativityInfoModalOpen] = useState(false);
   const [isHealthInfoModalOpen, setIsHealthInfoModalOpen] = useState(false);
@@ -64,7 +66,7 @@ const Index = () => {
     switch (activeSection) {
       case "unit-converter": return "Convertisseurs d'Unités";
       case "calculator": return "Calculatrices";
-      case "date-calculator-advanced": return "Dates & Temps Avancés";
+      case "date-calculator-advanced": return "Dates & Temps";
       case "productivity-suite": return "Suite Productivité";
       case "password-generator-advanced": return "Générateur de Mots de Passe";
       case "color-generator": return "Créativité";
@@ -338,8 +340,14 @@ const Index = () => {
                     {activeSection === "unit-converter" && (
                       <Scale className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     )}
+
+
+
                     {activeSection === "calculator" && (
                       <Calculator className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    )}
+                    {activeSection === "date-calculator-advanced" && (
+                      <Calendar className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                     )}
                     {activeSection === "productivity-suite" && (
                       <Brain className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
@@ -445,6 +453,25 @@ const Index = () => {
                         </div>
                       </>
                     )}
+                    {activeSection === "date-calculator-advanced" && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsDateTimeInfoModalOpen(true)}
+                          className="p-1 h-8 w-8 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900"
+                        >
+                          <Info className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        </Button>
+                        <div className="hidden lg:flex items-center gap-1 ml-2">
+                          <Badge variant="secondary" className="text-xs">Calculs dates</Badge>
+                          <Badge variant="secondary" className="text-xs">Âge précis</Badge>
+                          <Badge variant="secondary" className="text-xs">Planification</Badge>
+                          <Badge variant="secondary" className="text-xs">Fuseaux horaires</Badge>
+                          <Badge variant="secondary" className="text-xs">Historique</Badge>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
                 
@@ -484,6 +511,10 @@ const Index = () => {
               <HealthInfoModal 
                 isOpen={isHealthInfoModalOpen} 
                 onClose={() => setIsHealthInfoModalOpen(false)} 
+              />
+              <DateTimeInfoModal 
+                isOpen={isDateTimeInfoModalOpen} 
+                onClose={() => setIsDateTimeInfoModalOpen(false)} 
               />
             </div>
             
