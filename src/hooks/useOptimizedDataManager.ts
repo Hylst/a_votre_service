@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useDexieDB } from './useDexieDB';
 import { useDataSync } from './useDataSync';
 import { useToast } from './use-toast';
@@ -34,13 +34,17 @@ export const useOptimizedDataManager = <T>({
   const saveTimeoutRef = useRef<NodeJS.Timeout>();
   const syncIntervalRef = useRef<NodeJS.Timeout>();
 
+  // Memoize functions to prevent dependency changes
+  const memoizedLoadFromDexie = useCallback(loadFromDexie, []);
+  const memoizedLoadFromSync = useCallback(loadFromSync, []);
+  
   // Chargement initial optimisé
   useEffect(() => {
     const loadInitialData = async () => {
       setIsLoading(true);
       try {
         // Essayer de charger depuis la synchronisation (Supabase si en ligne, sinon local)
-        const syncData = await loadFromSync();
+        const syncData = await memoizedLoadFromSync();
         if (syncData) {
           setData(syncData);
           console.log(`📥 Données chargées depuis la sync pour ${toolName}`);
@@ -48,7 +52,7 @@ export const useOptimizedDataManager = <T>({
         }
 
         // Charger depuis Dexie comme fallback
-        const localData = await loadFromDexie(toolName);
+        const localData = await memoizedLoadFromDexie(toolName);
         if (localData) {
           setData(localData);
           console.log(`💾 Données chargées depuis Dexie pour ${toolName}`);
@@ -65,7 +69,7 @@ export const useOptimizedDataManager = <T>({
     };
 
     loadInitialData();
-  }, [toolName, isOnline, defaultData, loadFromDexie, loadFromSync]);
+  }, [toolName, memoizedLoadFromDexie, memoizedLoadFromSync]);
 
   // Auto-save debounced
   const debouncedSave = useCallback(async (newData: T) => {

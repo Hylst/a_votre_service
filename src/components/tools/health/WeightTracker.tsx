@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -49,17 +49,20 @@ export const WeightTracker = ({ data: propData, onDataChange }: WeightTrackerPro
   const [currentWeight, setCurrentWeight] = useState('');
   const [notes, setNotes] = useState('');
 
-  // Synchroniser avec les props pour compatibilité
+  // Memoize onDataChange to prevent infinite re-renders
+  const memoizedOnDataChange = useCallback(onDataChange, []);
+
+  // Synchroniser avec les props pour compatibilité (only on mount or when propData actually changes)
   useEffect(() => {
-    if (propData && Object.keys(propData).length > 0) {
+    if (propData && Object.keys(propData).length > 0 && JSON.stringify(propData) !== JSON.stringify(managedData)) {
       setManagedData(propData);
     }
-  }, [propData, setManagedData]);
+  }, [propData]);
 
-  // Notifier les changements pour compatibilité
+  // Notifier les changements pour compatibilité (memoized to prevent infinite loops)
   useEffect(() => {
-    onDataChange(managedData);
-  }, [managedData, onDataChange]);
+    memoizedOnDataChange(managedData);
+  }, [managedData, memoizedOnDataChange]);
 
   const addEntry = () => {
     if (!currentWeight) {

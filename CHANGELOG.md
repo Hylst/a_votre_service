@@ -3,6 +3,23 @@
 
 ## ✅ TERMINÉ (DONE)
 
+### v2.8.2 - 2025-01-17
+**Correction Critique des Erreurs IndexedDB - Gestion des Versions**
+- ✅ **Résolution des erreurs VersionError** : Correction des conflits de version IndexedDB (version demandée 155 < version existante 156)
+- ✅ **useIndexedDBManager.ts** : Implémentation d'un système de gestion dynamique des versions
+  - Détection automatique de la version actuelle de la base de données
+  - Calcul intelligent de la version cible (max entre config et actuelle+1)
+  - Ajout de logs détaillés pour le débogage des opérations de base de données
+  - Gestion des événements onblocked pour les mises à jour bloquées
+- ✅ **useOfflineDataManager.ts** : Ajout de mécanismes de récupération d'erreurs
+  - Détection spécifique des erreurs VersionError
+  - Système de retry automatique avec délai de 1 seconde
+  - Messages d'erreur améliorés pour une meilleure expérience utilisateur
+  - Récupération gracieuse avec données par défaut en cas d'échec
+- ✅ **Amélioration de la robustesse** : Gestion complète des cas d'erreur pour les opérations de sauvegarde et chargement
+- ✅ **Logs améliorés** : Ajout d'emojis et messages détaillés pour faciliter le débogage
+- ✅ **Tests de validation** : Vérification du bon fonctionnement sans erreurs IndexedDB
+
 ### v2.8.1 - 2025-01-17
 **Correction Critique des Plantages Navigateur - Outil Fuseaux Horaires**
 - ✅ **Résolution des crashes SelectItem** : Correction des erreurs "A <Select.Item /> must have a value prop that is not an empty string"

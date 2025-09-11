@@ -49,10 +49,29 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
         }
       } catch (error) {
         console.error(`❌ Erreur lors du chargement des données pour ${toolName}:`, error);
+        
+        // Check if it's a version error and attempt recovery
+        if (error instanceof Error && error.name === 'VersionError') {
+          console.log(`🔄 Tentative de récupération après erreur de version pour ${toolName}`);
+          try {
+            // Wait a bit and try again - the version should be auto-corrected now
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            const retryData = await loadData(toolName, 'main-data');
+            if (retryData) {
+              setData(retryData);
+              setLastSyncTime(new Date().toISOString());
+              console.log(`✅ Récupération réussie pour ${toolName}`);
+              return;
+            }
+          } catch (retryError) {
+            console.error(`❌ Échec de la récupération pour ${toolName}:`, retryError);
+          }
+        }
+        
         setData(defaultData);
         toast({
           title: "Erreur de chargement",
-          description: "Impossible de charger les données, valeurs par défaut utilisées",
+          description: "Impossible de charger les données sauvegardées. Les données par défaut seront utilisées.",
           variant: "destructive",
         });
       } finally {
@@ -94,9 +113,35 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
       }
     } catch (error) {
       console.error(`❌ Erreur lors de la sauvegarde pour ${toolName}:`, error);
+      
+      // Check if it's a version error and attempt recovery
+      if (error instanceof Error && error.name === 'VersionError') {
+        console.log(`🔄 Tentative de récupération après erreur de version lors de la sauvegarde pour ${toolName}`);
+        try {
+          // Wait a bit and try again - the version should be auto-corrected now
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          const dataWithMetadata = {
+            data: newData,
+            tool: toolName,
+            timestamp: Date.now(),
+            lastModified: new Date().toISOString()
+          };
+          const retrySuccess = await saveData(toolName, 'main-data', dataWithMetadata);
+          if (retrySuccess) {
+            setData(newData);
+            setLastSyncTime(new Date().toISOString());
+            console.log(`✅ Récupération de sauvegarde réussie pour ${toolName}`);
+            setIsSyncing(false);
+            return;
+          }
+        } catch (retryError) {
+          console.error(`❌ Échec de la récupération de sauvegarde pour ${toolName}:`, retryError);
+        }
+      }
+      
       toast({
         title: "Erreur de sauvegarde",
-        description: "Impossible de sauvegarder les données",
+        description: "Impossible de sauvegarder les données. Les modifications sont conservées en mémoire.",
         variant: "destructive",
       });
       // On garde quand même les données en mémoire

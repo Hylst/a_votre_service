@@ -22,31 +22,69 @@ interface StoredItem {
 }
 
 export const useIndexedDBManager = (config: DatabaseConfig) => {
-  const openDB = (): Promise<IDBDatabase> => {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(config.dbName, config.version);
-
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => resolve(request.result);
-
-      request.onupgradeneeded = (event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        
-        config.stores.forEach(store => {
-          if (!db.objectStoreNames.contains(store.name)) {
-            const objectStore = db.createObjectStore(store.name, {
-              keyPath: store.keyPath
-            });
-
-            // Créer les index
-            store.indexes?.forEach(index => {
-              objectStore.createIndex(index.name, index.keyPath, {
-                unique: index.unique || false
-              });
-            });
-          }
-        });
+  // Function to get the current database version
+  const getCurrentDBVersion = async (): Promise<number> => {
+    return new Promise((resolve) => {
+      const request = indexedDB.open(config.dbName);
+      request.onsuccess = () => {
+        const db = request.result;
+        const currentVersion = db.version;
+        db.close();
+        resolve(currentVersion);
       };
+      request.onerror = () => resolve(0); // If DB doesn't exist, start from 0
+    });
+  };
+
+  const openDB = async (): Promise<IDBDatabase> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Get current version and use the higher of config.version or current+1
+        const currentVersion = await getCurrentDBVersion();
+        const targetVersion = Math.max(config.version, currentVersion + (currentVersion >= config.version ? 1 : 0));
+        
+        console.log(`🔧 Opening IndexedDB ${config.dbName} - Current: ${currentVersion}, Target: ${targetVersion}`);
+        
+        const request = indexedDB.open(config.dbName, targetVersion);
+
+        request.onerror = () => {
+          console.error(`❌ IndexedDB open error for ${config.dbName}:`, request.error);
+          reject(request.error);
+        };
+        
+        request.onsuccess = () => {
+          console.log(`✅ IndexedDB ${config.dbName} opened successfully at version ${targetVersion}`);
+          resolve(request.result);
+        };
+
+        request.onupgradeneeded = (event) => {
+          console.log(`🔄 Upgrading IndexedDB ${config.dbName} from ${event.oldVersion} to ${targetVersion}`);
+          const db = (event.target as IDBOpenDBRequest).result;
+          
+          config.stores.forEach(store => {
+            if (!db.objectStoreNames.contains(store.name)) {
+              console.log(`📦 Creating object store: ${store.name}`);
+              const objectStore = db.createObjectStore(store.name, {
+                keyPath: store.keyPath
+              });
+
+              // Créer les index
+              store.indexes?.forEach(index => {
+                objectStore.createIndex(index.name, index.keyPath, {
+                  unique: index.unique || false
+                });
+              });
+            }
+          });
+        };
+        
+        request.onblocked = () => {
+          console.warn(`⚠️ IndexedDB ${config.dbName} upgrade blocked. Please close other tabs.`);
+        };
+      } catch (error) {
+        console.error(`❌ Error in openDB for ${config.dbName}:`, error);
+        reject(error);
+      }
     });
   };
 
@@ -67,13 +105,17 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       await new Promise<void>((resolve, reject) => {
         const request = store.put(item);
         request.onsuccess = () => resolve();
-        request.onerror = () => reject(request.error);
+        request.onerror = () => {
+          console.error(`❌ Error saving data to ${tool}:`, request.error);
+          reject(request.error);
+        };
       });
 
       db.close();
+      console.log(`💾 Data saved successfully to ${tool}`);
       return true;
     } catch (error) {
-      console.error(`Erreur sauvegarde IndexedDB pour ${tool}:`, error);
+      console.error(`❌ Failed to save data to ${tool}:`, error);
       return false;
     }
   };
@@ -87,17 +129,21 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       const result = await new Promise<StoredItem | undefined>((resolve, reject) => {
         const request = store.get(key);
         request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
+        request.onerror = () => {
+          console.error(`❌ Error loading data from ${tool}:`, request.error);
+          reject(request.error);
+        };
       });
 
       db.close();
+      console.log(`📖 Data loaded successfully from ${tool}`);
       
       if (result) {
         return result.data;
       }
       return null;
     } catch (error) {
-      console.error(`Erreur chargement IndexedDB pour ${tool}:`, error);
+      console.error(`❌ Failed to load data from ${tool}:`, error);
       return null;
     }
   };
