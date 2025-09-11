@@ -23,14 +23,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Scale, Info, Home, Calculator, Brain, Palette, Heart, Calendar } from "lucide-react";
+import { Scale, Info, Home, Calculator, Brain, Palette, Heart, Calendar, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { UnitConverterInfoModal } from "@/components/modals/UnitConverterInfoModal";
 import { CalculatorInfoModal } from "@/components/modals/CalculatorInfoModal";
 import { ProductivityInfoModal } from "@/components/modals/ProductivityInfoModal";
-import { CreativityInfoModal } from "@/components/modals/CreativityInfoModal";
-import { HealthInfoModal } from "@/components/modals/HealthInfoModal";
-import { DateTimeInfoModal } from "@/components/modals/DateTimeInfoModal";
+import CreativityInfoModal from "@/components/modals/CreativityInfoModal";
+import HealthInfoModal from "@/components/modals/HealthInfoModal";
+import DateTimeInfoModal from "@/components/modals/DateTimeInfoModal";
+import TextUtilsInfoModal from "@/components/modals/TextUtilsInfoModal";
 
 // New design system components
 import { Container } from "@/components/ui/container";
@@ -51,6 +52,7 @@ const Index = () => {
   const [isProductivityInfoModalOpen, setIsProductivityInfoModalOpen] = useState(false);
   const [isCreativityInfoModalOpen, setIsCreativityInfoModalOpen] = useState(false);
   const [isHealthInfoModalOpen, setIsHealthInfoModalOpen] = useState(false);
+  const [isTextUtilsInfoModalOpen, setIsTextUtilsInfoModalOpen] = useState(false);
 
   // Gérer la navigation via URL params (depuis Settings)
   useEffect(() => {
@@ -73,7 +75,7 @@ const Index = () => {
       case "health": return "Santé";
       case "health-wellness-suite": return "Santé";
       case "bmi-calculator": return "Calculateur IMC";
-      case "text-utils-advanced": return "Utilitaires Texte Avancés";
+      case "text-utils-advanced": return "Outils Texte";
       case "data-manager": return "Gestionnaire de Données";
       case "settings": return "Paramètres";
       case "profile": return "Mon Profil";
@@ -358,6 +360,9 @@ const Index = () => {
                     {(activeSection === "health" || activeSection === "health-wellness-suite") && (
                       <Heart className="w-6 h-6 text-red-600 dark:text-red-400" />
                     )}
+                    {activeSection === "text-utils-advanced" && (
+                      <FileText className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                    )}
                     <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
                       {getSectionTitle()}
                     </h1>
@@ -472,6 +477,24 @@ const Index = () => {
                         </div>
                       </>
                     )}
+                    {activeSection === "text-utils-advanced" && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsTextUtilsInfoModalOpen(true)}
+                          className="p-1 h-8 w-8 rounded-full hover:bg-orange-100 dark:hover:bg-orange-900"
+                        >
+                          <Info className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                        </Button>
+                        <div className="hidden lg:flex items-center gap-1 ml-2">
+                          <Badge variant="secondary" className="text-xs">Analyse</Badge>
+                          <Badge variant="secondary" className="text-xs">Édition</Badge>
+                          <Badge variant="secondary" className="text-xs">Création</Badge>
+                          <Badge variant="secondary" className="text-xs">Code</Badge>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
                 
@@ -515,6 +538,10 @@ const Index = () => {
               <DateTimeInfoModal 
                 isOpen={isDateTimeInfoModalOpen} 
                 onClose={() => setIsDateTimeInfoModalOpen(false)} 
+              />
+              <TextUtilsInfoModal 
+                isOpen={isTextUtilsInfoModalOpen} 
+                onClose={() => setIsTextUtilsInfoModalOpen(false)} 
               />
             </div>
             

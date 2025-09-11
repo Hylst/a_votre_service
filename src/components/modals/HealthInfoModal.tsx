@@ -123,3 +123,5 @@ export const HealthInfoModal: React.FC<HealthInfoModalProps> = ({
     </Dialog>
   );
 };
+
+export default HealthInfoModal;

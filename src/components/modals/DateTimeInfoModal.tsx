@@ -239,3 +239,5 @@ export const DateTimeInfoModal: React.FC<DateTimeInfoModalProps> = ({
     </Dialog>
   );
 };
+
+export default DateTimeInfoModal;

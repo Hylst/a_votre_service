@@ -151,112 +151,39 @@ export const TextUtilsAdvanced = () => {
       </Card>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-6">
-        {/* Tools Panel */}
-        <div className="xl:col-span-3">
-          <Card>
-            <CardContent className="p-0">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-11 h-auto p-1 gap-1">
-                  {tabs.map((tab) => {
-                    const IconComponent = tab.icon;
-                    return (
-                      <TabsTrigger
-                        key={tab.id}
-                        value={tab.id}
-                        className="flex flex-col items-center gap-1 p-2 text-xs min-h-16"
-                      >
-                        <IconComponent className="w-4 h-4 flex-shrink-0" />
-                        <span className="text-center leading-tight">{tab.label}</span>
-                      </TabsTrigger>
-                    );
-                  })}
-                </TabsList>
-                
-                {tabs.map((tab) => {
-                  const TabComponent = tab.component;
-                  return (
-                    <TabsContent key={tab.id} value={tab.id} className="p-3 lg:p-6">
-                      <TabComponent
-                        data={textUtilsData?.[tab.id] || {}}
-                        onDataChange={handleDataChange}
-                      />
-                    </TabsContent>
-                  );
-                })}
-              </Tabs>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Side Panel */}
-        <div className="space-y-4">
-          {/* Import/Export */}
-          <DataImportExport
-            onExport={exportData}
-            onImport={importData}
-            onReset={resetData}
-            isOnline={isOnline}
-            isSyncing={isSyncing}
-            lastSyncTime={lastSyncTime}
-            toolName="text-utils-advanced"
-          />
-
-          {/* Quick Stats */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium">Statistiques</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="text-center p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
-                <div className="text-lg font-bold text-blue-600">{tabs.length}</div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">Outils disponibles</div>
-              </div>
-              <div className="text-center p-3 bg-green-50 dark:bg-green-950 rounded-lg">
-                <div className="text-xs font-medium text-green-600">{activeTab.replace('-', ' ')}</div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">Outil actif</div>
-              </div>
-              <div className="text-center p-3 bg-purple-50 dark:bg-purple-950 rounded-lg">
-                <div className="text-lg font-bold text-purple-600">{categories.length}</div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">Catégories</div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Category Guide */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium">🎯 Catégories</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {categories.map(category => {
-                const categoryTabs = tabs.filter(tab => tab.category === category);
+      <Card>
+        <CardContent className="p-0">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-11 h-auto p-1 gap-1">
+              {tabs.map((tab) => {
+                const IconComponent = tab.icon;
                 return (
-                  <div key={category} className="text-xs">
-                    <div className="font-medium text-gray-700 dark:text-gray-300">{category}</div>
-                    <div className="text-gray-500 dark:text-gray-400 ml-2">
-                      {categoryTabs.length} outil{categoryTabs.length > 1 ? 's' : ''}
-                    </div>
-                  </div>
+                  <TabsTrigger
+                    key={tab.id}
+                    value={tab.id}
+                    className="flex flex-col items-center gap-1 p-2 text-xs min-h-16"
+                  >
+                    <IconComponent className="w-4 h-4 flex-shrink-0" />
+                    <span className="text-center leading-tight">{tab.label}</span>
+                  </TabsTrigger>
                 );
               })}
-            </CardContent>
-          </Card>
-
-          {/* Help Card */}
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium">💡 Aide</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                Utilisez les onglets pour accéder aux différents outils. Les données sont sauvegardées automatiquement. 
-                Explorez les nouvelles fonctionnalités de colorisation syntaxique et de gestion d'emojis !
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+            </TabsList>
+            
+            {tabs.map((tab) => {
+              const TabComponent = tab.component;
+              return (
+                <TabsContent key={tab.id} value={tab.id} className="p-3 lg:p-6">
+                  <TabComponent
+                    data={textUtilsData?.[tab.id] || {}}
+                    onDataChange={handleDataChange}
+                  />
+                </TabsContent>
+              );
+            })}
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 };

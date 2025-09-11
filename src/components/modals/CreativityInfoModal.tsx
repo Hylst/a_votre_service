@@ -298,3 +298,5 @@ export const CreativityInfoModal: React.FC<CreativityInfoModalProps> = ({
     </Dialog>
   );
 };
+
+export default CreativityInfoModal;
