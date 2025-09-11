@@ -1,5 +1,5 @@
 
-import { Calendar, Home, Calculator, CheckSquare, Palette, Heart, FileText, Shield, Settings, Info, User, Database } from "lucide-react";
+import { Calendar, Home, Calculator, CheckSquare, Palette, Heart, FileText, Shield, Settings, Info, User, Database, Briefcase } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -48,6 +48,7 @@ export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps)
     { id: "productivity-suite", label: "Organisation productive", icon: CheckSquare },
     { id: "password-generator-advanced", label: "Sécurité Avancée", icon: Shield },
     { id: "color-generator", label: "Créativité", icon: Palette },
+    { id: "career-generator", label: "Carrière/Pro", icon: Briefcase },
     { id: "health-wellness-suite", label: "Santé", icon: Heart },
     { id: "text-utils-advanced", label: "Utilitaires Texte", icon: FileText },
     { id: "settings", label: "Paramètres", icon: Settings },

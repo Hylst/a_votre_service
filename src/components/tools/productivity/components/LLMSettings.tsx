@@ -19,31 +19,39 @@ interface LLMProvider {
   selected_model: string | null;
 }
 
+// LLMSettings.tsx - Configuration des modèles LLM avec les dernières versions 2025
+// Mise à jour avec GPT-5, Claude 4, Gemini 2.5/2.0, et DeepSeek 3.1
 const PROVIDER_MODELS = {
   openai: [
+    'gpt-5',
+    'gpt-5-mini', 
+    'gpt-5-nano',
     'gpt-4o',
-    'gpt-4o-mini',
-    'gpt-4-turbo',
-    'gpt-3.5-turbo'
+    'gpt-4o-mini'
   ],
   anthropic: [
-    'claude-3-5-sonnet-20241022',
-    'claude-3-5-haiku-20241022',
-    'claude-3-opus-20240229'
+    'claude-opus-4-1-20250805',
+    'claude-opus-4-20250514',
+    'claude-sonnet-4-20250514',
+    'claude-3-7-sonnet-20250219',
+    'claude-3-5-sonnet-20241022'
   ],
   google: [
-    'gemini-2.0-flash-exp',
-    'gemini-1.5-pro',
-    'gemini-1.5-flash'
+    'gemini-2.5-pro',
+    'gemini-2.5-flash',
+    'gemini-2.5-flash-lite',
+    'gemini-2.0-flash',
+    'gemini-2.0-flash-lite'
   ],
   deepseek: [
     'deepseek-chat',
-    'deepseek-coder'
+    'deepseek-reasoner'
   ],
   openrouter: [
-    'deepseek/deepseek-r1',
+    'openrouter/auto',
     'anthropic/claude-3.5-sonnet',
-    'openai/gpt-4o'
+    'openai/gpt-4o',
+    'deepseek/deepseek-r1'
   ],
   xgrok: [
     'grok-beta',
@@ -52,11 +60,12 @@ const PROVIDER_MODELS = {
 };
 
 export const LLMSettings = () => {
-  const { user } = useAuth();
+  const { user, session, loading } = useAuth();
   const { toast } = useToast();
   const [providers, setProviders] = useState<LLMProvider[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showPasswords, setShowPasswords] = useState<{[key: string]: boolean}>({});
+  const [showNewApiKey, setShowNewApiKey] = useState(false);
   
   // Formulaire pour nouveau fournisseur
   const [newProvider, setNewProvider] = useState({
@@ -66,28 +75,53 @@ export const LLMSettings = () => {
   });
 
   useEffect(() => {
-    if (user) {
-      loadProviders();
-    }
+    loadProviders();
   }, [user]);
 
   const loadProviders = async () => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('user_llm_api_keys')
-        .select('*')
-        .eq('user_id', user?.id);
+      // Si l'utilisateur est connecté, charger depuis Supabase
+      if (user?.id) {
+        const { data, error } = await supabase
+          .from('user_llm_api_keys')
+          .select('*')
+          .eq('user_id', user.id);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setProviders(data || []);
+        // Combiner les données Supabase avec localStorage pour fallback
+        const supabaseProviders = data || [];
+        const localKeys = JSON.parse(localStorage.getItem('llm_api_keys') || '{}');
+        const localProviders = Object.entries(localKeys)
+          .filter(([provider]) => !supabaseProviders.some(sp => sp.provider === provider))
+          .map(([provider, api_key], index) => ({
+            id: `local-${Date.now()}-${index}`,
+            provider,
+            api_key: api_key as string,
+            is_default: supabaseProviders.length === 0 && index === 0,
+            selected_model: null
+          }));
+
+        setProviders([...supabaseProviders, ...localProviders]);
+      } else {
+        // Si pas connecté, charger uniquement depuis localStorage
+        const localKeys = JSON.parse(localStorage.getItem('llm_api_keys') || '{}');
+        const localProviders = Object.entries(localKeys).map(([provider, api_key], index) => ({
+          id: `local-${Date.now()}-${index}`,
+          provider,
+          api_key: api_key as string,
+          is_default: index === 0,
+          selected_model: null
+        }));
+        setProviders(localProviders);
+      }
     } catch (error) {
       console.error('Erreur chargement fournisseurs:', error);
-      // Fallback sur localStorage
+      // Fallback complet sur localStorage
       const localKeys = JSON.parse(localStorage.getItem('llm_api_keys') || '{}');
       const localProviders = Object.entries(localKeys).map(([provider, api_key], index) => ({
-        id: `local-${index}`,
+        id: `local-${Date.now()}-${index}`,
         provider,
         api_key: api_key as string,
         is_default: index === 0,
@@ -109,6 +143,47 @@ export const LLMSettings = () => {
       return;
     }
 
+    // Enhanced authentication check with better debugging
+    console.debug('Auth Debug - saveProvider:', {
+      user: user,
+      userId: user?.id,
+      session: session,
+      hasAccessToken: !!session?.access_token,
+      loading: loading
+    });
+
+    // Si l'utilisateur n'est pas connecté, utiliser le stockage local de manière transparente
+    if (!user?.id || !session?.access_token) {
+      const authIssue = !user ? 'No user object' : 
+                       !user.id ? 'User missing ID' : 
+                       !session ? 'No session' : 
+                       !session.access_token ? 'No access token' : 'Unknown';
+      
+      console.debug('Using local storage fallback:', authIssue);
+      
+      // Fallback vers localStorage de manière transparente
+      const localKeys = JSON.parse(localStorage.getItem('llm_api_keys') || '{}');
+      localKeys[newProvider.provider] = newProvider.api_key;
+      localStorage.setItem('llm_api_keys', JSON.stringify(localKeys));
+      
+      const newId = `local-${Date.now()}`;
+      setProviders([...providers, {
+        id: newId,
+        provider: newProvider.provider,
+        api_key: newProvider.api_key,
+        selected_model: newProvider.selected_model || null,
+        is_default: providers.length === 0
+      }]);
+      
+      setNewProvider({ provider: '', api_key: '', selected_model: '' });
+      
+      toast({
+        title: "Fournisseur ajouté (local)",
+        description: `${newProvider.provider} configuré localement avec succès`,
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       // Si c'est le premier fournisseur, le marquer comme défaut
@@ -117,7 +192,7 @@ export const LLMSettings = () => {
       const { data, error } = await supabase
         .from('user_llm_api_keys')
         .insert({
-          user_id: user?.id,
+          user_id: user.id,
           provider: newProvider.provider,
           api_key: newProvider.api_key,
           selected_model: newProvider.selected_model || null,
@@ -126,7 +201,10 @@ export const LLMSettings = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase insert error:', error);
+        throw error;
+      }
 
       setProviders([...providers, data]);
       setNewProvider({ provider: '', api_key: '', selected_model: '' });
@@ -306,13 +384,26 @@ export const LLMSettings = () => {
             <div className="space-y-2">
               <label className="text-sm font-medium">Clé API *</label>
               <form onSubmit={(e) => { e.preventDefault(); saveProvider(); }}>
-                <Input
-                  type="password"
-                  placeholder="Clé API"
-                  value={newProvider.api_key}
-                  onChange={(e) => setNewProvider({ ...newProvider, api_key: e.target.value })}
-                  autoComplete="new-password"
-                />
+                <div className="relative">
+                  <Input
+                    type={showNewApiKey ? "text" : "password"}
+                    placeholder="Clé API"
+                    value={newProvider.api_key}
+                    onChange={(e) => setNewProvider({ ...newProvider, api_key: e.target.value })}
+                    autoComplete="off"
+                    data-form-type="other"
+                    className="pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowNewApiKey(!showNewApiKey)}
+                  >
+                    {showNewApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </Button>
+                </div>
               </form>
             </div>
 

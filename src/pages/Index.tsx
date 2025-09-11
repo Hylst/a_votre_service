@@ -19,16 +19,18 @@ const HealthWellnessSuite = lazy(() => import("@/components/tools/HealthWellness
 const About = lazy(() => import("@/components/About").then(module => ({ default: module.About })));
 const UniversalDataManager = lazy(() => import("@/components/tools/common/UniversalDataManager").then(module => ({ default: module.UniversalDataManager })));
 const AppSettings = lazy(() => import("@/components/tools/common/AppSettings").then(module => ({ default: module.AppSettings })));
+const CareerSuite = lazy(() => import("@/components/tools/career/CareerSuite").then(module => ({ default: module.CareerSuite })));
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Scale, Info, Home, Calculator, Brain, Palette, Heart, Calendar, FileText } from "lucide-react";
+import { Scale, Info, Home, Calculator, Brain, Palette, Heart, Calendar, FileText, Briefcase } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { UnitConverterInfoModal } from "@/components/modals/UnitConverterInfoModal";
 import { CalculatorInfoModal } from "@/components/modals/CalculatorInfoModal";
 import { ProductivityInfoModal } from "@/components/modals/ProductivityInfoModal";
 import CreativityInfoModal from "@/components/modals/CreativityInfoModal";
+import CareerInfoModal from "@/components/modals/CareerInfoModal";
 import HealthInfoModal from "@/components/modals/HealthInfoModal";
 import DateTimeInfoModal from "@/components/modals/DateTimeInfoModal";
 import TextUtilsInfoModal from "@/components/modals/TextUtilsInfoModal";
@@ -51,6 +53,7 @@ const Index = () => {
   const [isDateTimeInfoModalOpen, setIsDateTimeInfoModalOpen] = useState(false);
   const [isProductivityInfoModalOpen, setIsProductivityInfoModalOpen] = useState(false);
   const [isCreativityInfoModalOpen, setIsCreativityInfoModalOpen] = useState(false);
+  const [isCareerInfoModalOpen, setIsCareerInfoModalOpen] = useState(false);
   const [isHealthInfoModalOpen, setIsHealthInfoModalOpen] = useState(false);
   const [isTextUtilsInfoModalOpen, setIsTextUtilsInfoModalOpen] = useState(false);
 
@@ -72,6 +75,7 @@ const Index = () => {
       case "productivity-suite": return "Organisation productive";
       case "password-generator-advanced": return "Générateur de Mots de Passe";
       case "color-generator": return "Créativité";
+      case "career-generator": return "Carrière/Pro";
       case "health": return "Santé";
       case "health-wellness-suite": return "Santé";
       case "bmi-calculator": return "Calculateur IMC";
@@ -136,6 +140,12 @@ const Index = () => {
         return (
           <Suspense fallback={<LoadingFallback />}>
             <ColorGenerator />
+          </Suspense>
+        );
+      case "career-generator":
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <CareerSuite />
           </Suspense>
         );
       case "health":
@@ -273,6 +283,15 @@ const Index = () => {
                   />
                   
                   <ToolCard
+                    title="Carrière/Pro"
+                    description="Outils professionnels pour votre développement de carrière"
+                    icon="💼"
+                    tools={["Préparation entretiens", "Documents pro", "Networking", "Évaluation compétences", "Négociation", "Coach IA", "Veille marché"]}
+                    onClick={() => setActiveSection("career-generator")}
+                    variant="highlighted"
+                  />
+                  
+                  <ToolCard
                     title="Santé & Bien-être"
                     description="Suite complète : IMC, nutrition, sommeil, exercices..."
                     icon="💪"
@@ -357,6 +376,9 @@ const Index = () => {
                     {activeSection === "color-generator" && (
                       <Palette className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                     )}
+                    {activeSection === "career-generator" && (
+                      <Briefcase className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                    )}
                     {(activeSection === "health" || activeSection === "health-wellness-suite") && (
                       <Heart className="w-6 h-6 text-red-600 dark:text-red-400" />
                     )}
@@ -436,6 +458,25 @@ const Index = () => {
                           <Badge variant="secondary" className="text-xs">Dégradés dynamiques</Badge>
                           <Badge variant="secondary" className="text-xs">Typographie</Badge>
                           <Badge variant="secondary" className="text-xs">Filtres image</Badge>
+                        </div>
+                      </>
+                    )}
+                    {activeSection === "career-generator" && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsCareerInfoModalOpen(true)}
+                          className="p-1 h-8 w-8 rounded-full hover:bg-indigo-100 dark:hover:bg-indigo-900"
+                        >
+                          <Info className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                        </Button>
+                        <div className="hidden lg:flex items-center gap-1 ml-2">
+                          <Badge variant="secondary" className="text-xs">Coach IA</Badge>
+                          <Badge variant="secondary" className="text-xs">Entretiens</Badge>
+                          <Badge variant="secondary" className="text-xs">CV/Lettres</Badge>
+                          <Badge variant="secondary" className="text-xs">Négociation</Badge>
+                          <Badge variant="secondary" className="text-xs">Networking</Badge>
                         </div>
                       </>
                     )}
@@ -530,6 +571,10 @@ const Index = () => {
               <CreativityInfoModal 
                 isOpen={isCreativityInfoModalOpen} 
                 onClose={() => setIsCreativityInfoModalOpen(false)} 
+              />
+              <CareerInfoModal 
+                isOpen={isCareerInfoModalOpen} 
+                onClose={() => setIsCareerInfoModalOpen(false)} 
               />
               <HealthInfoModal 
                 isOpen={isHealthInfoModalOpen} 

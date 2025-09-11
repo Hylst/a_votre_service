@@ -87,50 +87,84 @@ export const useLLMManager = () => {
     }
   }, [user]);
 
-  const loadProviders = async () => {
+  const loadProviders = useCallback(async () => {
+    console.log('🔍 [useLLMManager] Début du chargement des providers');
     try {
-      const { data, error } = await supabase
-        .from('user_llm_api_keys')
-        .select('*')
-        .eq('user_id', user?.id);
+      const { data: { user } } = await supabase.auth.getUser();
+      console.log('🔍 [useLLMManager] Utilisateur:', user ? 'connecté' : 'non connecté');
+      
+      if (user) {
+        const { data, error } = await supabase
+          .from('user_llm_api_keys')
+          .select('*')
+          .eq('user_id', user.id);
 
-      if (error) throw error;
+        if (error) {
+          console.error('❌ [useLLMManager] Erreur chargement providers Supabase:', error);
+          // Fallback vers localStorage
+          const localProviders = localStorage.getItem('llm_providers');
+          console.log('🔍 [useLLMManager] Fallback localStorage:', localProviders ? 'trouvé' : 'vide');
+          if (localProviders) {
+            const parsedProviders = JSON.parse(localProviders);
+            console.log('🔍 [useLLMManager] Providers localStorage:', parsedProviders.length, 'providers');
+            setProviders(parsedProviders);
+            const defaultProv = parsedProviders.find((p: LLMProvider) => p.is_default);
+            console.log('🔍 [useLLMManager] Default provider localStorage:', defaultProv ? `${defaultProv.provider} (${defaultProv.selected_model})` : 'aucun');
+            setDefaultProvider(defaultProv || null);
+          }
+          return;
+        }
 
-      setProviders(data || []);
-      const defaultProv = data?.find(p => p.is_default) || null;
-      setDefaultProvider(defaultProv);
-
-      // Fallback sur localStorage si pas de données Supabase
-      if (!data || data.length === 0) {
-        const localKeys = JSON.parse(localStorage.getItem('llm_api_keys') || '{}');
-        if (Object.keys(localKeys).length > 0) {
-          const firstProvider = Object.keys(localKeys)[0];
-          setDefaultProvider({
-            id: 'local',
-            provider: firstProvider,
-            api_key: localKeys[firstProvider],
-            is_default: true,
-            selected_model: null
-          });
+        if (data && data.length > 0) {
+          console.log('✅ [useLLMManager] Providers Supabase chargés:', data.length, 'providers');
+          setProviders(data);
+          const defaultProv = data.find(provider => provider.is_default);
+          console.log('🔍 [useLLMManager] Default provider Supabase:', defaultProv ? `${defaultProv.provider} (${defaultProv.selected_model})` : 'aucun');
+          setDefaultProvider(defaultProv || null);
+          // Sauvegarder en localStorage comme backup
+          localStorage.setItem('llm_providers', JSON.stringify(data));
+        } else {
+          console.log('⚠️ [useLLMManager] Aucune donnée Supabase, essai localStorage');
+          // Pas de données Supabase, essayer localStorage
+          const localProviders = localStorage.getItem('llm_providers');
+          if (localProviders) {
+            const parsedProviders = JSON.parse(localProviders);
+            console.log('🔍 [useLLMManager] Providers localStorage (fallback):', parsedProviders.length, 'providers');
+            setProviders(parsedProviders);
+            const defaultProv = parsedProviders.find((p: LLMProvider) => p.is_default);
+            console.log('🔍 [useLLMManager] Default provider localStorage (fallback):', defaultProv ? `${defaultProv.provider} (${defaultProv.selected_model})` : 'aucun');
+            setDefaultProvider(defaultProv || null);
+          }
+        }
+      } else {
+        console.log('👤 [useLLMManager] Utilisateur non connecté, utilisation localStorage');
+        // Utilisateur non connecté, utiliser localStorage
+        const localProviders = localStorage.getItem('llm_providers');
+        if (localProviders) {
+          const parsedProviders = JSON.parse(localProviders);
+          console.log('🔍 [useLLMManager] Providers localStorage (non connecté):', parsedProviders.length, 'providers');
+          setProviders(parsedProviders);
+          const defaultProv = parsedProviders.find((p: LLMProvider) => p.is_default);
+          console.log('🔍 [useLLMManager] Default provider localStorage (non connecté):', defaultProv ? `${defaultProv.provider} (${defaultProv.selected_model})` : 'aucun');
+          setDefaultProvider(defaultProv || null);
+        } else {
+          console.log('⚠️ [useLLMManager] Aucun provider en localStorage');
         }
       }
     } catch (error) {
-      console.error('Erreur chargement fournisseurs LLM:', error);
-      
-      // Fallback sur localStorage
-      const localKeys = JSON.parse(localStorage.getItem('llm_api_keys') || '{}');
-      if (Object.keys(localKeys).length > 0) {
-        const firstProvider = Object.keys(localKeys)[0];
-        setDefaultProvider({
-          id: 'local',
-          provider: firstProvider,
-          api_key: localKeys[firstProvider],
-          is_default: true,
-          selected_model: null
-        });
+      console.error('❌ [useLLMManager] Erreur chargement providers:', error);
+      // Fallback vers localStorage en cas d'erreur
+      const localProviders = localStorage.getItem('llm_providers');
+      if (localProviders) {
+        const parsedProviders = JSON.parse(localProviders);
+        console.log('🔍 [useLLMManager] Providers localStorage (erreur):', parsedProviders.length, 'providers');
+        setProviders(parsedProviders);
+        const defaultProv = parsedProviders.find((p: LLMProvider) => p.is_default);
+        console.log('🔍 [useLLMManager] Default provider localStorage (erreur):', defaultProv ? `${defaultProv.provider} (${defaultProv.selected_model})` : 'aucun');
+        setDefaultProvider(defaultProv || null);
       }
     }
-  };
+  }, []);
 
   const decomposeTaskWithAI = useCallback(async (
     request: DecompositionRequest
@@ -350,7 +384,7 @@ IMPORTANT: Réponds UNIQUEMENT avec le JSON, aucun texte avant ou après !`;
   const callDeepSeek = async (apiKey: string, prompt: string, selectedModel?: string | null): Promise<string> => {
     const model = selectedModel || 'deepseek-chat';
     
-    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    const response = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
@@ -453,12 +487,31 @@ IMPORTANT: Réponds UNIQUEMENT avec le JSON, aucun texte avant ou après !`;
     return data.choices[0]?.message?.content || '';
   };
 
+  // Debug logs pour hasConfiguredProvider avec validation API key
+  const hasConfiguredProvider = !!defaultProvider && !!defaultProvider.api_key && defaultProvider.api_key.trim() !== '';
+  console.log('🔍 [useLLMManager] hasConfiguredProvider:', hasConfiguredProvider);
+  console.log('🔍 [useLLMManager] defaultProvider:', defaultProvider ? `${defaultProvider.provider} (${defaultProvider.selected_model})` : 'null');
+  console.log('🔍 [useLLMManager] defaultProvider API key:', defaultProvider?.api_key ? `${defaultProvider.api_key.substring(0, 10)}...` : 'null');
+  console.log('🔍 [useLLMManager] providers count:', providers.length);
+  
+  // Debug détaillé de tous les providers
+  providers.forEach((provider, index) => {
+    console.log(`🔍 [useLLMManager] Provider ${index + 1}:`, {
+      id: provider.id,
+      provider: provider.provider,
+      hasApiKey: !!provider.api_key,
+      apiKeyLength: provider.api_key?.length || 0,
+      isDefault: provider.is_default,
+      selectedModel: provider.selected_model
+    });
+  });
+
   return {
     providers,
     defaultProvider,
     decomposeTaskWithAI,
     isLoading,
-    hasConfiguredProvider: !!defaultProvider,
+    hasConfiguredProvider,
     reloadProviders: loadProviders,
   };
 };
