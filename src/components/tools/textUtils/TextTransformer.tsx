@@ -17,8 +17,10 @@ export const TextTransformer = ({ data, onDataChange }: TextTransformerProps) =>
   const [transformedTexts, setTransformedTexts] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
-    onDataChange({ ...data, text, transformedTexts });
-  }, [text, transformedTexts]);
+    if (onDataChange && data) {
+      onDataChange({ ...data, text, transformedTexts });
+    }
+  }, [text, transformedTexts, data, onDataChange]);
 
   useEffect(() => {
     if (text) {

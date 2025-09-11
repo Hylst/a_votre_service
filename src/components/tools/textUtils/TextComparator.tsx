@@ -34,8 +34,10 @@ export const TextComparator = ({ data, onDataChange }: TextComparatorProps) => {
   });
 
   useEffect(() => {
-    onDataChange({ ...data, text1, text2, comparison });
-  }, [text1, text2, comparison]);
+    if (onDataChange && data) {
+      onDataChange({ ...data, text1, text2, comparison });
+    }
+  }, [text1, text2, comparison, data, onDataChange]);
 
   useEffect(() => {
     compareTexts(text1, text2);

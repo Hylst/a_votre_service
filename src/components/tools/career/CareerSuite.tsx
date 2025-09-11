@@ -11,6 +11,7 @@ import {
   Handshake,
   BarChart3
 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { CareerDashboard } from "./core/CareerDashboard";
 import { AICoach } from "./ai-coach/AICoach";
 import { MarketIntel } from "./market-intel/MarketIntel";
@@ -21,10 +22,34 @@ import { SkillsAssessment } from "./skills/SkillsAssessment";
 import { NegotiationCoach } from "./negotiation/NegotiationCoach";
 
 export const CareerSuite = () => {
+  const [activeTab, setActiveTab] = useState("ai-coach"); // Temporarily set to ai-coach for debugging
+
+  // Handle URL-based navigation to specific career tools
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    console.log('🔍 [CareerSuite] Current path:', currentPath);
+    
+    if (currentPath.includes('/ai-coach')) {
+      console.log('🎯 [CareerSuite] Setting active tab to ai-coach');
+      setActiveTab('ai-coach');
+    } else if (currentPath.includes('/market')) {
+      setActiveTab('market');
+    } else if (currentPath.includes('/interview')) {
+      setActiveTab('interview');
+    } else if (currentPath.includes('/documents')) {
+      setActiveTab('documents');
+    } else if (currentPath.includes('/networking')) {
+      setActiveTab('networking');
+    } else if (currentPath.includes('/skills')) {
+      setActiveTab('skills');
+    } else if (currentPath.includes('/negotiation')) {
+      setActiveTab('negotiation');
+    }
+  }, []);
   return (
     <div className="space-y-2">
       {/* Navigation par onglets responsive avec espacement compact */}
-      <Tabs defaultValue="dashboard" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 mb-2 h-auto">
           <TabsTrigger value="dashboard" className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 p-2 lg:p-3">
             <BarChart3 className="w-4 h-4 flex-shrink-0" />

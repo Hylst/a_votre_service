@@ -19,8 +19,10 @@ export const TextExtractor = ({ data, onDataChange }: TextExtractorProps) => {
   const [extractedItems, setExtractedItems] = useState<string[]>([]);
 
   useEffect(() => {
-    onDataChange({ ...data, inputText, extractionType, extractedItems });
-  }, [inputText, extractionType, extractedItems]);
+    if (onDataChange && data) {
+      onDataChange({ ...data, inputText, extractionType, extractedItems });
+    }
+  }, [inputText, extractionType, extractedItems, data, onDataChange]);
 
   useEffect(() => {
     if (inputText) {

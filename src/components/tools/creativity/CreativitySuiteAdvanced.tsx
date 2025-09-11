@@ -57,7 +57,7 @@ export const CreativitySuiteAdvanced = () => {
         </TabsContent>
 
         <TabsContent value="palettes">
-          <ColorGeneratorAdvanced />
+          <PaletteGenerator />
         </TabsContent>
 
         <TabsContent value="gradients">

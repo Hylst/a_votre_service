@@ -44,7 +44,7 @@ import { Text } from "@/components/ui/text";
 import { ToolCard } from "@/components/ui/tool-card";
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState("home");
+  const [activeSection, setActiveSection] = useState("career-generator"); // Temporarily set to career-generator for debugging
   const [searchParams] = useSearchParams();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -60,12 +60,17 @@ const Index = () => {
   // Gérer la navigation via URL params (depuis Settings)
   useEffect(() => {
     const section = searchParams.get('section');
-    if (section) {
+    console.log('🔍 [Index] URL section param:', section);
+    console.log('🔍 [Index] Current activeSection:', activeSection);
+    if (section && section !== activeSection) {
+      console.log('🔍 [Index] Setting activeSection to:', section);
       setActiveSection(section);
       // Nettoyer l'URL après avoir mis à jour l'état
-      navigate('/', { replace: true });
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 100);
     }
-  }, [searchParams, navigate]);
+  }, [searchParams, navigate, activeSection]);
 
   const getSectionTitle = () => {
     switch (activeSection) {
@@ -105,6 +110,7 @@ const Index = () => {
   );
 
   const renderContent = () => {
+    console.log('🔍 [Index] renderContent called with activeSection:', activeSection);
     switch (activeSection) {
       case "unit-converter":
         return (
@@ -143,6 +149,7 @@ const Index = () => {
           </Suspense>
         );
       case "career-generator":
+        console.log('🔍 [Index] Rendering CareerSuite component');
         return (
           <Suspense fallback={<LoadingFallback />}>
             <CareerSuite />

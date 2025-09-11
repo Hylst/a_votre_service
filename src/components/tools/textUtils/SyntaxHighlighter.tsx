@@ -19,8 +19,10 @@ export const SyntaxHighlighter = ({ data, onDataChange }: SyntaxHighlighterProps
   const [highlightedCode, setHighlightedCode] = useState('');
 
   useEffect(() => {
-    onDataChange({ ...data, code, language, highlightedCode });
-  }, [code, language, highlightedCode]);
+    if (onDataChange && data) {
+      onDataChange({ ...data, code, language, highlightedCode });
+    }
+  }, [code, language, highlightedCode, data, onDataChange]);
 
   const languages = [
     { value: 'javascript', label: 'JavaScript', ext: 'js' },

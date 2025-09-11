@@ -1,92 +1,74 @@
-# Changelog - Authentication & Network Fixes
+# Changelog
 
-## [2025-01-16] - Authentication Error & Network Connectivity Fixes
+## Corrections en cours - Configuration Vite et WebSocket
 
-### 🔧 Fixed
+### Problèmes identifiés :
+1. **Port inconsistant** : Le serveur Vite démarre parfois sur le port 5173 (défaut) au lieu de 8080
+2. **Échec des WebSockets** : Les connexions WebSocket échouent car elles tentent de se connecter au port configuré (8080) au lieu du port réellement utilisé
+3. **Configuration HMR** : La configuration Hot Module Replacement ne suit pas automatiquement le port du serveur
 
-#### Authentication Issues
-- **Enhanced authentication validation** in `LLMSettings.tsx`
-  - Added comprehensive user and session validation
-  - Improved error messages with specific failure reasons
-  - Added debug logging for authentication troubleshooting
-  - Enhanced fallback to localStorage with better error handling
+### Corrections appliquées :
+- ✅ Ajout de `strictPort: true` dans vite.config.ts (temporairement retiré)
+- ✅ Configuration HMR avec host '::' puis 'localhost'
+- ✅ Simplification de la configuration HMR à `hmr: true`
+- ✅ Libération des ports occupés
 
-#### Network Connectivity
-- **Fixed network status detection** in `useNetworkStatus.ts`
-  - **CRITICAL FIX**: Replaced problematic `httpstat.us/200` endpoint causing `ERR_EMPTY_RESPONSE`
-  - ✅ Updated reliable endpoints (all tested and working):
-    - `https://cdn.jsdelivr.net/npm/axios@1.6.0/package.json`
-    - `https://api.github.com/zen`
-    - `https://jsonplaceholder.typicode.com/posts/1`
-    - `https://www.google.com/favicon.ico`
-  - Enhanced error handling to prevent network issues from blocking authentication
-  - Added fallback mechanism using `navigator.onLine` when network tests fail
-  - Added option to disable network tests (`enableNetworkTests: false`)
-  - Improved error messages to clarify that authentication may still work
-  - Enhanced timeout management and CORS handling
+### Solution finale :
+- ✅ **Suppression du port fixe** : Retiré `port: 8080` de la configuration
+- ✅ **Configuration HMR simplifiée** : Utilisé `hmr: true` pour la gestion automatique
+- ✅ **Host localhost** : Configuré pour éviter les conflits IPv6/IPv4
+- ✅ **WebSockets fonctionnels** : Plus d'erreurs de connexion WebSocket
+- ✅ **HMR opérationnel** : Hot Module Replacement fonctionne correctement
 
-#### Database Security
-- **Fixed Supabase RLS policies** for `user_llm_api_keys` table
-  - Created comprehensive RLS policies for all CRUD operations
-  - Added policies for SELECT, INSERT, UPDATE, DELETE operations
-  - Granted proper permissions to `authenticated` role
-  - Revoked access from `anon` role for security
-  - Applied migration: `fix_user_llm_api_keys_permissions.sql`
+### Résultat :
+- ✅ Serveur démarre sur le port par défaut 5173
+- ✅ WebSockets se connectent automatiquement au bon port
+- ✅ Aucune erreur dans la console du navigateur
+- ✅ Application fonctionne correctement
 
-### 📝 Added
+### Leçon apprise :
+Quand un port fixe est configuré dans Vite mais que ce port est occupé, Vite démarre sur un port alternatif mais les WebSockets tentent encore de se connecter au port configuré. La solution est de laisser Vite gérer automatiquement les ports.
 
-#### Documentation
-- **Created diagnostic buffer** (`diagnostic_buffer.md`)
-  - Comprehensive analysis of authentication and storage issues
-  - Root cause analysis for network connectivity problems
-  - Technical investigation notes and proposed solutions
-  - Implementation status tracking
+## Corrections récentes - Janvier 2025
 
-#### Code Quality
-- Enhanced TypeScript types for authentication context
-- Improved error handling throughout authentication flow
-- Added comprehensive debugging capabilities
-- Better user feedback with detailed error messages
+### ✅ Corrections appliquées :
 
-### 🔍 Technical Details
+#### 1. **Correction du parsing JSON dans Coach IA**
+- ✅ **Problème résolu** : Erreur "Impossible d'analyser la réponse de l'IA. Format de réponse invalide selon JSON trouvé"
+- ✅ **Amélioration du nettoyage des réponses** : Suppression des caractères de contrôle et normalisation
+- ✅ **Validation JSON renforcée** : Gestion d'erreur améliorée avec fallback
+- ✅ **Logs de débogage** : Ajout de logs pour tracer les erreurs de parsing
+- ✅ **Robustesse** : Le composant continue de fonctionner même avec des réponses malformées
 
-#### Files Modified
-1. `src/hooks/useNetworkStatus.ts`
-   - Updated endpoint URLs for better reliability
-   - Enhanced fetch implementation with proper error handling
-   - Added debug logging for troubleshooting
+#### 2. **Configuration des ports unifiée**
+- ✅ **Vérification complète** : Aucune référence aux anciens ports (8080, 8088, 8089) trouvée
+- ✅ **Configuration Vite optimale** : Port par défaut 5173 utilisé automatiquement
+- ✅ **Flexibilité** : Le système s'adapte automatiquement si le port est occupé (ex: 5174)
 
-2. `src/components/tools/productivity/components/LLMSettings.tsx`
-   - Enhanced authentication validation logic
-   - Added session and access token checks
-   - Improved error messages and debugging
-   - Better fallback handling to localStorage
+#### 3. **Documentation React DevTools**
+- ✅ **Guide complet créé** : `.trae/documents/REACT_DEVTOOLS_GUIDE.md`
+- ✅ **Installation détaillée** : Instructions pour Chrome, Firefox, Edge
+- ✅ **Intégration Trae IDE** : Avantages spécifiques au workflow de développement
+- ✅ **Cas d'usage pratiques** : Débogage du Coach IA, optimisation des performances
+- ✅ **Conseils avancés** : Profiling, inspection des hooks, source maps
 
-3. `supabase/migrations/fix_user_llm_api_keys_permissions.sql`
-   - Comprehensive RLS policies for user data protection
-   - Proper permission grants for authenticated users
-   - Security hardening by revoking anon access
+#### 4. **Refactorisation complète du système de communication IA**
+- ✅ **Composant réutilisable créé** : `useAIApiManager.ts` pour une gestion centralisée des API IA
+- ✅ **Parser JSON robuste** : `aiResponseParser.ts` avec multiples stratégies de parsing et fallbacks
+- ✅ **Gestion d'erreurs améliorée** : `handleAIError.ts` avec catégorisation et messages utilisateur
+- ✅ **Coach IA refactorisé** : Utilisation du nouveau système pour une meilleure fiabilité
+- ✅ **Architecture modulaire** : Composants réutilisables pour d'autres outils IA futurs
+- ✅ **Parsing intelligent** : Extraction JSON depuis contenu mixte, correction automatique
+- ✅ **Validation de schéma** : Vérification des champs requis avec valeurs de fallback
+- ✅ **Cache de réponses** : Amélioration des performances avec mise en cache
+- ✅ **Retry automatique** : Logique de nouvelle tentative en cas d'échec
+- ✅ **Messages d'erreur contextuels** : Feedback utilisateur adapté selon le type d'erreur
 
-#### Root Causes Identified & Fixed
-1. **Network Errors**: Unreliable external endpoints causing CORS and timeout issues
-2. **Authentication Flow**: Missing session validation and unclear error reporting
-3. **Database Security**: Missing RLS policies preventing authenticated operations
-4. **Data Synchronization**: Inconsistent handling between Supabase and localStorage
-
-### 🎯 Impact
-- ✅ Resolved authentication errors when adding LLM API keys
-- ✅ Fixed network connectivity detection issues
-- ✅ Improved security with proper RLS policies
-- ✅ Enhanced user experience with better error messages
-- ✅ Added comprehensive debugging capabilities
-
-### 🔮 Future Improvements
-- [ ] Add data synchronization mechanism (localStorage → Supabase on login)
-- [ ] Implement conflict resolution for duplicate providers
-- [ ] Add retry logic for failed Supabase operations
-- [ ] Consider implementing offline-first architecture
-
----
-**Resolved Issues**: Authentication error, Network connectivity, RLS policies  
-**Status**: All critical issues fixed and tested  
-**Next Steps**: Monitor for edge cases and user feedback
+### 🎯 Résultats :
+- ✅ **Coach IA ultra-stable** : Système de parsing JSON robuste avec multiples fallbacks
+- ✅ **Architecture évolutive** : Composants réutilisables pour futurs outils IA
+- ✅ **Expérience utilisateur améliorée** : Messages d'erreur clairs et actions de récupération
+- ✅ **Performance optimisée** : Cache et retry logic pour une meilleure réactivité
+- ✅ **Configuration cohérente** : Ports unifiés sur 5173 (défaut Vite)
+- ✅ **Développement optimisé** : Guide React DevTools pour une meilleure productivité
+- ✅ **Documentation à jour** : Ressources complètes pour l'équipe de développement

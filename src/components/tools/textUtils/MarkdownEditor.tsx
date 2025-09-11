@@ -18,8 +18,10 @@ export const MarkdownEditor = ({ data, onDataChange }: MarkdownEditorProps) => {
   const [html, setHtml] = useState('');
 
   useEffect(() => {
-    onDataChange({ ...data, markdown, html });
-  }, [markdown, html]);
+    if (onDataChange && data) {
+      onDataChange({ ...data, markdown, html });
+    }
+  }, [markdown, html, data, onDataChange]);
 
   const convertToHtml = (text: string): string => {
     let result = text;

@@ -28,10 +28,10 @@ export const TextAnalyzer = ({ data, onDataChange }: TextAnalyzerProps) => {
   });
 
   useEffect(() => {
-    if (text !== data.text) {
+    if (onDataChange && data && text !== data.text) {
       onDataChange({ ...data, text });
     }
-  }, [text]);
+  }, [text, data, onDataChange]);
 
   useEffect(() => {
     analyzeText(text);

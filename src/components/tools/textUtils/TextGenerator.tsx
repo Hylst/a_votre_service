@@ -22,8 +22,10 @@ export const TextGenerator = ({ data, onDataChange }: TextGeneratorProps) => {
   const [generatedText, setGeneratedText] = useState(data.generatedText || '');
 
   useEffect(() => {
-    onDataChange({ generatorType, length, customSeed, generatedText });
-  }, [generatorType, length, customSeed, generatedText]);
+    if (onDataChange && data) {
+      onDataChange({ ...data, generatorType, length, customSeed, generatedText });
+    }
+  }, [generatorType, length, customSeed, generatedText, data, onDataChange]);
 
   const generateText = () => {
     let result = '';

@@ -19,8 +19,10 @@ export const TextFormatter = ({ data, onDataChange }: TextFormatterProps) => {
   const [selectedFormat, setSelectedFormat] = useState(data.selectedFormat || 'clean');
 
   useEffect(() => {
-    onDataChange({ ...data, inputText, outputText, selectedFormat });
-  }, [inputText, outputText, selectedFormat]);
+    if (onDataChange && data) {
+      onDataChange({ ...data, inputText, outputText, selectedFormat });
+    }
+  }, [inputText, outputText, selectedFormat, data, onDataChange]);
 
   const formatOptions = [
     { value: 'clean', label: 'Nettoyer le texte', description: 'Supprime espaces multiples, tabs, retours à la ligne' },

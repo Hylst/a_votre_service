@@ -24,7 +24,7 @@ const DEFAULT_ENDPOINTS = [
   'https://cdn.jsdelivr.net/npm/axios@1.6.0/package.json',
   'https://api.github.com/zen',
   'https://jsonplaceholder.typicode.com/posts/1',
-  'https://www.google.com/favicon.ico'
+  'https://httpbin.org/status/200'
 ];
 
 const DEFAULT_OPTIONS: Required<UseNetworkStatusOptions> = {

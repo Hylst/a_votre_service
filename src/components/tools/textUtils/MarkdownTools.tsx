@@ -17,8 +17,10 @@ export const MarkdownTools = ({ data, onDataChange }: MarkdownToolsProps) => {
   const [html, setHtml] = useState('');
 
   useEffect(() => {
-    onDataChange({ ...data, markdown, html });
-  }, [markdown, html]);
+    if (onDataChange && data) {
+      onDataChange({ ...data, markdown, html });
+    }
+  }, [markdown, html, data, onDataChange]);
 
   useEffect(() => {
     convertToHtml(markdown);

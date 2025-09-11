@@ -41,8 +41,10 @@ export const SEOAnalyzer = ({ data, onDataChange }: SEOAnalyzerProps) => {
   });
 
   useEffect(() => {
-    onDataChange({ content, keyword, title, description, analysis });
-  }, [content, keyword, title, description, analysis]);
+    if (onDataChange && data) {
+      onDataChange({ ...data, content, keyword, title, description, analysis });
+    }
+  }, [content, keyword, title, description, analysis, data, onDataChange]);
 
   useEffect(() => {
     analyzeSEO();

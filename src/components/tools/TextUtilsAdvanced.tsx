@@ -1,7 +1,10 @@
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Container } from '@/components/ui/container';
+import { useOfflineDataManager } from '@/hooks/useOfflineDataManager';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { TextAnalyzer } from './textUtils/TextAnalyzer';
 import { TextFormatter } from './textUtils/TextFormatter';
 import { TextTransformer } from './textUtils/TextTransformer';
@@ -14,7 +17,6 @@ import { SyntaxHighlighter } from './textUtils/SyntaxHighlighter';
 import { EmojiManager } from './textUtils/EmojiManager';
 import { MarkdownEditor } from './textUtils/MarkdownEditor';
 import { DataImportExport } from './common/DataImportExport';
-import { useOfflineDataManager } from '@/hooks/useOfflineDataManager';
 import { FileText, BarChart3, Type, Shuffle, Copy, FileCode, Search, FileDown, Code, Smile, Edit } from 'lucide-react';
 
 export const TextUtilsAdvanced = () => {
@@ -35,13 +37,25 @@ export const TextUtilsAdvanced = () => {
   const [activeTab, setActiveTab] = useState('analyzer');
 
   const handleDataChange = (newData: any) => {
-    const currentData = textUtilsData && typeof textUtilsData === 'object' ? textUtilsData : {};
-    const updatedData = {
-      ...currentData,
-      [activeTab]: newData,
-      lastModified: new Date().toISOString()
-    };
-    setData(updatedData);
+    try {
+      // Ensure setData function is available
+      if (typeof setData !== 'function') {
+        console.error('setData is not a function in handleDataChange');
+        return;
+      }
+
+      // Ensure we have valid data structure
+      const currentData = textUtilsData && typeof textUtilsData === 'object' ? textUtilsData : {};
+      const updatedData = {
+        ...currentData,
+        [activeTab]: newData,
+        lastModified: new Date().toISOString()
+      };
+      
+      setData(updatedData);
+    } catch (error) {
+      console.error('Error in handleDataChange:', error);
+    }
   };
 
   const tabs = [
@@ -152,10 +166,12 @@ export const TextUtilsAdvanced = () => {
               const TabComponent = tab.component;
               return (
                 <TabsContent key={tab.id} value={tab.id} className="p-3 lg:p-6">
-                  <TabComponent
-                    data={textUtilsData?.[tab.id] || {}}
-                    onDataChange={handleDataChange}
-                  />
+                  <ErrorBoundary>
+                    <TabComponent
+                      data={textUtilsData?.[tab.id] || {}}
+                      onDataChange={handleDataChange}
+                    />
+                  </ErrorBoundary>
                 </TabsContent>
               );
             })}
