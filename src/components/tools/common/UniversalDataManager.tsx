@@ -1,4 +1,9 @@
 
+/**
+ * UniversalDataManager.tsx
+ * Advanced data management component with theme system integration,
+ * performance monitoring, and comprehensive data operations
+ */
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Database } from 'lucide-react';
@@ -191,12 +196,12 @@ export const UniversalDataManager = () => {
       <PerformanceMonitor />
 
       {/* Titre principal */}
-      <Card className="border-2 border-blue-200 dark:border-blue-800">
+      <Card className="border-2 border-primary/20 bg-card text-card-foreground">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between text-lg">
             <div className="flex items-center gap-2">
-              <Database className="w-5 h-5 text-blue-600" />
-              Gestionnaire Universel des Données (v2.2)
+              <Database className="w-5 h-5 text-primary" />
+              Gestionnaire Universel des Données (v2.3)
             </div>
             <button
               onClick={() => setShowTests(!showTests)}
@@ -229,18 +234,20 @@ export const UniversalDataManager = () => {
       <TechnicalInfo />
 
       {/* Nouvelles fonctionnalités */}
-      <Card>
+      <Card className="bg-card text-card-foreground">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm">🚀 Nouvelles Fonctionnalités v2.2</CardTitle>
+          <CardTitle className="text-sm flex items-center gap-2">
+            🚀 Nouvelles Fonctionnalités v2.3
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <div className="text-xs space-y-1">
-            <div>✅ <strong>IndexedDB unifié:</strong> Migration complète vers Dexie</div>
-            <div>✅ <strong>Performance optimisée:</strong> Réduction des appels redondants</div>
-            <div>✅ <strong>Hooks simplifiés:</strong> Chaîne de dépendances nettoyée</div>
-            <div>✅ <strong>Debouncing amélioré:</strong> Moins de charge système</div>
-            <div>✅ <strong>Gestion d'erreurs:</strong> Messages plus clairs</div>
-            <div>✅ <strong>Transactions optimisées:</strong> Opérations par batch</div>
+            <div>✅ <strong>Intégration Système de Thème:</strong> Support complet du mode sombre/clair</div>
+            <div>✅ <strong>Accessibilité Améliorée:</strong> Contraste optimisé et navigation clavier</div>
+            <div>✅ <strong>Cohérence Visuelle:</strong> Design unifié avec le système de couleurs adaptatif</div>
+            <div>✅ <strong>Schéma de Couleurs Adaptatif:</strong> Couleurs qui s'adaptent au thème</div>
+            <div>✅ <strong>Performance UI:</strong> Transitions fluides et interactions optimisées</div>
+            <div>✅ <strong>Composants Thématiques:</strong> Tous les éléments respectent le thème actuel</div>
           </div>
         </CardContent>
       </Card>

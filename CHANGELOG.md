@@ -1,5 +1,42 @@
 # Changelog
 
+## Version 1.5.8 (2025) - Amélioration majeure de la page À propos
+
+### ✅ Nouvelles fonctionnalités :
+
+#### 1. **Refonte complète de la page À propos**
+- ✅ **Version mise à jour** : Passage de 1.0.0 à 1.5.8 (2025)
+- ✅ **Contenu détaillé** : Liste exhaustive de toutes les suites d'outils de l'application
+- ✅ **Interface pliable** : Utilisation de composants Collapsible pour une navigation optimale
+- ✅ **Design adaptatif** : Classes thématiques (bg-card, text-card-foreground) pour compatibilité dark/light
+- ✅ **Largeur optimisée** : Blocs à 100% de largeur pour une meilleure utilisation de l'espace
+
+#### 2. **Suites d'outils documentées (10 suites complètes)**
+- ✅ **Convertisseurs Universels** : 12 types d'unités, temps réel, standards SI
+- ✅ **Calculatrices** : Scientifique, clavier, mémoire, historique
+- ✅ **Dates & Temps Avancés** : Différences, ajout/soustraction, fuseaux horaires
+- ✅ **Organisation Productive** : Tâches intelligentes, Pomodoro, statistiques
+- ✅ **Sécurité Avancée** : Templates sécurisés, analyse de force, chiffrement
+- ✅ **Créativité** : Couleurs, palettes, design, inspiration
+- ✅ **Carrière/Pro** : Entretiens, documents pro, coach IA, veille marché
+- ✅ **Santé & Bien-être** : IMC, nutrition, sommeil, exercices, métriques
+- ✅ **Utilitaires Texte** : Compteur, formatage, analyse sentiment, SEO
+- ✅ **Gestionnaire de Données** : Export universel, statistiques, tests intégrés
+
+#### 3. **Améliorations techniques**
+- ✅ **Composants Collapsible** : Navigation intuitive avec sections pliables/dépliables
+- ✅ **État de gestion** : useState pour contrôler l'ouverture/fermeture des sections
+- ✅ **Icônes adaptatives** : ChevronDown/ChevronUp selon l'état d'ouverture
+- ✅ **Responsive design** : Adaptation automatique aux différentes tailles d'écran
+- ✅ **Accessibilité** : Structure sémantique et navigation au clavier
+
+### 🎯 Résultats :
+- ✅ **Documentation complète** : Tous les outils et fonctionnalités clairement présentés
+- ✅ **Expérience utilisateur optimisée** : Navigation fluide avec contenu organisé
+- ✅ **Design cohérent** : Intégration parfaite avec le système de design existant
+- ✅ **Performance maintenue** : Chargement rapide malgré le contenu enrichi
+- ✅ **Maintenance facilitée** : Structure modulaire pour futures mises à jour
+
 ## Corrections en cours - Configuration Vite et WebSocket
 
 ### Problèmes identifiés :
