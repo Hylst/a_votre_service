@@ -4,21 +4,21 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/AppSidebar";
 
 // Lazy load all tool components for better performance
-const UserProfile = lazy(() => import("@/components/UserProfile").then(module => ({ default: module.UserProfile })));
+const UserProfile = lazy(() => import("@/components/UserProfile"));
 const UnitConverter = lazy(() => import("@/components/tools/UnitConverter"));
 const CalculatorImproved = lazy(() => import("@/components/tools/CalculatorImproved").then(module => ({ default: module.CalculatorImproved })));
-const TodoListEnhanced = lazy(() => import("@/components/tools/TodoListEnhanced").then(module => ({ default: module.TodoListEnhanced })));
+const TodoListEnhanced = lazy(() => import("@/components/tools/TodoListEnhanced"));
 const ColorGenerator = lazy(() => import("@/components/tools/ColorGenerator").then(module => ({ default: module.ColorGenerator })));
-const BMICalculator = lazy(() => import("@/components/tools/BMICalculator").then(module => ({ default: module.BMICalculator })));
-const TextUtilsAdvanced = lazy(() => import("@/components/tools/TextUtilsAdvanced").then(module => ({ default: module.TextUtilsAdvanced })));
+const BMICalculator = lazy(() => import("@/components/tools/BMICalculator"));
+const TextUtilsAdvanced = lazy(() => import("@/components/tools/TextUtilsAdvanced"));
 const DateCalculatorAdvanced = lazy(() => import("@/components/tools/DateCalculatorAdvanced"));
 const ProductivitySuiteModular = lazy(() => import("@/components/tools/ProductivitySuiteModular").then(module => ({ default: module.ProductivitySuiteModular })));
 const PasswordGeneratorAdvancedEnhanced = lazy(() => import("@/components/tools/PasswordGeneratorAdvancedEnhanced").then(module => ({ default: module.PasswordGeneratorAdvancedEnhanced })));
-const QRCodeGenerator = lazy(() => import("@/components/tools/QRCodeGenerator").then(module => ({ default: module.QRCodeGenerator })));
+const QRCodeGenerator = lazy(() => import("@/components/tools/QRCodeGenerator"));
 const HealthWellnessSuite = lazy(() => import("@/components/tools/HealthWellnessSuite").then(module => ({ default: module.HealthWellnessSuite })));
-const About = lazy(() => import("@/components/About").then(module => ({ default: module.About })));
-const UniversalDataManager = lazy(() => import("@/components/tools/common/UniversalDataManager").then(module => ({ default: module.UniversalDataManager })));
-const AppSettings = lazy(() => import("@/components/tools/common/AppSettings").then(module => ({ default: module.AppSettings })));
+const About = lazy(() => import("@/components/About"));
+const UniversalDataManager = lazy(() => import("@/components/tools/common/UniversalDataManager"));
+const AppSettings = lazy(() => import("@/components/tools/common/AppSettings"));
 const CareerSuite = lazy(() => import("@/components/tools/career/CareerSuite").then(module => ({ default: module.CareerSuite })));
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -44,7 +44,7 @@ import { Text } from "@/components/ui/text";
 import { ToolCard } from "@/components/ui/tool-card";
 
 const Index = () => {
-  const [activeSection, setActiveSection] = useState("career-generator"); // Temporarily set to career-generator for debugging
+  const [activeSection, setActiveSection] = useState(""); // Reset to default home page
   const [searchParams] = useSearchParams();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
