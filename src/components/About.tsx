@@ -13,7 +13,8 @@ import {
   Code, Heart, Zap, Shield, Palette, Calculator, 
   Scale, Calendar, Brain, Briefcase, FileText, 
   Database, ChevronDown, ChevronRight, 
-  Target, Clock, Users, Lightbulb, Activity
+  Target, Clock, Users, Lightbulb, Activity,
+  Grid3X3, Gauge
 } from "lucide-react";
 import { useState } from "react";
 
@@ -1223,23 +1224,70 @@ export const About = () => {
 
   return (
     <div className="w-full space-y-6">
-      {/* En-tête principal */}
+      {/* Hero Section Enhanced */}
       <Card className="w-full border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center text-2xl">
-              🛠️
+        <CardHeader className="p-8">
+          <div className="flex flex-col lg:flex-row items-center gap-8">
+            {/* Logo Section */}
+            <div className="flex-shrink-0">
+              <img 
+                src="/images/majordome-hero.png" 
+                alt="À votre service - Logo" 
+                className="h-32 md:h-40 lg:h-48 w-auto object-contain"
+              />
             </div>
-          </div>
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            à votre service
-          </CardTitle>
-          <p className="text-lg text-muted-foreground mt-2">
-            Une collection complète de plus de 100 outils professionnels pour votre quotidien
-          </p>
-          <div className="flex justify-center gap-2 mt-4">
-            <Badge variant="secondary">Version 1.5.8</Badge>
-            <Badge className="bg-gradient-to-r from-primary to-secondary text-primary-foreground">2025</Badge>
+            
+            {/* Content Section */}
+            <div className="flex-1 text-center lg:text-left space-y-6">
+              <div>
+                <CardTitle className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
+                  À votre service
+                </CardTitle>
+                <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
+                  Une collection complète d'outils professionnels pour optimiser votre productivité quotidienne
+                </p>
+              </div>
+              
+              {/* Statistics Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-8">
+                <div className="bg-background/50 rounded-lg p-4 text-center">
+                  <Target className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-foreground">77</div>
+                  <div className="text-sm text-muted-foreground">Outils principaux</div>
+                </div>
+                <div className="bg-background/50 rounded-lg p-4 text-center">
+                  <Zap className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-foreground">300+</div>
+                  <div className="text-sm text-muted-foreground">Fonctionnalités</div>
+                </div>
+                <div className="bg-background/50 rounded-lg p-4 text-center">
+                  <Grid3X3 className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-foreground">10</div>
+                  <div className="text-sm text-muted-foreground">Suites spécialisées</div>
+                </div>
+                <div className="bg-background/50 rounded-lg p-4 text-center">
+                  <Palette className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-foreground">2</div>
+                  <div className="text-sm text-muted-foreground">Thèmes adaptatifs</div>
+                </div>
+                <div className="bg-background/50 rounded-lg p-4 text-center">
+                  <Shield className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-foreground">100%</div>
+                  <div className="text-sm text-muted-foreground">Sauvegarde locale</div>
+                </div>
+                <div className="bg-background/50 rounded-lg p-4 text-center">
+                  <Gauge className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold text-foreground">⚡</div>
+                  <div className="text-sm text-muted-foreground">Performance optimisée</div>
+                </div>
+              </div>
+              
+              {/* Version Badges */}
+              <div className="flex justify-center lg:justify-start gap-2 mt-6">
+                <Badge variant="secondary">Version 1.5.8</Badge>
+                <Badge className="bg-gradient-to-r from-primary to-secondary text-primary-foreground">2025</Badge>
+              </div>
+            </div>
           </div>
         </CardHeader>
       </Card>
