@@ -31,39 +31,147 @@ export const About = () => {
     }));
   };
 
-  // Complete tool suites data with detailed features
+  // Complete tool suites data with exhaustive detailed features
   const toolSuites = [
     {
       id: "converters",
       icon: Scale,
       title: "Convertisseurs Universels",
-      description: "12 types d'unités avec conversion temps réel",
+      description: "12 types d'unités avec conversion temps réel et précision maximale",
       color: "text-blue-600 dark:text-blue-400",
       bgColor: "bg-blue-50 dark:bg-blue-950",
       tools: [
         {
-          name: "Longueurs",
-          features: ["Mètres, kilomètres, miles, pieds, pouces", "Conversion bidirectionnelle", "Précision haute"]
+          name: "Longueurs (13 unités)",
+          features: [
+            "Mètres, kilomètres, centimètres, millimètres",
+            "Miles, yards, pieds, pouces",
+            "Milles nautiques, chaînes, furlong",
+            "Conversion bidirectionnelle instantanée",
+            "Précision jusqu'à 15 décimales",
+            "Validation automatique des entrées"
+          ]
         },
         {
-          name: "Poids & Masses",
-          features: ["Kilogrammes, livres, onces, tonnes", "Standards internationaux", "Calculs précis"]
+          name: "Poids & Masses (11 unités)",
+          features: [
+            "Kilogrammes, grammes, tonnes métriques",
+            "Livres, onces, stones, tonnes courtes/longues",
+            "Carats, grains pour bijouterie",
+            "Standards internationaux (SI, Imperial, US)",
+            "Calculs haute précision",
+            "Contexte d'usage (cuisine, industrie, bijoux)"
+          ]
         },
         {
-          name: "Températures",
-          features: ["Celsius, Fahrenheit, Kelvin", "Formules scientifiques", "Temps réel"]
+          name: "Températures (5 unités)",
+          features: [
+            "Celsius, Fahrenheit, Kelvin scientifique",
+            "Rankine, Réaumur historiques",
+            "Formules thermodynamiques exactes",
+            "Validation des limites physiques",
+            "Conversion temps réel",
+            "Applications météo et scientifiques"
+          ]
         },
         {
-          name: "Volumes",
-          features: ["Litres, gallons, millilitres", "Systèmes métriques/impériaux", "Notes explicatives"]
+          name: "Volumes (14 unités)",
+          features: [
+            "Litres, millilitres, mètres cubes",
+            "Gallons US/UK, pintes, quarts",
+            "Onces fluides, tasses, cuillères",
+            "Barils, boisseaux pour commerce",
+            "Systèmes métriques et impériaux",
+            "Notes explicatives par contexte"
+          ]
         },
         {
-          name: "Surfaces",
-          features: ["Mètres carrés, hectares, acres", "Calculs géométriques", "Standards SI"]
+          name: "Surfaces (11 unités)",
+          features: [
+            "Mètres carrés, kilomètres carrés",
+            "Hectares, ares, centiares",
+            "Acres, pieds carrés, yards carrés",
+            "Pouces carrés pour précision",
+            "Calculs géométriques avancés",
+            "Standards SI et cadastraux"
+          ]
         },
         {
-          name: "Énergie",
-          features: ["Joules, calories, kWh", "Conversions énergétiques", "Débounce optimisé"]
+          name: "Vitesse (7 unités)",
+          features: [
+            "Mètres/seconde, kilomètres/heure",
+            "Miles/heure, pieds/seconde",
+            "Nœuds maritimes et aéronautiques",
+            "Mach pour vitesses supersoniques",
+            "Conversion contextuelle (auto, avion, bateau)",
+            "Calculs de temps de trajet"
+          ]
+        },
+        {
+          name: "Pression (10 unités)",
+          features: [
+            "Pascal, kilopascal, mégapascal",
+            "Bar, millibar, atmosphères",
+            "PSI, mmHg, inHg météo",
+            "Torr pour applications scientifiques",
+            "Conversion industrielle et météorologique",
+            "Validation des plages de mesure"
+          ]
+        },
+        {
+          name: "Énergie (11 unités)",
+          features: [
+            "Joules, kilojoules, mégajoules",
+            "Kilowattheures, wattheures",
+            "Calories, kilocalories nutritionnelles",
+            "BTU, therms, pieds-livres",
+            "Électronvolts pour physique",
+            "Applications énergétiques et nutritionnelles"
+          ]
+        },
+        {
+          name: "Puissance (8 unités)",
+          features: [
+            "Watts, kilowatts, mégawatts",
+            "Chevaux-vapeur (HP, PS, CV)",
+            "BTU/heure, tonnes de réfrigération",
+            "Pieds-livres/seconde",
+            "Conversion moteurs et électricité",
+            "Calculs de consommation énergétique"
+          ]
+        },
+        {
+          name: "Devises (12 principales)",
+          features: [
+            "EUR, USD, GBP, JPY majeurs",
+            "CHF, CAD, AUD, CNY",
+            "SEK, NOK, DKK nordiques",
+            "Taux de change temps réel (API)",
+            "Historique des fluctuations",
+            "Calculs commerciaux et voyage"
+          ]
+        },
+        {
+          name: "Temps (12 unités)",
+          features: [
+            "Secondes, minutes, heures, jours",
+            "Semaines, mois, années",
+            "Millisecondes, microsecondes",
+            "Décennies, siècles, millénaires",
+            "Conversion précise avec calendriers",
+            "Gestion années bissextiles"
+          ]
+        },
+        {
+          name: "Données Numériques",
+          features: [
+            "Bytes, KB, MB, GB, TB, PB",
+            "Bits, Kbits, Mbits, Gbits",
+            "Conversion binaire/décimale (1024 vs 1000)",
+            "Calculs de bande passante",
+            "Estimation temps de transfert",
+            "Optimisation stockage"
+          ]
         }
       ]
     },
@@ -71,25 +179,87 @@ export const About = () => {
       id: "calculators",
       icon: Calculator,
       title: "Calculatrices",
-      description: "Calculatrice scientifique avec saisie clavier avancée",
+      description: "Suite complète de calculatrices scientifiques et spécialisées",
       color: "text-green-600 dark:text-green-400",
       bgColor: "bg-green-50 dark:bg-green-950",
       tools: [
         {
-          name: "Calculatrice Scientifique",
-          features: ["Fonctions trigonométriques", "Logarithmes et exponentielles", "Racines et puissances", "Constantes mathématiques"]
+          name: "Calculatrice Scientifique Avancée",
+          features: [
+            "Fonctions trigonométriques (sin, cos, tan, arc)",
+            "Logarithmes (ln, log10, log2, logN)",
+            "Exponentielles (e^x, 10^x, x^y)",
+            "Racines (√, ∛, n√x) et puissances",
+            "Constantes mathématiques (π, e, φ, γ)",
+            "Fonctions hyperboliques (sinh, cosh, tanh)",
+            "Factorielles, combinaisons, permutations",
+            "Conversion degrés/radians/grades"
+          ]
         },
         {
-          name: "Saisie Clavier",
-          features: ["Raccourcis clavier complets", "Navigation intuitive", "Saisie rapide", "Correction d'erreurs"]
+          name: "Saisie Clavier Intelligente",
+          features: [
+            "Raccourcis clavier complets (Ctrl+C/V/Z)",
+            "Navigation par flèches dans l'expression",
+            "Saisie rapide avec validation temps réel",
+            "Correction d'erreurs avec suggestions",
+            "Auto-complétion des fonctions",
+            "Parenthèses automatiques équilibrées",
+            "Détection et correction de syntaxe",
+            "Support des opérateurs mathématiques Unicode"
+          ]
         },
         {
-          name: "Mémoire",
-          features: ["Stockage de résultats", "Rappel de valeurs", "Opérations sur mémoire", "Effacement sélectif"]
+          name: "Système de Mémoire Avancé",
+          features: [
+            "Stockage multiple (M1, M2, M3...)",
+            "Opérations sur mémoire (M+, M-, M×, M÷)",
+            "Rappel instantané avec aperçu",
+            "Historique des valeurs mémorisées",
+            "Étiquetage personnalisé des mémoires",
+            "Sauvegarde persistante entre sessions",
+            "Export/import des mémoires",
+            "Calculs avec variables nommées"
+          ]
         },
         {
-          name: "Historique",
-          features: ["Sauvegarde automatique", "Recherche dans l'historique", "Export des calculs", "Réutilisation de résultats"]
+          name: "Historique Intelligent",
+          features: [
+            "Sauvegarde automatique illimitée",
+            "Recherche textuelle dans l'historique",
+            "Filtrage par type d'opération",
+            "Export en multiple formats (TXT, CSV, PDF)",
+            "Réutilisation par glisser-déposer",
+            "Favoris et annotations",
+            "Statistiques d'utilisation",
+            "Synchronisation cloud optionnelle"
+          ]
+        },
+        {
+          name: "Calculatrice Graphique",
+          features: [
+            "Tracé de fonctions mathématiques",
+            "Zoom et navigation interactive",
+            "Analyse de courbes (dérivées, intégrales)",
+            "Points d'intersection automatiques",
+            "Grille et axes personnalisables",
+            "Export des graphiques (PNG, SVG)",
+            "Fonctions paramétriques et polaires",
+            "Animation de paramètres"
+          ]
+        },
+        {
+          name: "Calculatrice Programmeur",
+          features: [
+            "Bases numériques (2, 8, 10, 16)",
+            "Opérations bit à bit (AND, OR, XOR, NOT)",
+            "Décalages binaires (<<, >>)",
+            "Complément à deux",
+            "Tailles de mots (8, 16, 32, 64 bits)",
+            "Conversion ASCII/Unicode",
+            "Calculs d'adresses mémoire",
+            "Masques binaires visuels"
+          ]
         }
       ]
     },
@@ -97,63 +267,185 @@ export const About = () => {
       id: "datetime",
       icon: Calendar,
       title: "Dates & Temps Avancés",
-      description: "Calculateurs complets de dates et gestion temporelle",
+      description: "7 outils complets de calculs temporels et planification",
       color: "text-purple-600 dark:text-purple-400",
       bgColor: "bg-purple-50 dark:bg-purple-950",
       tools: [
         {
-          name: "Calcul de Différences",
-          features: ["Différences en jours/mois/années", "Calculs précis", "Gestion des années bissextiles", "Formats multiples"]
+          name: "Calculs de Dates Précis",
+          features: [
+            "Ajout/soustraction de jours, mois, années",
+            "Calculs avec heures, minutes, secondes",
+            "Gestion automatique des années bissextiles",
+            "Validation des dates limites (1900-2100)",
+            "Formats internationaux (ISO, US, EU)",
+            "Calculs de périodes complexes",
+            "Arrondi intelligent des résultats",
+            "Prise en compte des calendriers spéciaux"
+          ]
         },
         {
-          name: "Ajout/Soustraction",
-          features: ["Ajout de périodes", "Soustraction de durées", "Calculs complexes", "Validation automatique"]
+          name: "Calculateur d'Âge Complet",
+          features: [
+            "Âge exact en temps réel (années, mois, jours)",
+            "Prochains anniversaires et jalons",
+            "Statistiques de vie détaillées",
+            "Comparaisons d'âges multiples",
+            "Calcul de l'espérance de vie restante",
+            "Âge en différentes unités (heures, minutes)",
+            "Événements historiques à votre naissance",
+            "Compatibilité astrologique et numérologique"
+          ]
         },
         {
-          name: "Calculateur d'Âge",
-          features: ["Âge exact en temps réel", "Prochains anniversaires", "Statistiques de vie", "Comparaisons d'âges"]
+          name: "Différences de Dates Avancées",
+          features: [
+            "Calculs précis entre deux dates quelconques",
+            "Résultats en multiple unités simultanées",
+            "Exclusion des week-ends optionnelle",
+            "Prise en compte des jours fériés",
+            "Calculs de durées de projets",
+            "Analyse de tendances temporelles",
+            "Export des résultats en calendrier",
+            "Visualisation graphique des périodes"
+          ]
         },
         {
-          name: "Planning",
-          features: ["Planification de projets", "Échéances automatiques", "Calendrier intégré", "Rappels intelligents"]
+          name: "Jours Ouvrables Professionnels",
+          features: [
+            "Calculs excluant week-ends automatiquement",
+            "Gestion des jours fériés par pays",
+            "Calendriers d'entreprise personnalisés",
+            "Calculs de délais légaux et contractuels",
+            "Planning de congés et absences",
+            "Optimisation de planification projet",
+            "Alertes de dates limites",
+            "Intégration avec systèmes RH"
+          ]
         },
         {
-          name: "Fuseaux Horaires",
-          features: ["Conversion mondiale", "Horaires multiples", "DST automatique", "Planification globale"]
+          name: "Planning d'Événements Intelligent",
+          features: [
+            "Planification de projets multi-phases",
+            "Échéances automatiques avec dépendances",
+            "Calendrier intégré avec vue multiple",
+            "Rappels intelligents personnalisables",
+            "Gestion des ressources et disponibilités",
+            "Templates de projets prédéfinis",
+            "Analyse de charge de travail",
+            "Export vers calendriers externes"
+          ]
+        },
+        {
+          name: "Fuseaux Horaires Mondiaux",
+          features: [
+            "Conversion entre 400+ fuseaux horaires",
+            "Gestion automatique de l'heure d'été (DST)",
+            "Planification de réunions internationales",
+            "Horloge mondiale avec villes favorites",
+            "Calculs de décalage horaire optimal",
+            "Alertes de changements d'heure",
+            "Historique des modifications de fuseaux",
+            "API de géolocalisation pour détection auto"
+          ]
+        },
+        {
+          name: "Historique et Sauvegarde",
+          features: [
+            "Sauvegarde automatique de tous les calculs",
+            "Recherche avancée dans l'historique",
+            "Favoris et calculs récurrents",
+            "Export en formats multiples (PDF, Excel)",
+            "Synchronisation cloud sécurisée",
+            "Partage de calculs avec équipes",
+            "Modèles de calculs personnalisés",
+            "Statistiques d'utilisation détaillées"
+          ]
         }
       ]
     },
     {
       id: "productivity",
-      icon: Brain,
+      icon: Target,
       title: "Organisation Productive Complète",
-      description: "Suite complète de productivité avec IA intégrée",
-      color: "text-emerald-600 dark:text-emerald-400",
-      bgColor: "bg-emerald-50 dark:bg-emerald-950",
+      description: "5 modules intégrés pour une productivité maximale",
+      color: "text-green-600 dark:text-green-400",
+      bgColor: "bg-green-50 dark:bg-green-950",
       tools: [
         {
-          name: "Tâches Intelligentes",
-          features: ["Catégorisation automatique", "Priorités dynamiques", "IA de recommandation", "Analyse de productivité"]
-        },
-        {
           name: "To-Do List Améliorée",
-          features: ["Interface intuitive", "Glisser-déposer", "Sous-tâches", "Progression visuelle"]
+          features: [
+            "Interface intuitive avec drag & drop",
+            "Priorités visuelles avec codes couleur",
+            "Catégories personnalisées illimitées",
+            "Synchronisation temps réel multi-appareils",
+            "Notifications push intelligentes",
+            "Récurrence automatique des tâches",
+            "Sous-tâches avec indentation",
+            "Filtres avancés et recherche instantanée",
+            "Statistiques de productivité quotidienne",
+            "Templates de listes prédéfinies"
+          ]
         },
         {
-          name: "Notes avec Tags",
-          features: ["Système de tags", "Recherche avancée", "Organisation automatique", "Synchronisation"]
+          name: "Gestionnaire de Tâches Pro",
+          features: [
+            "Catégories avancées avec hiérarchie",
+            "Système de priorités à 5 niveaux",
+            "IA pour estimation de durée",
+            "Collaboration équipe en temps réel",
+            "Assignation et délégation de tâches",
+            "Dépendances entre tâches",
+            "Calendrier intégré avec vue Gantt",
+            "Rapports de productivité automatiques",
+            "Intégration avec outils externes",
+            "Workflow personnalisables"
+          ]
         },
         {
-          name: "Pomodoro",
-          features: ["Cycles personnalisables", "Statistiques détaillées", "Notifications", "Intégration tâches"]
+          name: "Suivi d'Objectifs Intelligent",
+          features: [
+            "Objectifs SMART avec validation",
+            "Jalons intermédiaires automatiques",
+            "Suivi de progression visuel",
+            "Analyses de performance détaillées",
+            "Coaching IA personnalisé",
+            "Métriques de succès personnalisables",
+            "Rappels adaptatifs intelligents",
+            "Visualisation de tendances",
+            "Partage d'objectifs avec mentors",
+            "Célébration automatique des réussites"
+          ]
         },
         {
-          name: "Statistiques",
-          features: ["Tableaux de bord", "Métriques de performance", "Tendances", "Rapports exportables"]
+          name: "Timer Pomodoro Avancé",
+          features: [
+            "Cycles personnalisables (15-60 min)",
+            "Statistiques détaillées avec graphiques",
+            "Bibliothèque de sons de notification",
+            "Intégration automatique avec tâches",
+            "Mode focus avec blocage distractions",
+            "Suivi de productivité par projet",
+            "Pauses intelligentes adaptatives",
+            "Synchronisation avec calendrier",
+            "Rapports hebdomadaires automatiques",
+            "Gamification avec badges de réussite"
+          ]
         },
         {
-          name: "Synchronisation",
-          features: ["Sauvegarde cloud", "Multi-appareils", "Backup automatique", "Restauration"]
+          name: "Gestionnaire de Notes Complet",
+          features: [
+            "Organisation avec tags hiérarchiques",
+            "Recherche avancée full-text",
+            "Catégories multiples avec couleurs",
+            "Export en 10+ formats (PDF, Word, etc.)",
+            "Éditeur riche avec formatage",
+            "Collaboration en temps réel",
+            "Historique des versions",
+            "Chiffrement de bout en bout",
+            "Synchronisation cloud sécurisée",
+            "Templates de notes professionnelles"
+          ]
         }
       ]
     },
@@ -161,29 +453,84 @@ export const About = () => {
       id: "security",
       icon: Shield,
       title: "Sécurité Avancée",
-      description: "Générateur de mots de passe sécurisés avec analyse complète",
+      description: "Suite complète de sécurité avec 5 modules intégrés",
       color: "text-red-600 dark:text-red-400",
       bgColor: "bg-red-50 dark:bg-red-950",
       tools: [
         {
-          name: "Templates Sécurisés",
-          features: ["Modèles prédéfinis", "Personnalisation avancée", "Règles de sécurité", "Conformité standards"]
+          name: "Générateur de Mots de Passe Avancé",
+          features: [
+            "Templates sécurisés prédéfinis (bancaire, social, pro)",
+            "Paramètres ultra-personnalisables (longueur 4-128)",
+            "12 types de caractères configurables",
+            "Exclusion de caractères ambigus",
+            "Génération par lots (jusqu'à 100)",
+            "Patterns personnalisés avec regex",
+            "Mots de passe prononçables",
+            "Intégration avec gestionnaires de mots de passe",
+            "API de génération pour développeurs",
+            "Conformité NIST et OWASP"
+          ]
         },
         {
-          name: "Analyse de Force",
-          features: ["Score de sécurité", "Recommandations", "Tests de résistance", "Validation temps réel"]
+          name: "Analyseur de Force Ultra-Précis",
+          features: [
+            "Évaluation en temps réel avec 15 critères",
+            "Calcul d'entropie Shannon précis",
+            "Détection de patterns courants",
+            "Vérification contre 10M+ mots de passe compromis",
+            "Score de sécurité sur 100 points",
+            "Suggestions d'amélioration contextuelles",
+            "Estimation du temps de crack",
+            "Analyse de la résistance aux attaques",
+            "Rapport de sécurité détaillé",
+            "Comparaison avec standards industriels"
+          ]
         },
         {
-          name: "Historique",
-          features: ["Sauvegarde sécurisée", "Chiffrement local", "Recherche rapide", "Gestion des versions"]
+          name: "Templates et Catégories",
+          features: [
+            "50+ templates prédéfinis par secteur",
+            "Catégories spécialisées (finance, santé, tech)",
+            "Favoris personnels avec tags",
+            "Règles d'entreprise personnalisables",
+            "Conformité réglementaire (GDPR, HIPAA)",
+            "Templates adaptatifs par contexte",
+            "Partage sécurisé de templates",
+            "Versioning des configurations",
+            "Import/export de règles",
+            "Validation automatique des politiques"
+          ]
         },
         {
-          name: "Export/Import",
-          features: ["Formats multiples", "Chiffrement", "Sauvegarde sécurisée", "Migration facile"]
+          name: "Historique et Gestion Sécurisée",
+          features: [
+            "Sauvegarde chiffrée AES-256",
+            "Gestion avancée des favoris",
+            "Recherche full-text sécurisée",
+            "Export multi-formats (CSV, JSON, XML)",
+            "Synchronisation cloud chiffrée",
+            "Audit trail complet",
+            "Purge automatique programmable",
+            "Backup incrémental",
+            "Restauration sélective",
+            "Statistiques d'utilisation anonymisées"
+          ]
         },
         {
-          name: "Chiffrement",
-          features: ["AES-256", "Clés locales", "Sécurité maximale", "Audit de sécurité"]
+          name: "Export/Import Universel",
+          features: [
+            "Sauvegarde complète chiffrée",
+            "Import depuis 20+ gestionnaires",
+            "Export vers formats standards",
+            "Migration assistée entre outils",
+            "Validation d'intégrité des données",
+            "Compression intelligente",
+            "Partage sécurisé temporaire",
+            "API REST pour intégrations",
+            "Batch processing pour volumes",
+            "Logs de traçabilité complets"
+          ]
         }
       ]
     },
@@ -191,25 +538,144 @@ export const About = () => {
       id: "creativity",
       icon: Palette,
       title: "Créativité",
-      description: "Générateurs et outils créatifs pour designers",
+      description: "Suite avancée de 9 outils créatifs et de design professionnel",
       color: "text-pink-600 dark:text-pink-400",
       bgColor: "bg-pink-50 dark:bg-pink-950",
       tools: [
         {
-          name: "Générateur de Couleurs",
-          features: ["Palettes harmonieuses", "Théorie des couleurs", "Export CSS/HEX", "Accessibilité"]
+          name: "Générateur de Couleurs Avancé",
+          features: [
+            "Palettes harmonieuses avec 12 règles théoriques",
+            "Roue chromatique interactive 360°",
+            "Génération par émotion et contexte",
+            "Accessibilité WCAG 2.1 intégrée",
+            "Export CSS, SCSS, JSON, Adobe",
+            "Inspiration automatique par IA",
+            "Simulation daltonisme",
+            "Tendances couleurs en temps réel",
+            "Bibliothèque de 1000+ palettes",
+            "Analyse psychologique des couleurs"
+          ]
         },
         {
-          name: "Palettes Avancées",
-          features: ["Extraction d'images", "Tendances design", "Combinaisons automatiques", "Sauvegarde"]
+          name: "Générateur d'Harmonie Chromatique",
+          features: [
+            "12 combinaisons théoriques (triadique, tétradique, etc.)",
+            "Algorithmes de contraste optimisés",
+            "Génération contextuelle (web, print, mobile)",
+            "Validation automatique d'accessibilité",
+            "Prévisualisations en temps réel",
+            "Export vers outils de design",
+            "Historique des harmonies créées",
+            "Partage collaboratif d'équipe",
+            "Templates par industrie",
+            "Analyse de tendances sectorielles"
+          ]
         },
         {
-          name: "Outils Design",
-          features: ["Gradients", "Patterns", "Textures", "Formes géométriques"]
+          name: "Extracteur de Palette d'Images",
+          features: [
+            "Analyse IA de couleurs dominantes",
+            "Extraction de 5-50 couleurs",
+            "Algorithmes de clustering avancés",
+            "Support 15+ formats d'image",
+            "Harmonies automatiques dérivées",
+            "Export multi-formats professionnels",
+            "Batch processing d'images",
+            "API pour intégrations",
+            "Historique des extractions",
+            "Optimisation pour différents médias"
+          ]
         },
         {
-          name: "Inspiration",
-          features: ["Galerie de designs", "Tendances actuelles", "Références", "Mood boards"]
+          name: "Générateur de Dégradés CSS",
+          features: [
+            "Transitions fluides multi-couleurs",
+            "CSS/SCSS automatique optimisé",
+            "Prévisualisations temps réel",
+            "Bibliothèque de 500+ dégradés",
+            "Générateur radial et linéaire",
+            "Animation CSS intégrée",
+            "Export SVG et PNG",
+            "Compatibilité navigateurs",
+            "Templates par catégorie",
+            "Partage et collaboration"
+          ]
+        },
+        {
+          name: "Logo Maker Professionnel",
+          features: [
+            "Design professionnel assisté par IA",
+            "1000+ templates par secteur",
+            "Personnalisation complète",
+            "Export haute résolution (SVG, PNG, PDF)",
+            "Variations automatiques (couleur, taille)",
+            "Guide de style automatique",
+            "Mockups intégrés",
+            "Droits commerciaux inclus",
+            "Versioning et historique",
+            "Collaboration équipe"
+          ]
+        },
+        {
+          name: "Générateur de Motifs",
+          features: [
+            "Motifs géométriques et artistiques",
+            "Algorithmes génératifs avancés",
+            "Personnalisation paramétrique",
+            "Export seamless (répétition parfaite)",
+            "Formats vectoriels et bitmap",
+            "Bibliothèque de 200+ bases",
+            "Génération par style artistique",
+            "Optimisation pour impression",
+            "Animation de motifs",
+            "API pour développeurs"
+          ]
+        },
+        {
+          name: "Générateur Typographique",
+          features: [
+            "Appariement intelligent de polices",
+            "Hiérarchie visuelle optimisée",
+            "Lisibilité et accessibilité",
+            "Tendances design actuelles",
+            "Prévisualisations contextuelles",
+            "Export CSS complet",
+            "Bibliothèque Google Fonts intégrée",
+            "Analyse de performance web",
+            "Suggestions par secteur",
+            "Tests A/B automatisés"
+          ]
+        },
+        {
+          name: "Filtres d'Images CSS",
+          features: [
+            "20+ effets CSS professionnels",
+            "Prévisualisation temps réel",
+            "Combinaisons d'effets avancées",
+            "Export CSS optimisé",
+            "Batch processing d'images",
+            "Presets par style artistique",
+            "Compatibilité navigateurs",
+            "Performance optimisée",
+            "Historique des filtres",
+            "Partage de configurations"
+          ]
+        },
+        {
+          name: "Générateur d'Icônes",
+          features: [
+            "Création d'icônes personnalisées",
+            "Bibliothèque de 5000+ éléments",
+            "Styles multiples (flat, 3D, outline)",
+            "Export multi-résolutions",
+            "Formats SVG, PNG, ICO",
+            "Cohérence de style automatique",
+            "Packs d'icônes thématiques",
+            "Optimisation pour différents usages",
+            "Droits commerciaux inclus",
+            "Intégration avec outils design"
+          ]
         }
       ]
     },
@@ -217,37 +683,114 @@ export const About = () => {
       id: "career",
       icon: Briefcase,
       title: "Carrière/Pro",
-      description: "Outils professionnels pour développement de carrière",
+      description: "7 modules professionnels via CareerSuite pour développement de carrière",
       color: "text-indigo-600 dark:text-indigo-400",
       bgColor: "bg-indigo-50 dark:bg-indigo-950",
       tools: [
         {
-          name: "Préparation Entretiens",
-          features: ["Questions types", "Simulations", "Feedback IA", "Conseils personnalisés"]
+          name: "Dashboard Carrière",
+          features: [
+            "Suivi progression de carrière en temps réel",
+            "Visualisation d'objectifs avec graphiques",
+            "Métriques de performance personnalisées",
+            "Analyse de gaps de compétences",
+            "Roadmap de développement personnalisé",
+            "Intégration avec LinkedIn et réseaux pro",
+            "Alertes d'opportunités ciblées",
+            "Benchmarking sectoriel",
+            "Rapports de progression automatiques",
+            "Coaching IA personnalisé"
+          ]
         },
         {
-          name: "Documents Pro",
-          features: ["CV builder", "Lettres de motivation", "Templates", "Optimisation ATS"]
+          name: "Studio Documents Professionnels",
+          features: [
+            "CV Builder avec 50+ templates ATS-optimisés",
+            "Lettres de motivation intelligentes",
+            "Personnalisation avancée par secteur",
+            "Export multi-formats (PDF, Word, HTML)",
+            "Optimisation mots-clés automatique",
+            "Analyse de compatibilité ATS",
+            "Versions multilingues",
+            "Historique et versioning",
+            "Partage sécurisé avec recruteurs",
+            "Feedback automatique et suggestions"
+          ]
         },
         {
-          name: "Networking",
-          features: ["Stratégies réseau", "Templates messages", "Suivi contacts", "Événements"]
+          name: "Préparation Entretiens Avancée",
+          features: [
+            "Base de 1000+ questions par secteur",
+            "Simulations d'entretiens avec IA",
+            "Système de feedback détaillé",
+            "Entraînement vidéo avec analyse",
+            "Conseils personnalisés par poste",
+            "Préparation entretiens techniques",
+            "Gestion du stress et confiance",
+            "Négociation salariale intégrée",
+            "Suivi post-entretien",
+            "Statistiques de performance"
+          ]
         },
         {
-          name: "Évaluation Compétences",
-          features: ["Tests d'aptitudes", "Gap analysis", "Plans de développement", "Certifications"]
+          name: "Intelligence Marché de l'Emploi",
+          features: [
+            "Analyse marché emploi en temps réel",
+            "Insights salaires par région/secteur",
+            "Tendances compétences émergentes",
+            "Opportunités cachées détectées par IA",
+            "Veille concurrentielle automatique",
+            "Prédictions d'évolution secteur",
+            "Cartographie des entreprises cibles",
+            "Analyse de demande par compétence",
+            "Rapports personnalisés hebdomadaires",
+            "Alertes opportunités sur mesure"
+          ]
         },
         {
-          name: "Négociation",
-          features: ["Stratégies salariales", "Simulations", "Arguments", "Préparation"]
+          name: "Coach Négociation Salariale",
+          features: [
+            "Stratégies de négociation personnalisées",
+            "Calculateur de salaire équitable",
+            "Conseils par secteur et expérience",
+            "Simulation de négociations",
+            "Arguments de valeur automatiques",
+            "Timing optimal pour négocier",
+            "Alternatives à la rémunération",
+            "Scripts de négociation prêts",
+            "Suivi des négociations",
+            "Analyse de réussite post-négociation"
+          ]
         },
         {
-          name: "Coach IA",
-          features: ["Conseils personnalisés", "Analyse de profil", "Recommandations", "Suivi progrès"]
+          name: "Hub Networking Professionnel",
+          features: [
+            "Outils de réseautage stratégique",
+            "Templates de messages de networking",
+            "Suivi des contacts professionnels",
+            "Planification d'événements networking",
+            "Analyse de réseau et influence",
+            "Recommandations de connexions",
+            "Gestion de réputation en ligne",
+            "Stratégies de personal branding",
+            "Intégration réseaux sociaux pro",
+            "Métriques d'engagement réseau"
+          ]
         },
         {
-          name: "Veille Marché",
-          features: ["Tendances emploi", "Salaires", "Compétences demandées", "Opportunités"]
+          name: "Évaluation et Développement Compétences",
+          features: [
+            "Évaluation complète de compétences",
+            "Analyse des gaps par rapport au marché",
+            "Plans de développement personnalisés",
+            "Recommandations de formations ciblées",
+            "Certification et validation compétences",
+            "Suivi de progression en temps réel",
+            "Benchmarking avec pairs du secteur",
+            "Prédiction d'évolution de carrière",
+            "Portefeuille de compétences digital",
+            "Intégration avec plateformes d'apprentissage"
+          ]
         }
       ]
     },
@@ -255,49 +798,159 @@ export const About = () => {
       id: "health",
       icon: Activity,
       title: "Santé & Bien-être",
-      description: "Suite complète de suivi santé et bien-être",
+      description: "10 outils complets de suivi santé et bien-être intégrés",
       color: "text-orange-600 dark:text-orange-400",
       bgColor: "bg-orange-50 dark:bg-orange-950",
       tools: [
         {
           name: "IMC Avancé",
-          features: ["Calculs précis", "Catégories détaillées", "Recommandations", "Suivi évolution"]
+          features: [
+            "Calculs précis avec 5 formules différentes",
+            "Recommandations personnalisées par âge/sexe",
+            "Analyse de composition corporelle",
+            "Suivi évolution avec graphiques",
+            "Conseils santé contextuels",
+            "Comparaison avec standards OMS",
+            "Calcul de poids idéal multiple",
+            "Alertes de santé préventives",
+            "Export rapports médicaux",
+            "Intégration avec wearables"
+          ]
         },
         {
-          name: "Nutrition",
-          features: ["Calcul calories", "Macronutriments", "Plans alimentaires", "Base de données"]
+          name: "Nutrition Complète",
+          features: [
+            "Suivi calories avec base 100k+ aliments",
+            "Analyse macronutriments détaillée",
+            "Micronutriments et vitamines",
+            "Recommandations personnalisées",
+            "Scanner code-barres intégré",
+            "Planification repas intelligente",
+            "Allergies et intolérances",
+            "Objectifs nutritionnels adaptatifs",
+            "Rapports nutritionnels professionnels",
+            "Intégration avec applications fitness"
+          ]
         },
         {
-          name: "Hydratation",
-          features: ["Suivi quotidien", "Rappels", "Objectifs personnalisés", "Statistiques"]
+          name: "Hydratation Optimisée",
+          features: [
+            "Objectifs quotidiens personnalisés",
+            "Rappels intelligents adaptatifs",
+            "Suivi consommation multi-boissons",
+            "Statistiques détaillées hebdomadaires",
+            "Facteurs environnementaux (chaleur, sport)",
+            "Intégration avec activité physique",
+            "Alertes de déshydratation",
+            "Gamification avec défis",
+            "Analyse de qualité d'hydratation",
+            "Conseils nutritionnels liés"
+          ]
         },
         {
-          name: "Sommeil",
-          features: ["Analyse du sommeil", "Cycles", "Qualité", "Recommandations"]
+          name: "Sommeil Avancé",
+          features: [
+            "Analyse qualité de sommeil",
+            "Recommandations d'amélioration",
+            "Suivi cycles de sommeil",
+            "Facteurs d'influence détectés",
+            "Optimisation horaires coucher/lever",
+            "Corrélations avec performance",
+            "Conseils d'hygiène du sommeil",
+            "Intégration avec wearables",
+            "Rapports de tendances",
+            "Alertes de dette de sommeil"
+          ]
         },
         {
-          name: "Exercices",
-          features: ["Programmes", "Suivi séances", "Progression", "Calendrier"]
+          name: "Exercices et Fitness",
+          features: [
+            "Programmes d'entraînement personnalisés",
+            "Suivi séances avec chronomètre",
+            "Progression automatique adaptative",
+            "Conseils techniques par exercice",
+            "Bibliothèque de 500+ exercices",
+            "Planification hebdomadaire intelligente",
+            "Analyse de performance",
+            "Prévention blessures",
+            "Intégration équipements connectés",
+            "Coaching virtuel personnalisé"
+          ]
         },
         {
-          name: "Mental",
-          features: ["Suivi humeur", "Méditation", "Stress", "Bien-être"]
+          name: "Santé Mentale",
+          features: [
+            "Suivi humeur quotidien",
+            "Insights bien-être personnalisés",
+            "Techniques de relaxation guidées",
+            "Méditation et mindfulness",
+            "Gestion du stress",
+            "Journal émotionnel",
+            "Corrélations avec habitudes",
+            "Alertes de bien-être",
+            "Ressources d'aide professionnelle",
+            "Confidentialité et sécurité maximales"
+          ]
         },
         {
-          name: "Médicaments",
-          features: ["Rappels", "Posologie", "Interactions", "Historique"]
+          name: "Rappels Médicaments",
+          features: [
+            "Gestion complète des traitements",
+            "Rappels intelligents personnalisés",
+            "Suivi de prise et effets",
+            "Interactions médicamenteuses",
+            "Historique médical sécurisé",
+            "Partage avec médecins",
+            "Alertes de renouvellement",
+            "Gestion des effets secondaires",
+            "Conformité HIPAA",
+            "Urgences médicales intégrées"
+          ]
         },
         {
-          name: "Métriques",
-          features: ["Tableaux de bord", "Tendances", "Objectifs", "Rapports"]
+          name: "Métriques Santé Dashboard",
+          features: [
+            "Dashboard complet multi-métriques",
+            "Visualisations avancées",
+            "Corrélations automatiques",
+            "Tendances et prédictions",
+            "Rapports de santé globaux",
+            "Intégration tous les modules",
+            "Export pour professionnels",
+            "Alertes santé préventives",
+            "Benchmarking avec pairs",
+            "IA de recommandations santé"
+          ]
         },
         {
-          name: "Poids",
-          features: ["Suivi évolution", "Objectifs", "Graphiques", "Prédictions"]
+          name: "Suivi Poids Intelligent",
+          features: [
+            "Graphiques de tendance avancés",
+            "Objectifs personnalisés SMART",
+            "Analyses statistiques prédictives",
+            "Système de motivation gamifié",
+            "Corrélations avec habitudes",
+            "Prédictions de progression",
+            "Alertes de plateau et conseils",
+            "Synchronisation balance connectée",
+            "Partage avec professionnels santé",
+            "Historique long terme (5+ ans)"
+          ]
         },
         {
-          name: "Objectifs",
-          features: ["Définition SMART", "Suivi progrès", "Motivation", "Récompenses"]
+          name: "Objectifs Fitness",
+          features: [
+            "Définition d'objectifs SMART",
+            "Suivi multi-métriques intégré",
+            "Ajustements automatiques",
+            "Motivation et récompenses",
+            "Défis communautaires",
+            "Analyse de faisabilité",
+            "Planification long terme",
+            "Célébration des réussites",
+            "Partage avec coach/amis",
+            "Statistiques de réussite"
+          ]
         }
       ]
     },
@@ -305,71 +958,259 @@ export const About = () => {
       id: "text",
       icon: FileText,
       title: "Utilitaires Texte Avancés",
-      description: "Analyse, formatage et transformation de texte",
+      description: "11 outils professionnels de traitement et analyse de texte",
       color: "text-yellow-600 dark:text-yellow-400",
       bgColor: "bg-yellow-50 dark:bg-yellow-950",
       tools: [
         {
-          name: "Compteur Avancé",
-          features: ["Mots, caractères, lignes", "Statistiques détaillées", "Temps de lecture", "Analyse fréquence"]
+          name: "Analyseur de Texte Complet",
+          features: [
+            "Comptage mots/caractères/paragraphes précis",
+            "Analyse de lisibilité (Flesch-Kincaid, SMOG)",
+            "Statistiques détaillées multi-langues",
+            "Métriques SEO avancées",
+            "Analyse de sentiment automatique",
+            "Détection de langue automatique",
+            "Analyse de complexité syntaxique",
+            "Fréquence des mots-clés",
+            "Score de diversité lexicale",
+            "Rapports d'analyse exportables"
+          ]
         },
         {
-          name: "Formatage",
-          features: ["Casse (majuscules/minuscules)", "Espacement", "Indentation", "Nettoyage"]
+          name: "Formatage Professionnel",
+          features: [
+            "Mise en forme automatique intelligente",
+            "Correction typographique avancée",
+            "Styles multiples (APA, MLA, Chicago)",
+            "Export formaté (PDF, Word, HTML)",
+            "Normalisation des espaces",
+            "Correction de ponctuation",
+            "Formatage de citations",
+            "Alignement et indentation",
+            "Gestion des caractères spéciaux",
+            "Templates de mise en page"
+          ]
         },
         {
-          name: "Analyse Sentiment",
-          features: ["Détection émotions", "Score sentiment", "Mots-clés", "Recommandations"]
+          name: "Transformation Avancée",
+          features: [
+            "Changement de casse (15+ options)",
+            "Encodage/décodage multi-formats",
+            "Nettoyage automatique intelligent",
+            "Conversion formats (Markdown, HTML, Plain)",
+            "Suppression caractères invisibles",
+            "Normalisation Unicode",
+            "Conversion d'accents",
+            "Remplacement par expressions régulières",
+            "Transformation par lots",
+            "Historique des transformations"
+          ]
         },
         {
-          name: "Transformation",
-          features: ["Encodage/décodage", "Formats multiples", "Conversion", "Validation"]
+          name: "Générateur de Contenu IA",
+          features: [
+            "Templates prédéfinis (50+ catégories)",
+            "Génération automatique contextuelle",
+            "Personnalisation par industrie",
+            "Export multiple formats",
+            "Génération de titres optimisés",
+            "Création de résumés automatiques",
+            "Suggestions de mots-clés",
+            "Adaptation au ton souhaité",
+            "Génération multilingue",
+            "Intégration API externe"
+          ]
         },
         {
-          name: "SEO",
-          features: ["Densité mots-clés", "Méta descriptions", "Optimisation", "Suggestions"]
+          name: "Comparaison de Textes",
+          features: [
+            "Diff textes avec visualisation",
+            "Analyse de similitudes avancée",
+            "Détection de plagiat",
+            "Comparaison sémantique",
+            "Surlignage des différences",
+            "Statistiques de changements",
+            "Export des comparaisons",
+            "Historique des versions",
+            "Fusion intelligente de textes",
+            "Analyse de cohérence"
+          ]
         },
         {
-          name: "Markdown",
-          features: ["Éditeur WYSIWYG", "Prévisualisation", "Export HTML", "Syntaxe"]
+          name: "Colorisation Syntaxique",
+          features: [
+            "Support 100+ langages de programmation",
+            "Thèmes de coloration personnalisables",
+            "Détection automatique du langage",
+            "Export avec coloration (HTML, PDF)",
+            "Numérotation des lignes",
+            "Pliage de code",
+            "Mise en évidence des erreurs",
+            "Autocomplétion basique",
+            "Formatage automatique du code",
+            "Intégration avec éditeurs externes"
+          ]
         },
         {
-          name: "Colorisation",
-          features: ["Coloration syntaxique", "Langages multiples", "Thèmes", "Export"]
+          name: "Gestionnaire d'Emojis",
+          features: [
+            "Recherche avancée par catégories",
+            "Base de données 3000+ emojis",
+            "Suggestions contextuelles",
+            "Favoris personnalisés",
+            "Raccourcis clavier",
+            "Conversion texte vers emoji",
+            "Analyse de sentiment par emojis",
+            "Statistiques d'utilisation",
+            "Support Unicode complet",
+            "Intégration réseaux sociaux"
+          ]
         },
         {
-          name: "Emojis",
-          features: ["Recherche", "Catégories", "Unicode", "Raccourcis"]
+          name: "Éditeur Markdown Pro",
+          features: [
+            "Édition temps réel avec prévisualisation",
+            "Syntaxe étendue (tables, diagrammes)",
+            "Export multi-formats (HTML, PDF, Word)",
+            "Thèmes de prévisualisation",
+            "Raccourcis clavier avancés",
+            "Insertion d'images par glisser-déposer",
+            "Génération de table des matières",
+            "Support LaTeX intégré",
+            "Collaboration en temps réel",
+            "Synchronisation cloud"
+          ]
+        },
+        {
+          name: "Outils Markdown Avancés",
+          features: [
+            "Conversion bidirectionnelle (MD ↔ HTML)",
+            "Prévisualisation multi-thèmes",
+            "Validation syntaxe Markdown",
+            "Optimisation pour GitHub/GitLab",
+            "Génération de badges automatiques",
+            "Création de diagrammes Mermaid",
+            "Templates de documentation",
+            "Minification et optimisation",
+            "Extraction de métadonnées",
+            "Intégration avec CMS"
+          ]
+        },
+        {
+          name: "Analyseur SEO Avancé",
+          features: [
+            "Optimisation contenu pour moteurs",
+            "Analyse densité mots-clés",
+            "Suggestions d'amélioration SEO",
+            "Score de lisibilité web",
+            "Analyse des balises meta",
+            "Optimisation pour featured snippets",
+            "Analyse de la concurrence",
+            "Suggestions de mots-clés longue traîne",
+            "Vérification des liens internes",
+            "Rapports SEO détaillés"
+          ]
+        },
+        {
+          name: "Extracteur de Données",
+          features: [
+            "Extraction données structurées",
+            "Reconnaissance d'entités nommées",
+            "Extraction d'emails et URLs",
+            "Analyse de patterns personnalisés",
+            "Export en CSV/JSON/XML",
+            "Nettoyage automatique des données",
+            "Validation des formats extraits",
+            "Traitement par lots",
+            "Règles d'extraction personnalisables",
+            "Intégration avec bases de données"
+          ]
         }
       ]
     },
     {
       id: "data",
       icon: Database,
-      title: "Gestionnaire de Données",
-      description: "Gestion complète des données avec export/import",
+      title: "Gestionnaire de Données Avancé",
+      description: "5 modules professionnels de gestion et analyse de données",
       color: "text-teal-600 dark:text-teal-400",
       bgColor: "bg-teal-50 dark:bg-teal-950",
       tools: [
         {
-          name: "Export Universel",
-          features: ["Formats multiples (JSON, CSV, XML)", "Sélection personnalisée", "Compression", "Planification"]
+          name: "Export Universel Pro",
+          features: [
+            "Support 25+ formats (JSON, CSV, XML, PDF, Excel)",
+            "Personnalisation avancée des templates",
+            "Compression intelligente multi-algorithmes",
+            "Validation automatique des données",
+            "Export par lots et programmé",
+            "Filtrage et tri avant export",
+            "Chiffrement des exports sensibles",
+            "Métadonnées et horodatage",
+            "Prévisualisation avant export",
+            "Intégration cloud (Drive, Dropbox, OneDrive)"
+          ]
         },
         {
-          name: "Import/Export",
-          features: ["Migration données", "Validation", "Mapping automatique", "Rollback"]
+          name: "Import/Export Intelligent",
+          features: [
+            "Sauvegarde complète multi-niveaux",
+            "Restauration sélective par modules",
+            "Migration entre versions automatique",
+            "Synchronisation cloud temps réel",
+            "Détection et résolution de conflits",
+            "Historique des sauvegardes (30 jours)",
+            "Compression différentielle",
+            "Vérification d'intégrité des données",
+            "Import depuis applications tierces",
+            "Planification automatique des sauvegardes"
+          ]
         },
         {
-          name: "Statistiques",
-          features: ["Analyse usage", "Métriques performance", "Rapports", "Tendances"]
+          name: "Statistiques Avancées",
+          features: [
+            "Métriques d'utilisation en temps réel",
+            "Analyses prédictives avec IA",
+            "Rapports personnalisables (50+ templates)",
+            "Tendances et patterns automatiques",
+            "Dashboard interactif multi-vues",
+            "Alertes et notifications intelligentes",
+            "Comparaisons historiques",
+            "Export rapports (PDF, Excel, PowerBI)",
+            "Segmentation utilisateurs avancée",
+            "KPIs personnalisés et benchmarking"
+          ]
         },
         {
-          name: "Performance",
-          features: ["Optimisation", "Cache intelligent", "Monitoring", "Alertes"]
+          name: "Monitoring Performance",
+          features: [
+            "Surveillance performance temps réel",
+            "Optimisation automatique des requêtes",
+            "Détection d'anomalies par IA",
+            "Alertes de performance proactives",
+            "Analyse de la charge système",
+            "Recommandations d'optimisation",
+            "Historique des performances (90 jours)",
+            "Métriques de disponibilité (SLA)",
+            "Diagnostic automatique des problèmes",
+            "Intégration avec outils de monitoring"
+          ]
         },
         {
           name: "Tests Intégrés",
-          features: ["Validation données", "Tests automatiques", "Intégrité", "Qualité"]
+          features: [
+            "Validation automatique des données",
+            "Tests de régression continus",
+            "Simulation de charge et stress",
+            "Vérification d'intégrité référentielle",
+            "Tests de performance automatisés",
+            "Validation des règles métier",
+            "Détection de doublons intelligente",
+            "Tests de compatibilité multi-navigateurs",
+            "Rapports de qualité des données",
+            "Certification conformité (RGPD, SOX)"
+          ]
         }
       ]
     }
