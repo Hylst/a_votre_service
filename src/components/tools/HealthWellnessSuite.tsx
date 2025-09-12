@@ -23,7 +23,7 @@ interface HealthWellnessSuiteProps {
   spacing?: 'xxs' | 'xs' | 'sm' | 'md' | 'lg';
 }
 
-export const HealthWellnessSuite = ({ spacing = 'md' }: HealthWellnessSuiteProps) => {
+const HealthWellnessSuite = ({ spacing = 'md' }: HealthWellnessSuiteProps) => {
   console.log('HealthWellnessSuite component loading...');
   
   const {
@@ -285,3 +285,5 @@ export const HealthWellnessSuite = ({ spacing = 'md' }: HealthWellnessSuiteProps
     </div>
   );
 };
+
+export default HealthWellnessSuite;

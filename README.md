@@ -1,6 +1,12 @@
-# À Votre Service
+# À Votre Service - Suite de Productivité Multi-Outils
 
-A comprehensive multi-tool productivity suite offering over 100+ integrated tools across 8 major categories. Built with modern React architecture, this application provides a seamless, responsive experience for calculations, text processing, health monitoring, creativity, career development, and productivity enhancement.
+🚀 **Une plateforme de productivité web complète offrant plus de 100 outils intégrés répartis en 10 suites spécialisées**
+
+[![Version](https://img.shields.io/badge/version-1.5.8-blue.svg)](https://github.com/geoffroystreit/a-votre-service)
+[![React](https://img.shields.io/badge/React-18.3.1-61dafb.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-3178c6.svg)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.4.1-646cff.svg)](https://vitejs.dev/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ## 🚀 Key Highlights
 

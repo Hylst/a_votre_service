@@ -19,7 +19,7 @@ import { MarkdownEditor } from './textUtils/MarkdownEditor';
 import { DataImportExport } from './common/DataImportExport';
 import { FileText, BarChart3, Type, Shuffle, Copy, FileCode, Search, FileDown, Code, Smile, Edit } from 'lucide-react';
 
-export const TextUtilsAdvanced = () => {
+const TextUtilsAdvanced = () => {
   const {
     data: textUtilsData,
     setData,
@@ -181,3 +181,5 @@ export const TextUtilsAdvanced = () => {
     </div>
   );
 };
+
+export default TextUtilsAdvanced;

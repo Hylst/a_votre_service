@@ -1,11 +1,34 @@
 
-import { useState, useEffect } from 'react';
+/**
+ * TextTransformer.tsx - Advanced text transformation utility
+ * Provides multiple text transformation options with theme-aware UI and optimized performance
+ */
+
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Shuffle, Copy, ArrowUpDown } from 'lucide-react';
+import { Shuffle, Copy, AlertCircle, Loader2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+
+/**
+ * Debounce utility function to limit function calls
+ * @param func - Function to debounce
+ * @param wait - Wait time in milliseconds
+ * @returns Debounced function
+ */
+const debounce = <T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): ((...args: Parameters<T>) => void) => {
+  let timeout: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+};
 
 interface TextTransformerProps {
   data: any;
@@ -15,6 +38,22 @@ interface TextTransformerProps {
 export const TextTransformer = ({ data, onDataChange }: TextTransformerProps) => {
   const [text, setText] = useState(data.text || '');
   const [transformedTexts, setTransformedTexts] = useState<{[key: string]: string}>({});
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+
+  // Debounced transformation function to improve performance
+  const debouncedTransform = useCallback(
+    debounce((inputText: string) => {
+      if (inputText.trim()) {
+        performTransformations(inputText);
+      } else {
+        setTransformedTexts({});
+        setErrors({});
+        setIsProcessing(false);
+      }
+    }, 300),
+    []
+  );
 
   useEffect(() => {
     if (onDataChange && data) {
@@ -23,66 +62,163 @@ export const TextTransformer = ({ data, onDataChange }: TextTransformerProps) =>
   }, [text, transformedTexts, data, onDataChange]);
 
   useEffect(() => {
-    if (text) {
-      performTransformations(text);
-    }
-  }, [text]);
+    setIsProcessing(true);
+    debouncedTransform(text);
+  }, [text, debouncedTransform]);
 
-  const performTransformations = (inputText: string) => {
-    const transforms = {
-      uppercase: inputText.toUpperCase(),
-      lowercase: inputText.toLowerCase(),
-      titleCase: inputText.replace(/\w\S*/g, (txt) => 
-        txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-      ),
-      sentenceCase: inputText.charAt(0).toUpperCase() + inputText.slice(1).toLowerCase(),
-      camelCase: inputText
-        .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => 
-          index === 0 ? word.toLowerCase() : word.toUpperCase()
-        ).replace(/\s+/g, ''),
-      pascalCase: inputText
-        .replace(/(?:^\w|[A-Z]|\b\w)/g, (word) => word.toUpperCase())
-        .replace(/\s+/g, ''),
-      snakeCase: inputText.replace(/\W+/g, ' ')
-        .split(/ |\B(?=[A-Z])/)
-        .map(word => word.toLowerCase())
-        .join('_'),
-      kebabCase: inputText.replace(/\W+/g, ' ')
-        .split(/ |\B(?=[A-Z])/)
-        .map(word => word.toLowerCase())
-        .join('-'),
-      reverse: inputText.split('').reverse().join(''),
-      reverseWords: inputText.split(' ').reverse().join(' '),
-      alternatingCase: inputText
+  /**
+   * Performs all text transformations with error handling
+   * @param inputText - The text to transform
+   */
+  const performTransformations = useCallback((inputText: string) => {
+    const newTransforms: {[key: string]: string} = {};
+    const newErrors: {[key: string]: string} = {};
+
+    try {
+      // Case transformations
+      newTransforms.uppercase = inputText.toUpperCase();
+      newTransforms.lowercase = inputText.toLowerCase();
+      newTransforms.titleCase = inputText.replace(/\w\S*/g, (txt) => 
+        txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase()
+      );
+      newTransforms.sentenceCase = inputText.charAt(0).toUpperCase() + inputText.slice(1).toLowerCase();
+      
+      // Programming case transformations
+      newTransforms.camelCase = toCamelCase(inputText);
+      newTransforms.pascalCase = toPascalCase(inputText);
+      newTransforms.snakeCase = toSnakeCase(inputText);
+      newTransforms.kebabCase = toKebabCase(inputText);
+      
+      // Text manipulations
+      newTransforms.reverse = inputText.split('').reverse().join('');
+      newTransforms.reverseWords = inputText.split(' ').reverse().join(' ');
+      newTransforms.alternatingCase = inputText
         .split('')
         .map((char, index) => 
           index % 2 === 0 ? char.toLowerCase() : char.toUpperCase()
-        ).join(''),
-      removeVowels: inputText.replace(/[aeiouAEIOU]/g, ''),
-      removeConsonants: inputText.replace(/[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]/g, ''),
-      removeNumbers: inputText.replace(/[0-9]/g, ''),
-      removeSpecialChars: inputText.replace(/[^a-zA-Z0-9\s]/g, ''),
-      doubleSpace: inputText.replace(/ /g, '  '),
-      singleSpace: inputText.replace(/\s+/g, ' '),
-      rot13: inputText.replace(/[a-zA-Z]/g, (char) => {
+        ).join('');
+      
+      // Filters
+      newTransforms.removeVowels = inputText.replace(/[aeiouAEIOU]/g, '');
+      newTransforms.removeConsonants = inputText.replace(/[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]/g, '');
+      newTransforms.removeNumbers = inputText.replace(/[0-9]/g, '');
+      newTransforms.removeSpecialChars = inputText.replace(/[^a-zA-Z0-9\s]/g, '');
+      newTransforms.doubleSpace = inputText.replace(/ /g, '  ');
+      newTransforms.singleSpace = inputText.replace(/\s+/g, ' ');
+      
+      // Encoding transformations with error handling
+      newTransforms.rot13 = inputText.replace(/[a-zA-Z]/g, (char) => {
         const start = char <= 'Z' ? 65 : 97;
         return String.fromCharCode(((char.charCodeAt(0) - start + 13) % 26) + start);
-      }),
-      morse: textToMorse(inputText),
-      binary: textToBinary(inputText),
-      base64: btoa(inputText),
-      slugify: inputText
+      });
+      
+      try {
+        newTransforms.morse = textToMorse(inputText);
+      } catch (error) {
+        newErrors.morse = 'Erreur lors de la conversion en morse';
+      }
+      
+      try {
+        newTransforms.binary = textToBinary(inputText);
+      } catch (error) {
+        newErrors.binary = 'Erreur lors de la conversion en binaire';
+      }
+      
+      try {
+        newTransforms.base64 = safeBase64Encode(inputText);
+      } catch (error) {
+        newErrors.base64 = 'Erreur lors de l\'encodage Base64';
+      }
+      
+      // URL and text processing
+      newTransforms.slugify = inputText
         .toLowerCase()
         .trim()
         .replace(/[^\w\s-]/g, '')
         .replace(/[\s_-]+/g, '-')
-        .replace(/^-+|-+$/g, ''),
-      wordCount: `Mots: ${inputText.trim().split(/\s+/).length}, Caractères: ${inputText.length}`,
-      firstLetters: inputText.split(' ').map(word => word.charAt(0)).join(''),
-      lastLetters: inputText.split(' ').map(word => word.charAt(word.length - 1)).join('')
-    };
+        .replace(/^-+|-+$/g, '');
+      
+      // Analysis
+      const words = inputText.trim().split(/\s+/).filter(word => word.length > 0);
+      newTransforms.wordCount = `Mots: ${words.length}, Caractères: ${inputText.length}, Sans espaces: ${inputText.replace(/\s/g, '').length}`;
+      
+      // Letter extractions
+      newTransforms.firstLetters = inputText.split(' ').map(word => word.charAt(0)).join('');
+      newTransforms.lastLetters = inputText.split(' ').map(word => word.charAt(word.length - 1)).join('');
+      
+    } catch (error) {
+      console.error('Error in performTransformations:', error);
+    }
 
-    setTransformedTexts(transforms);
+    setTransformedTexts(newTransforms);
+    setErrors(newErrors);
+    setIsProcessing(false);
+  }, []);
+
+  /**
+   * Converts text to camelCase
+   * @param text - Input text
+   * @returns camelCase formatted text
+   */
+  const toCamelCase = (text: string): string => {
+    return text
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => 
+        index === 0 ? word.toLowerCase() : word.toUpperCase()
+      )
+      .replace(/\s+/g, '');
+  };
+
+  /**
+   * Converts text to PascalCase
+   * @param text - Input text
+   * @returns PascalCase formatted text
+   */
+  const toPascalCase = (text: string): string => {
+    return text
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word) => word.toUpperCase())
+      .replace(/\s+/g, '');
+  };
+
+  /**
+   * Converts text to snake_case
+   * @param text - Input text
+   * @returns snake_case formatted text
+   */
+  const toSnakeCase = (text: string): string => {
+    return text
+      .replace(/\W+/g, ' ')
+      .split(/ |\B(?=[A-Z])/)
+      .map(word => word.toLowerCase())
+      .join('_');
+  };
+
+  /**
+   * Converts text to kebab-case
+   * @param text - Input text
+   * @returns kebab-case formatted text
+   */
+  const toKebabCase = (text: string): string => {
+    return text
+      .replace(/\W+/g, ' ')
+      .split(/ |\B(?=[A-Z])/)
+      .map(word => word.toLowerCase())
+      .join('-');
+  };
+
+  /**
+   * Safely encodes text to Base64 with error handling
+   * @param text - Input text
+   * @returns Base64 encoded text or error message
+   */
+  const safeBase64Encode = (text: string): string => {
+    try {
+      // Handle special characters by using encodeURIComponent first
+      return btoa(encodeURIComponent(text).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+        return String.fromCharCode(parseInt(p1, 16));
+      }));
+    } catch (error) {
+      throw new Error('Impossible d\'encoder en Base64');
+    }
   };
 
   const textToMorse = (text: string): string => {
@@ -165,14 +301,36 @@ export const TextTransformer = ({ data, onDataChange }: TextTransformerProps) =>
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={4}
-            className="w-full"
+            className="w-full bg-background text-foreground"
           />
+          {isProcessing && (
+            <div className="flex items-center gap-2 mt-2 text-sm text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Transformation en cours...
+            </div>
+          )}
         </CardContent>
       </Card>
 
+      {/* Display errors if any */}
+      {text && Object.keys(errors).length > 0 && (
+        <Alert className="bg-destructive/10 border-destructive/20">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <ul className="list-disc list-inside space-y-1">
+              {Object.entries(errors).map(([key, error]) => (
+                <li key={key} className="text-sm">
+                  <strong>{key}:</strong> {error}
+                </li>
+              ))}
+            </ul>
+          </AlertDescription>
+        </Alert>
+      )}
+
       {/* Transformations by Category */}
       {text && categories.map(category => (
-        <Card key={category}>
+        <Card key={category} className="bg-card text-card-foreground border">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">
               <Badge variant="outline">{category}</Badge>
@@ -185,17 +343,39 @@ export const TextTransformer = ({ data, onDataChange }: TextTransformerProps) =>
                 .map(({ key, label }) => (
                 <div key={key} className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium">{label}</label>
+                    <label className="text-sm font-medium text-foreground">{label}</label>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => copyToClipboard(transformedTexts[key] || '', label)}
+                      disabled={isProcessing || !transformedTexts[key]}
+                      className="h-8 w-8 p-0"
                     >
-                      <Copy className="w-3 h-3" />
+                      {isProcessing ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Copy className="w-3 h-3" />
+                      )}
                     </Button>
                   </div>
-                  <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded border text-sm font-mono break-all">
-                    {transformedTexts[key] || ''}
+                  <div className="p-3 bg-secondary text-secondary-foreground rounded border text-sm font-mono break-all min-h-[60px] relative">
+                    {errors[key] ? (
+                      <div className="flex items-center gap-2 text-destructive">
+                        <AlertCircle className="w-4 h-4" />
+                        <span className="text-xs">{errors[key]}</span>
+                      </div>
+                    ) : (
+                      transformedTexts[key] || (
+                        isProcessing ? (
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span className="text-xs">Transformation...</span>
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground text-xs">Aucun résultat</span>
+                        )
+                      )
+                    )}
                   </div>
                 </div>
               ))}
@@ -207,11 +387,11 @@ export const TextTransformer = ({ data, onDataChange }: TextTransformerProps) =>
       {!text && (
         <Card>
           <CardContent className="p-8 text-center">
-            <Shuffle className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-            <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <Shuffle className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <h3 className="text-lg font-medium text-foreground mb-2">
               Prêt à transformer
             </h3>
-            <p className="text-gray-500">
+            <p className="text-muted-foreground">
               Saisissez du texte ci-dessus pour voir toutes les transformations disponibles.
             </p>
           </CardContent>

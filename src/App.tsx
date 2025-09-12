@@ -5,6 +5,7 @@ import Auth from './pages/Auth';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
 import { UniversalDataManagerPage } from './components/UniversalDataManagerPage';
+import TestSEO from './test-seo';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -29,6 +30,7 @@ function AppContent() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/universal-data-manager" element={<UniversalDataManagerPage />} />
+        <Route path="/test-seo" element={<TestSEO />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

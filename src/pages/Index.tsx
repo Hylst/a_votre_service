@@ -10,12 +10,12 @@ const CalculatorImproved = lazy(() => import("@/components/tools/CalculatorImpro
 const TodoListEnhanced = lazy(() => import("@/components/tools/TodoListEnhanced"));
 const ColorGenerator = lazy(() => import("@/components/tools/ColorGenerator").then(module => ({ default: module.ColorGenerator })));
 const BMICalculator = lazy(() => import("@/components/tools/BMICalculator"));
-const TextUtilsAdvanced = lazy(() => import("@/components/tools/TextUtilsAdvanced").then(module => ({ default: module.TextUtilsAdvanced })));
+const TextUtilsAdvanced = lazy(() => import("@/components/tools/TextUtilsAdvanced"));
 const DateCalculatorAdvanced = lazy(() => import("@/components/tools/DateCalculatorAdvanced"));
 const ProductivitySuiteModular = lazy(() => import("@/components/tools/ProductivitySuiteModular").then(module => ({ default: module.ProductivitySuiteModular })));
 const PasswordGeneratorAdvancedEnhanced = lazy(() => import("@/components/tools/PasswordGeneratorAdvancedEnhanced").then(module => ({ default: module.PasswordGeneratorAdvancedEnhanced })));
 const QRCodeGenerator = lazy(() => import("@/components/tools/QRCodeGenerator"));
-const HealthWellnessSuite = lazy(() => import("@/components/tools/HealthWellnessSuite").then(module => ({ default: module.HealthWellnessSuite })));
+const HealthWellnessSuite = lazy(() => import("@/components/tools/HealthWellnessSuite"));
 const About = lazy(() => import("@/components/About").then(module => ({ default: module.About })));
 const UniversalDataManager = lazy(() => import("@/components/tools/common/UniversalDataManager").then(module => ({ default: module.UniversalDataManager })));
 const AppSettings = lazy(() => import("@/components/tools/common/AppSettings"));
