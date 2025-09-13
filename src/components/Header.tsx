@@ -174,7 +174,7 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
           <ThemeToggle />
           
           {user ? (
-            <UserMenu />
+            <UserMenu onProfileClick={() => setActiveSection('profile')} />
           ) : (
             <Button 
               variant="outline" 

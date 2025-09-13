@@ -1,24 +1,30 @@
 # Changelog
 
-## [2025-01-13] - Navigation Fix: Authentication Button
+## [2025-01-13] - Navigation Fixes: Authentication & Profile
 
 ### ✅ Done
 
 #### Correction de Navigation
 - **Problème résolu** : Le bouton "Connexion" dans le Header causait une erreur 404
+- **Problème résolu** : Le menu profil ne naviguait pas correctement vers la section profil
 - **Cause** : Utilisation de `window.location.href = '/auth'` au lieu de React Router
+- **Cause** : Prop `onProfileClick` manquante dans le composant UserMenu
 - **Solution** : Remplacement par `useNavigate` de React Router
   - Import de `useNavigate` depuis 'react-router-dom'
   - Remplacement de `window.location.href = '/auth'` par `navigate('/auth')`
+  - Ajout de la prop `onProfileClick` au composant UserMenu
   - Navigation fluide sans rechargement de page
 
 #### Fichiers Modifiés
-- `src/components/Header.tsx` - Correction de la navigation vers la page d'authentification
+- `src/components/Header.tsx` - Correction de la navigation vers la page d'authentification et ajout de la navigation profil
 
 #### Impact
 - **AVANT** : Clic sur "Connexion" → Erreur 404
+- **AVANT** : Clic sur profil → Pas de navigation
 - **APRÈS** : Clic sur "Connexion" → Navigation vers la page d'authentification avec modal de connexion/inscription
+- **APRÈS** : Clic sur profil → Navigation vers la section profil
 - **Fonctionnalité** : L'authentification par localStorage fonctionne correctement
+- **Ajouté** : Guide complet de déploiement Vercel avec bonnes pratiques et recommandations
 
 ---
 
