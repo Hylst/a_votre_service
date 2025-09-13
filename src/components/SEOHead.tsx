@@ -22,16 +22,39 @@ interface SEOHeadProps {
 }
 
 interface StructuredDataProps {
-  type: string;
+  '@context': string;
+  '@type': string;
   name: string;
   description: string;
   url: string;
   image?: string;
-  author?: string;
+  author?: {
+    '@type': string;
+    name: string;
+    url: string;
+  };
+  publisher?: {
+    '@type': string;
+    name: string;
+    url: string;
+    logo: {
+      '@type': string;
+      url: string;
+    };
+  };
+  inLanguage?: string;
   datePublished?: string;
   dateModified?: string;
-  toolCategory?: string;
   applicationCategory?: string;
+  operatingSystem?: string;
+  permissions?: string;
+  isAccessibleForFree?: boolean;
+  offers?: {
+    '@type': string;
+    price: string;
+    priceCurrency: string;
+  };
+  featureList?: string;
 }
 
 const SEOHead: React.FC<SEOHeadProps> = ({
@@ -231,10 +254,10 @@ const SEOHead: React.FC<SEOHeadProps> = ({
           priceCurrency: 'EUR'
         },
         featureList: finalKeywords.join(', ')
-      };
+      } as StructuredDataProps;
     }
     
-    return baseData;
+    return baseData as StructuredDataProps;
   };
   
   useEffect(() => {
