@@ -1,5 +1,27 @@
 # Changelog
 
+## [2025-01-13] - Navigation Fix: Authentication Button
+
+### ✅ Done
+
+#### Correction de Navigation
+- **Problème résolu** : Le bouton "Connexion" dans le Header causait une erreur 404
+- **Cause** : Utilisation de `window.location.href = '/auth'` au lieu de React Router
+- **Solution** : Remplacement par `useNavigate` de React Router
+  - Import de `useNavigate` depuis 'react-router-dom'
+  - Remplacement de `window.location.href = '/auth'` par `navigate('/auth')`
+  - Navigation fluide sans rechargement de page
+
+#### Fichiers Modifiés
+- `src/components/Header.tsx` - Correction de la navigation vers la page d'authentification
+
+#### Impact
+- **AVANT** : Clic sur "Connexion" → Erreur 404
+- **APRÈS** : Clic sur "Connexion" → Navigation vers la page d'authentification avec modal de connexion/inscription
+- **Fonctionnalité** : L'authentification par localStorage fonctionne correctement
+
+---
+
 ## [2025-01-13] - CRITICAL SECURITY FIX: API Keys Hardcoded Removal
 
 ### 🚨 URGENT SECURITY PATCH

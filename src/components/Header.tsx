@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { UnitConverterInfoModal } from "@/components/modals/UnitConverterInfoModal";
 import { CalculatorInfoModal } from "@/components/modals/CalculatorInfoModal";
 import { ProductivityInfoModal } from "@/components/modals/ProductivityInfoModal";
@@ -20,6 +21,7 @@ interface HeaderProps {
 
 export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderProps) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isCalculatorInfoModalOpen, setIsCalculatorInfoModalOpen] = useState(false);
   const [isProductivityInfoModalOpen, setIsProductivityInfoModalOpen] = useState(false);
@@ -176,7 +178,7 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
           ) : (
             <Button 
               variant="outline" 
-              onClick={() => window.location.href = '/auth'}
+              onClick={() => navigate('/auth')}
               className="hidden sm:flex"
             >
               Connexion
