@@ -11,6 +11,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from './components/ui/toaster';
 import { useIndexedDBFix } from './hooks/useIndexedDBFix';
+import SEOHead from './components/SEOHead';
 import { useEffect } from 'react';
 
 const queryClient = new QueryClient();
@@ -25,6 +26,7 @@ function AppContent() {
 
   return (
     <Router>
+      <SEOHead />
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/auth" element={<Auth />} />
