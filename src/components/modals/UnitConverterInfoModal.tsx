@@ -37,7 +37,7 @@ const converterInfo = [
   {
     id: 'length',
     title: 'Convertisseur de Longueurs',
-    icon: <Ruler className="w-5 h-5 text-blue-600" />,
+    icon: <Ruler className="w-5 h-5 text-primary" />,
     units: '13 unités',
     description: 'Convertit entre mètres, kilomètres, centimètres, millimètres, pouces, pieds, yards, miles, etc.',
     features: ['Standards SI', 'Unités impériales', 'Précision élevée']
@@ -45,7 +45,7 @@ const converterInfo = [
   {
     id: 'weight',
     title: 'Convertisseur de Poids',
-    icon: <Weight className="w-5 h-5 text-green-600" />,
+    icon: <Weight className="w-5 h-5 text-primary" />,
     units: '11 unités',
     description: 'Convertit entre grammes, kilogrammes, tonnes, livres, onces, stones, etc.',
     features: ['Système métrique', 'Système impérial', 'Conversion précise']
@@ -53,7 +53,7 @@ const converterInfo = [
   {
     id: 'temperature',
     title: 'Convertisseur de Température',
-    icon: <Thermometer className="w-5 h-5 text-red-600" />,
+    icon: <Thermometer className="w-5 h-5 text-primary" />,
     units: '5 unités',
     description: 'Convertit entre Celsius, Fahrenheit, Kelvin, Rankine et Réaumur.',
     features: ['Échelles scientifiques', 'Usage quotidien', 'Formules exactes']
@@ -61,7 +61,7 @@ const converterInfo = [
   {
     id: 'volume',
     title: 'Convertisseur de Volume',
-    icon: <Volume className="w-5 h-5 text-purple-600" />,
+    icon: <Volume className="w-5 h-5 text-primary" />,
     units: '14 unités',
     description: 'Convertit entre litres, millilitres, gallons, pintes, tasses, etc.',
     features: ['Cuisine & recettes', 'Systèmes US/UK', 'Précision culinaire']
@@ -69,7 +69,7 @@ const converterInfo = [
   {
     id: 'area',
     title: 'Convertisseur de Surface',
-    icon: <Scale className="w-5 h-5 text-teal-600" />,
+    icon: <Scale className="w-5 h-5 text-primary" />,
     units: '11 unités',
     description: 'Convertit entre mètres carrés, hectares, acres, pieds carrés, etc.',
     features: ['Immobilier', 'Agriculture', 'Architecture']
@@ -77,7 +77,7 @@ const converterInfo = [
   {
     id: 'speed',
     title: 'Convertisseur de Vitesse',
-    icon: <Activity className="w-5 h-5 text-orange-600" />,
+    icon: <Activity className="w-5 h-5 text-primary" />,
     units: '7 unités',
     description: 'Convertit entre km/h, m/s, mph, nœuds, mach, etc.',
     features: ['Transport', 'Aviation', 'Marine']
@@ -85,7 +85,7 @@ const converterInfo = [
   {
     id: 'pressure',
     title: 'Convertisseur de Pression',
-    icon: <Droplets className="w-5 h-5 text-cyan-600" />,
+    icon: <Droplets className="w-5 h-5 text-primary" />,
     units: '10 unités',
     description: 'Convertit entre pascals, bars, atmosphères, PSI, mmHg, etc.',
     features: ['Météorologie', 'Ingénierie', 'Médical']
@@ -93,7 +93,7 @@ const converterInfo = [
   {
     id: 'energy',
     title: 'Convertisseur d\'Énergie',
-    icon: <Fuel className="w-5 h-5 text-amber-600" />,
+    icon: <Fuel className="w-5 h-5 text-primary" />,
     units: '11 unités',
     description: 'Convertit entre joules, calories, kWh, BTU, etc.',
     features: ['Électricité', 'Nutrition', 'Thermodynamique']
@@ -101,7 +101,7 @@ const converterInfo = [
   {
     id: 'power',
     title: 'Convertisseur de Puissance',
-    icon: <Zap className="w-5 h-5 text-yellow-600" />,
+    icon: <Zap className="w-5 h-5 text-primary" />,
     units: '8 unités',
     description: 'Convertit entre watts, kilowatts, chevaux-vapeur, BTU/h, etc.',
     features: ['Électronique', 'Automobile', 'Industrie']
@@ -109,7 +109,7 @@ const converterInfo = [
   {
     id: 'currency',
     title: 'Convertisseur de Devises',
-    icon: <DollarSign className="w-5 h-5 text-green-600" />,
+    icon: <DollarSign className="w-5 h-5 text-primary" />,
     units: '12 devises',
     description: 'Convertit entre EUR, USD, GBP, JPY, CHF et autres devises majeures.',
     features: ['Taux en temps réel', 'Devises majeures', 'Commerce international']
@@ -117,7 +117,7 @@ const converterInfo = [
   {
     id: 'time',
     title: 'Convertisseur de Temps',
-    icon: <Clock className="w-5 h-5 text-indigo-600" />,
+    icon: <Clock className="w-5 h-5 text-primary" />,
     units: '12 unités',
     description: 'Convertit entre secondes, minutes, heures, jours, semaines, années, etc.',
     features: ['Planification', 'Productivité', 'Calculs temporels']
@@ -125,7 +125,7 @@ const converterInfo = [
   {
     id: 'data',
     title: 'Convertisseur de Données',
-    icon: <Palette className="w-5 h-5 text-pink-600" />,
+    icon: <Palette className="w-5 h-5 text-primary" />,
     units: '12 unités',
     description: 'Convertit entre octets, Ko, Mo, Go, To et autres unités de stockage.',
     features: ['Informatique', 'Stockage', 'Réseaux']
@@ -141,7 +141,7 @@ export const UnitConverterInfoModal: React.FC<UnitConverterInfoModalProps> = ({
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Scale className="w-6 h-6 text-blue-600" />
+            <Scale className="w-6 h-6 text-primary" />
             Convertisseurs Universels - Fonctionnalités Détaillées
           </DialogTitle>
           <DialogDescription>
@@ -163,7 +163,7 @@ export const UnitConverterInfoModal: React.FC<UnitConverterInfoModalProps> = ({
                   </Badge>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                  <p className="text-sm text-muted-foreground mb-3">
                     {converter.description}
                   </p>
                   <div className="flex flex-wrap gap-1">
@@ -178,28 +178,28 @@ export const UnitConverterInfoModal: React.FC<UnitConverterInfoModalProps> = ({
             ))}
           </div>
           
-          <Card className="border-2 border-blue-200 bg-blue-50 dark:bg-blue-950 dark:border-blue-800">
+          <Card className="border-2 border-primary/20 bg-primary/5">
             <CardHeader>
-              <CardTitle className="text-blue-800 dark:text-blue-200">
+              <CardTitle className="text-primary">
                 Fonctionnalités Générales
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid gap-2 md:grid-cols-2">
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-blue-600">Standards SI</Badge>
+                  <Badge className="bg-primary text-primary-foreground">Standards SI</Badge>
                   <span className="text-sm">Conformité aux standards internationaux</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-green-600">Temps réel</Badge>
+                  <Badge className="bg-primary text-primary-foreground">Temps réel</Badge>
                   <span className="text-sm">Conversion instantanée pendant la saisie</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-purple-600">Notes explicatives</Badge>
+                  <Badge className="bg-primary text-primary-foreground">Notes explicatives</Badge>
                   <span className="text-sm">Informations détaillées sur chaque unité</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge className="bg-orange-600">Débounce optimisé</Badge>
+                  <Badge className="bg-primary text-primary-foreground">Débounce optimisé</Badge>
                   <span className="text-sm">Performance optimisée pour une saisie fluide</span>
                 </div>
               </div>

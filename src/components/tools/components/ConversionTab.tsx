@@ -91,10 +91,10 @@ export const ConversionTab: React.FC<ConversionTabProps> = ({
   };
 
   return (
-    <Card className="shadow-lg border-2 hover:shadow-xl transition-shadow">
-      <CardHeader className={`bg-gradient-to-r from-${color}-50 to-${color}-100 dark:from-${color}-950/50 dark:to-${color}-900/50`}>
+    <Card className="shadow-lg border-2 hover:shadow-xl transition-shadow bg-card text-card-foreground">
+      <CardHeader className="bg-gradient-to-r from-secondary/50 to-secondary/80">
         <CardTitle className="flex items-center gap-3">
-          <div className={`p-2 bg-${color}-100 dark:bg-${color}-800 rounded-full`}>
+          <div className="p-2 bg-secondary rounded-full">
             {icon}
           </div>
           {title}
@@ -104,7 +104,7 @@ export const ConversionTab: React.FC<ConversionTabProps> = ({
       <CardContent className="p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            <label className="text-sm font-semibold text-muted-foreground">
               Valeur à convertir
             </label>
             <Input
@@ -112,19 +112,19 @@ export const ConversionTab: React.FC<ConversionTabProps> = ({
               placeholder="Entrez une valeur..."
               value={inputValue}
               onChange={(e) => handleInputChange(e.target.value)}
-              className="text-lg font-mono border-2 focus:border-blue-400 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="text-lg font-mono border-2 focus:border-blue-400 bg-background text-foreground"
             />
           </div>
           
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+            <label className="text-sm font-semibold text-muted-foreground">
               Unité source
             </label>
             <Select value={fromUnit} onValueChange={setFromUnit}>
-              <SelectTrigger className="border-2 bg-white dark:bg-gray-800">
+              <SelectTrigger className="border-2 bg-background">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="max-h-60 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
+              <SelectContent className="max-h-60 bg-background border border-border z-50">
                 {Object.entries(units).map(([key, unit]: [string, any]) => (
                   <SelectItem key={key} value={key}>
                     <div className="flex items-center gap-2">
@@ -142,7 +142,7 @@ export const ConversionTab: React.FC<ConversionTabProps> = ({
               variant="outline" 
               size="sm" 
               onClick={swapUnits}
-              className="hover:bg-blue-50 dark:hover:bg-blue-900"
+              className="hover:bg-secondary"
             >
               <ArrowRightLeft className="w-4 h-4" />
             </Button>
@@ -150,14 +150,14 @@ export const ConversionTab: React.FC<ConversionTabProps> = ({
         </div>
         
         <div className="space-y-2">
-          <label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+          <label className="text-sm font-semibold text-muted-foreground">
             Unité cible
           </label>
           <Select value={toUnit} onValueChange={setToUnit}>
-            <SelectTrigger className="border-2 bg-white dark:bg-gray-800">
+            <SelectTrigger className="border-2 bg-background">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="max-h-60 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
+            <SelectContent className="max-h-60 bg-background border border-border z-50">
               {Object.entries(units).map(([key, unit]: [string, any]) => (
                 <SelectItem key={key} value={key}>
                   <div className="flex items-center gap-2">
@@ -170,20 +170,20 @@ export const ConversionTab: React.FC<ConversionTabProps> = ({
           </Select>
         </div>
         
-        <div className={`p-6 bg-gradient-to-r from-${color}-50 to-${color}-100 dark:from-${color}-900/20 dark:to-${color}-800/20 rounded-xl border-2 border-${color}-200 dark:border-${color}-700/50`}>
+        <div className="p-6 bg-gradient-to-r from-secondary/50 to-secondary/80 rounded-xl border-2 border-secondary">
           <div className="flex items-center gap-2 mb-3">
-            <div className={`p-1 bg-${color}-200 dark:bg-${color}-700/50 rounded-full`}>
-              <Info className={`w-4 h-4 text-${color}-600 dark:text-${color}-400`} />
+            <div className="p-1 bg-secondary/80 rounded-full">
+              <Info className="w-4 h-4 text-secondary-foreground" />
             </div>
-            <p className="text-sm font-semibold text-gray-700 dark:text-gray-100">
+            <p className="text-sm font-semibold text-card-foreground">
               Résultat de la conversion
             </p>
           </div>
-          <p className="text-3xl font-bold text-gray-900 dark:text-white font-mono break-all bg-white/50 dark:bg-gray-800/50 p-3 rounded border dark:border-gray-600">
+          <p className="text-3xl font-bold text-foreground font-mono break-all bg-card/50 p-3 rounded border border-border">
             {result} {result && units[toUnit]?.symbol}
           </p>
           {inputValue && result && (
-            <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">
+            <p className="text-sm text-muted-foreground mt-2">
               {inputValue} {units[fromUnit]?.symbol} = {result} {units[toUnit]?.symbol}
             </p>
           )}
@@ -191,7 +191,7 @@ export const ConversionTab: React.FC<ConversionTabProps> = ({
 
         <Alert className="border-amber-200 dark:border-amber-800 bg-amber-50/50 dark:bg-amber-950/20">
           <Info className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-          <AlertDescription className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+          <AlertDescription className="text-sm text-muted-foreground leading-relaxed">
             <div dangerouslySetInnerHTML={{ 
               __html: getDetailedExplanatoryNote(conversionType, fromUnit, toUnit)
             }} />
