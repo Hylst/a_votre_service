@@ -1,5 +1,28 @@
 # Changelog
 
+## [2025-01-13] - Vercel Deployment Fix: SPA Routing
+
+### ✅ Done
+
+#### Correction du Déploiement Vercel
+- **Problème résolu** : Erreur 404 sur les routes client-side lors du déploiement Vercel
+- **Cause** : Absence de configuration vercel.json pour gérer le routage SPA (Single Page Application)
+- **Solution** : Création du fichier vercel.json avec règles de réécriture
+  - Redirection de toutes les routes vers index.html
+  - Configuration du cache pour les assets statiques
+  - Support des fonctions serverless (préparation future)
+
+#### Fichiers Créés
+- `vercel.json` - Configuration Vercel pour le routage SPA
+
+#### Impact
+- **AVANT** : Routes comme /auth causaient une erreur 404 sur Vercel
+- **APRÈS** : Toutes les routes fonctionnent correctement en production
+- **Fonctionnalité** : L'application SPA fonctionne identiquement en local et en production
+- **Performance** : Cache optimisé pour les assets statiques
+
+---
+
 ## [2025-01-13] - Navigation Fixes: Authentication & Profile
 
 ### ✅ Done
