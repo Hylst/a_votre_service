@@ -1,5 +1,64 @@
 # Changelog
 
+## [2025-01-13] - CRITICAL SECURITY FIX: API Keys Hardcoded Removal
+
+### 🚨 URGENT SECURITY PATCH
+
+#### Problème de Sécurité Résolu
+- **Suppression complète des clés API hardcodées** exposées publiquement sur GitHub
+- **Clé API Google compromise** : `` supprimée de tous les fichiers
+- **Mise en conformité sécuritaire** : L'application utilise désormais exclusivement les clés API saisies par l'utilisateur
+
+#### Actions Correctives Effectuées
+
+##### Suppression des Clés API Hardcodées
+- **Fichier `debug-gemini-setup.js`** : Supprimé complètement (contenait une clé API hardcodée)
+- **Fichier `useLLMManager.ts`** : Suppression des clés API hardcodées aux lignes 99 et 185
+  - Remplacement du fallback provider par des messages d'erreur appropriés
+  - Ajout de toasts informatifs pour guider l'utilisateur vers les paramètres
+- **Fichier `.env`** : Suppression de toutes les clés API hardcodées
+  - Variables `GOOGLE_API_KEY`, `GEMINI_API_KEY`, `VITE_GOOGLE_API_KEY`, `VITE_GEMINI_API_KEY`
+
+##### Amélioration de la Sécurité
+- **Mise à jour `.gitignore`** : Ajout de protection pour les fichiers sensibles
+  - `.env`, `.env.local`, `.env.*.local`
+  - Fichiers de clés (`*.key`, `*.pem`, `*.p12`, `*.pfx`)
+  - Dossiers et fichiers de credentials (`secrets/`, `api-keys.json`, `credentials.json`)
+- **Création `.env.example`** : Template avec valeurs placeholder pour les développeurs
+  - Documentation des variables d'environnement requises
+  - Instructions pour obtenir les clés API des différents fournisseurs
+
+##### Vérification du Code
+- **Audit complet** : Recherche exhaustive de toutes les occurrences de clés API hardcodées
+- **Validation** : Confirmation que l'application utilise uniquement les clés saisies par l'utilisateur
+- **Interface utilisateur** : Vérification que le composant `LLMSettings` permet la saisie sécurisée des clés API
+
+#### Impact Sécuritaire
+- **AVANT** : Clés API exposées publiquement sur GitHub, risque d'utilisation malveillante
+- **APRÈS** : Aucune clé API dans le code source, sécurité renforcée
+- **Utilisateurs** : Doivent maintenant configurer leurs propres clés API via l'interface de paramètres
+
+#### Recommandations Post-Correctif
+1. **Révocation immédiate** de la clé API compromise ``
+2. **Génération de nouvelles clés** pour tous les services LLM utilisés
+3. **Configuration utilisateur** : Saisir les nouvelles clés via Paramètres > Configuration LLM
+4. **Surveillance** : Monitoring des accès API pour détecter toute utilisation non autorisée
+
+### 📁 Fichiers Modifiés/Supprimés
+
+#### Fichiers Supprimés
+- `debug-gemini-setup.js` - Contenait une clé API hardcodée
+
+#### Fichiers Modifiés
+- `src/components/tools/productivity/hooks/useLLMManager.ts` - Suppression clés API hardcodées
+- `.env` - Nettoyage complet des clés API
+- `.gitignore` - Ajout protection fichiers sensibles
+
+#### Fichiers Créés
+- `.env.example` - Template sécurisé pour les développeurs
+
+---
+
 ## [2025-01-13] - SEO & Sitemap Implementation
 
 ### ✅ Done

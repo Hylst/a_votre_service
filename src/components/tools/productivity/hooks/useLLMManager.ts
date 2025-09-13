@@ -89,20 +89,10 @@ export const useLLMManager = () => {
   console.log('  - llm_providers exists:', !!localStorage.getItem('llm_providers'));
   console.log('  - llm_api_keys exists:', !!localStorage.getItem('llm_api_keys'));
   
-  // Force create provider immediately if none exists
+  // Check if providers exist in localStorage
   const existingProviders = localStorage.getItem('llm_providers');
   if (!existingProviders) {
-    console.log('🔧 [useLLMManager] No providers in localStorage, creating fallback immediately');
-    const immediateProvider = {
-      id: `immediate-${Date.now()}`,
-      provider: 'google',
-      api_key: 'AIzaSyDSyFgKU1Y4J2soMMRQZMKFazQmci_Mq0k',
-      is_default: true,
-      selected_model: 'gemini-1.5-flash'
-    };
-    localStorage.setItem('llm_providers', JSON.stringify([immediateProvider]));
-    localStorage.setItem('llm_api_keys', JSON.stringify({ google: immediateProvider.api_key }));
-    console.log('✅ [useLLMManager] Immediate fallback provider created');
+    console.log('⚠️ [useLLMManager] No providers in localStorage - user needs to configure API keys');
   }
 
   // Enhanced debugging for user authentication and provider loading
@@ -177,21 +167,13 @@ export const useLLMManager = () => {
     } else {
       console.log('⚠️ [useLLMManager] No providers found in localStorage');
       
-      // Last resort: Create Gemini provider with known API key from LLM config
-      console.log('🔧 [useLLMManager] Creating fallback Gemini provider with configured API key');
-      const fallbackProvider = {
-        id: `fallback-${Date.now()}`,
-        provider: 'google',
-        api_key: 'AIzaSyDSyFgKU1Y4J2soMMRQZMKFazQmci_Mq0k',
-        is_default: true,
-        selected_model: 'gemini-1.5-flash'
-      };
-      setProviders([fallbackProvider]);
-      setDefaultProvider(fallbackProvider);
-      // Save to localStorage for future use
-      localStorage.setItem('llm_providers', JSON.stringify([fallbackProvider]));
-      localStorage.setItem('llm_api_keys', JSON.stringify({ google: fallbackProvider.api_key }));
-      console.log('✅ [useLLMManager] Fallback Gemini provider created and saved');
+      console.log('⚠️ [useLLMManager] No providers found - user must configure API keys in settings');
+      // Show toast to inform user they need to configure API keys
+      toast({
+        title: "Configuration requise",
+        description: "Veuillez configurer vos clés API dans les paramètres pour utiliser les fonctionnalités IA.",
+        variant: "destructive"
+      });
     }
   }, []);
 
