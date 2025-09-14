@@ -1,5 +1,6 @@
 
-import { Calendar, Home, Calculator, CheckSquare, Palette, Heart, FileText, Shield, Settings, Info, User, Database, Briefcase } from "lucide-react";
+import React from 'react';
+import { Calendar, Home, Calculator, CheckSquare, Palette, Heart, FileText, Shield, Settings, Info, Database, Briefcase } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -22,7 +23,6 @@ interface AppSidebarProps {
 }
 
 export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps) => {
-  const { user } = useAuth();
   const { setOpenMobile, isMobile } = useSidebar();
   const navigate = useNavigate();
 
@@ -52,13 +52,12 @@ export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps)
     { id: "health-wellness-suite", label: "Santé", icon: Heart },
     { id: "text-utils-advanced", label: "Utilitaires Texte", icon: FileText },
     { id: "settings", label: "Paramètres", icon: Settings },
-    { id: "profile", label: "Mon Profil", icon: User },
     { id: "data-manager", label: "Gestion Données", icon: Database },
     { id: "about", label: "À propos", icon: Info },
   ];
 
-  // Filtrer les éléments selon l'état de connexion de l'utilisateur
-  const filteredMenuItems = user ? menuItems : menuItems.filter(item => item.id !== "profile");
+  // Tous les éléments du menu sont maintenant disponibles (profil retiré de la sidebar)
+  const filteredMenuItems = menuItems;
 
   return (
     <Sidebar collapsible="icon">

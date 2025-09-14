@@ -810,24 +810,8 @@ IMPORTANT: Réponds UNIQUEMENT avec le JSON, aucun texte avant ou après !`;
     return data.choices[0]?.message?.content || '';
   };
 
-  // Debug logs pour hasConfiguredProvider avec validation API key
+  // Check if we have a configured provider with valid API key
   const hasConfiguredProvider = !!defaultProvider && !!defaultProvider.api_key && defaultProvider.api_key.trim() !== '';
-  console.log('🔍 [useLLMManager] hasConfiguredProvider:', hasConfiguredProvider);
-  console.log('🔍 [useLLMManager] defaultProvider:', defaultProvider ? `${defaultProvider.provider} (${defaultProvider.selected_model})` : 'null');
-  console.log('🔍 [useLLMManager] defaultProvider API key:', defaultProvider?.api_key ? `${defaultProvider.api_key.substring(0, 10)}...` : 'null');
-  console.log('🔍 [useLLMManager] providers count:', providers.length);
-  
-  // Debug détaillé de tous les providers
-  providers.forEach((provider, index) => {
-    console.log(`🔍 [useLLMManager] Provider ${index + 1}:`, {
-      id: provider.id,
-      provider: provider.provider,
-      hasApiKey: !!provider.api_key,
-      apiKeyLength: provider.api_key?.length || 0,
-      isDefault: provider.is_default,
-      selectedModel: provider.selected_model
-    });
-  });
 
   // Manual reload functions for testing
   const reloadProviders = useCallback(() => {

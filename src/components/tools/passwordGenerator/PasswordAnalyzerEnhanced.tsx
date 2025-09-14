@@ -3,8 +3,8 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Shield, Clock, AlertTriangle, CheckCircle, XCircle, Search, Copy, Eye, EyeOff } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Shield, Clock, AlertTriangle, CheckCircle, XCircle, Search, Copy, Eye, EyeOff, Zap, Hash, Shuffle, Info } from "lucide-react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 
 interface PasswordStrength {
@@ -53,12 +53,13 @@ export const PasswordAnalyzerEnhanced = ({
     }
   }, [password]);
 
-  useEffect(() => {
-    if (inputPassword) {
+  // Memoize the analysis function to prevent unnecessary re-renders
+  const performAnalysis = useCallback((passwordToAnalyze: string) => {
+    if (passwordToAnalyze) {
       setIsAnalyzing(true);
       // Simulate analysis delay for better UX
       const timer = setTimeout(() => {
-        const result = analyzeStrength(inputPassword);
+        const result = analyzeStrength(passwordToAnalyze);
         setAnalysis(result);
         setIsAnalyzing(false);
       }, 200);
@@ -67,28 +68,32 @@ export const PasswordAnalyzerEnhanced = ({
       setAnalysis(null);
       setIsAnalyzing(false);
     }
-  }, [inputPassword, analyzeStrength]);
+  }, [analyzeStrength]);
 
-  const handleCopyPassword = () => {
+  useEffect(() => {
+    return performAnalysis(inputPassword);
+  }, [inputPassword, performAnalysis]);
+
+  const handleCopyPassword = useCallback(() => {
     if (inputPassword) {
       navigator.clipboard.writeText(inputPassword);
       toast.success("Mot de passe copié !");
     }
-  };
+  }, [inputPassword]);
 
-  const getScoreColor = (score: number) => {
+  const getScoreColor = useCallback((score: number) => {
     if (score >= 80) return "text-green-600 bg-green-100 dark:bg-green-900/20";
     if (score >= 60) return "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/20";
     if (score >= 40) return "text-orange-600 bg-orange-100 dark:bg-orange-900/20";
     return "text-red-600 bg-red-100 dark:bg-red-900/20";
-  };
+  }, []);
 
-  const getProgressColor = (score: number) => {
+  const getProgressColor = useCallback((score: number) => {
     if (score >= 80) return "bg-green-500";
     if (score >= 60) return "bg-yellow-500";
     if (score >= 40) return "bg-orange-500";
     return "bg-red-500";
-  };
+  }, []);
 
   return (
     <div className={`space-y-6 ${className}`}>
@@ -101,40 +106,49 @@ export const PasswordAnalyzerEnhanced = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-2">
-            <div className="relative flex-1">
-              <Input
-                type={showPassword ? "text" : "password"}
-                value={inputPassword}
-                onChange={(e) => setInputPassword(e.target.value)}
-                placeholder="Entrez un mot de passe à analyser..."
-                className="pr-20"
-              />
-              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="h-8 w-8 p-0"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </Button>
-                {inputPassword && (
+          <form onSubmit={(e) => e.preventDefault()}>
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  value={inputPassword}
+                  onChange={(e) => setInputPassword(e.target.value)}
+                  placeholder="Entrez un mot de passe à analyser..."
+                  className="pr-20"
+                  autoComplete="new-password"
+                />
+                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
                   <Button
+                    type="button"
                     size="sm"
                     variant="ghost"
-                    onClick={handleCopyPassword}
+                    onClick={() => setShowPassword(!showPassword)}
                     className="h-8 w-8 p-0"
                   >
-                    <Copy className="w-4 h-4" />
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </Button>
-                )}
+                  {inputPassword && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={handleCopyPassword}
+                      className="h-8 w-8 p-0"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          </form>
           {inputPassword && (
-            <div className="text-sm text-muted-foreground">
-              Longueur: {inputPassword.length} caractères
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <span>Longueur: {inputPassword.length} caractères</span>
+              <div className="flex items-center gap-2">
+                <span>Analyse en temps réel</span>
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              </div>
             </div>
           )}
         </CardContent>
@@ -196,27 +210,36 @@ export const PasswordAnalyzerEnhanced = ({
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-muted/50 rounded-lg p-3 text-center">
+                <div className="bg-muted/50 rounded-lg p-3 text-center hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-center gap-2 mb-1">
                     <Clock className="w-4 h-4 text-primary" />
                   </div>
                   <div className="text-xs text-muted-foreground mb-1">Temps de cassage</div>
                   <div className="text-sm font-medium">{analysis.crackTime}</div>
                 </div>
-                <div className="bg-muted/50 rounded-lg p-3 text-center">
+                <div className="bg-muted/50 rounded-lg p-3 text-center hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-center gap-2 mb-1">
                     <Shield className="w-4 h-4 text-primary" />
                   </div>
                   <div className="text-xs text-muted-foreground mb-1">Entropie</div>
                   <div className="text-sm font-medium">{analysis.entropy} bits</div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    {analysis.entropy >= 60 ? 'Excellent' : analysis.entropy >= 40 ? 'Bon' : 'Faible'}
+                  </div>
                 </div>
-                <div className="bg-muted/50 rounded-lg p-3 text-center">
+                <div className="bg-muted/50 rounded-lg p-3 text-center hover:shadow-md transition-shadow">
                   <div className="text-xs text-muted-foreground mb-1">Longueur</div>
                   <div className="text-sm font-medium">{analysis.details.length} chars</div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    {analysis.details.length >= 12 ? 'Recommandé' : 'Trop court'}
+                  </div>
                 </div>
-                <div className="bg-muted/50 rounded-lg p-3 text-center">
+                <div className="bg-muted/50 rounded-lg p-3 text-center hover:shadow-md transition-shadow">
                   <div className="text-xs text-muted-foreground mb-1">Variété</div>
                   <div className="text-sm font-medium">{analysis.details.characterVariety}/4</div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    {analysis.details.characterVariety === 4 ? 'Parfait' : 'Peut être amélioré'}
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -377,12 +400,35 @@ export const PasswordAnalyzerEnhanced = ({
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {analysis.feedback.map((tip, index) => (
-                    <div key={index} className="flex items-start gap-3 p-3 bg-primary/5 rounded-lg">
-                      <div className="w-2 h-2 bg-primary rounded-full mt-2" />
-                      <span className="text-sm">{tip}</span>
+                  {analysis.feedback.map((feedback, index) => (
+                    <div key={index} className="flex items-start gap-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                      <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                          {feedback}
+                        </div>
+                        {index === 0 && analysis.score < 60 && (
+                          <div className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">
+                            Conseil: Utilisez le générateur pour créer un mot de passe plus sécurisé
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))}
+                </div>
+                
+                {/* Conseils de sécurité supplémentaires */}
+                <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <h4 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2 flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Conseils de sécurité
+                  </h4>
+                  <ul className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                    <li>• Utilisez un gestionnaire de mots de passe</li>
+                    <li>• Activez l'authentification à deux facteurs</li>
+                    <li>• Ne réutilisez jamais le même mot de passe</li>
+                    <li>• Changez vos mots de passe régulièrement</li>
+                  </ul>
                 </div>
               </CardContent>
             </Card>

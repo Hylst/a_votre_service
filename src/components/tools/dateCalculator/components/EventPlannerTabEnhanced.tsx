@@ -8,8 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Calendar, Clock, MapPin, Tag, Plus, Edit, Trash2, Download, Upload, Wifi, WifiOff, RefreshCw, BarChart3 } from 'lucide-react';
-import { useEventPlannerUnified, type Event } from '../hooks/useEventPlannerUnified';
+import { Calendar, Clock, MapPin, Tag, Plus, Edit, Trash2, Download, Upload, BarChart3, RefreshCw } from 'lucide-react';
+import { useEventPlannerLocal, type Event } from '../hooks/useEventPlannerLocal';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
@@ -21,16 +21,12 @@ const EventPlannerTabEnhanced: React.FC = () => {
     stats,
     userSettings,
     isLoading,
-    isSyncing,
-    lastSyncTime,
     addEvent,
     updateEvent,
     deleteEvent,
-    toggleOfflineMode,
-    syncWithSupabase,
     exportData,
     importData
-  } = useEventPlannerUnified();
+  } = useEventPlannerLocal();
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
@@ -328,29 +324,7 @@ const EventPlannerTabEnhanced: React.FC = () => {
               </DialogContent>
             </Dialog>
 
-            <div className="flex items-center space-x-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={toggleOfflineMode}
-                className={userSettings.offlineMode ? "bg-orange-100" : "bg-green-100"}
-              >
-                {userSettings.offlineMode ? <WifiOff className="w-4 h-4 mr-2" /> : <Wifi className="w-4 h-4 mr-2" />}
-                {userSettings.offlineMode ? 'Hors ligne' : 'En ligne'}
-              </Button>
 
-              {!userSettings.offlineMode && (
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={syncWithSupabase}
-                  disabled={isSyncing}
-                >
-                  <RefreshCw className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
-                  Synchroniser
-                </Button>
-              )}
-            </div>
 
             <Button variant="outline" size="sm" onClick={exportData}>
               <Download className="w-4 h-4 mr-2" />
@@ -374,11 +348,7 @@ const EventPlannerTabEnhanced: React.FC = () => {
             </div>
           </div>
 
-          {lastSyncTime && (
-            <p className="text-xs text-muted-foreground mt-2">
-              Dernière synchronisation: {new Date(lastSyncTime).toLocaleString()}
-            </p>
-          )}
+
         </CardContent>
       </Card>
 

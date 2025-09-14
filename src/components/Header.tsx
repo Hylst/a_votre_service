@@ -9,9 +9,10 @@ import { UnitConverterInfoModal } from "@/components/modals/UnitConverterInfoMod
 import { CalculatorInfoModal } from "@/components/modals/CalculatorInfoModal";
 import { ProductivityInfoModal } from "@/components/modals/ProductivityInfoModal";
 import { CreativityInfoModal } from "@/components/modals/CreativityInfoModal";
+import { ProfileModal } from "@/components/modals/ProfileModal";
 
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -22,10 +23,29 @@ interface HeaderProps {
 export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  
+  // Debug: Log user state changes in Header
+  useEffect(() => {
+    console.log('🔄 Header re-rendered - User state:', user ? 'logged in' : 'not logged in', user);
+    
+    // Debug localStorage state
+    const currentUser = localStorage.getItem('currentUser');
+    const localUsers = localStorage.getItem('localUsers');
+    console.log('🔍 localStorage currentUser:', currentUser);
+    console.log('🔍 localStorage localUsers:', localUsers);
+  }, [user]);
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
   const [isCalculatorInfoModalOpen, setIsCalculatorInfoModalOpen] = useState(false);
   const [isProductivityInfoModalOpen, setIsProductivityInfoModalOpen] = useState(false);
   const [isCreativityInfoModalOpen, setIsCreativityInfoModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  
+  // Debug: Log ProfileModal state changes
+  useEffect(() => {
+    console.log('📋 Header: ProfileModal state changed to:', isProfileModalOpen);
+    console.log('📋 Header: User state:', user ? 'User exists' : 'No user');
+    console.log('📋 Header: User object:', user);
+  }, [isProfileModalOpen, user]);
 
   
   const getSectionTitle = () => {
@@ -174,7 +194,9 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
           <ThemeToggle />
           
           {user ? (
-            <UserMenu onProfileClick={() => setActiveSection('profile')} />
+            <UserMenu onProfileClick={() => {
+              setIsProfileModalOpen(true);
+            }} />
           ) : (
             <Button 
               variant="outline" 
@@ -202,6 +224,13 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
       <CreativityInfoModal 
         isOpen={isCreativityInfoModalOpen} 
         onClose={() => setIsCreativityInfoModalOpen(false)} 
+      />
+      <ProfileModal 
+        isOpen={isProfileModalOpen} 
+        onClose={() => {
+          console.log('📋 Header: Closing ProfileModal');
+          setIsProfileModalOpen(false);
+        }} 
       />
 
     </header>

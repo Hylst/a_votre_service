@@ -8,8 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Loader2, Mail, Lock, User, ArrowLeft } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { Loader2, Lock, User, ArrowLeft } from 'lucide-react';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,11 +17,10 @@ const Auth = () => {
   const [activeTab, setActiveTab] = useState('login');
   
   // Form states
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   
-  const { user } = useAuth();
+  const { user, signIn } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,14 +35,17 @@ const Auth = () => {
     setError('');
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
+      // Simuler un délai de connexion
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Navigation automatique gérée par useEffect
+      // Utiliser la méthode signIn du contexte d'authentification
+      const { error } = await signIn(fullName, password);
+      
+      if (error) {
+        throw error;
+      }
+      
+      // La navigation se fera automatiquement via useEffect quand user change
     } catch (error: any) {
       setError(error.message || 'Erreur lors de la connexion');
     } finally {
@@ -59,26 +60,29 @@ const Auth = () => {
     setSuccess('');
     
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            full_name: fullName,
-          }
-        }
-      });
-
-      if (error) throw error;
+      // Vérifier si l'utilisateur existe déjà
+      const users = JSON.parse(localStorage.getItem('localUsers') || '[]');
+      const existingUser = users.find((u: any) => u.fullName === fullName);
       
-      setSuccess('Vérifiez votre email pour confirmer votre compte !');
-    } catch (error: any) {
-      if (error.message.includes('already registered')) {
-        setError('Cette adresse email est déjà utilisée. Essayez de vous connecter.');
-      } else {
-        setError(error.message || 'Erreur lors de l\'inscription');
+      if (existingUser) {
+        throw new Error('Ce nom d\'utilisateur est déjà utilisé.');
       }
+      
+      // Créer un nouvel utilisateur local
+      const newUser = {
+        id: Date.now().toString(),
+        fullName,
+        password,
+        createdAt: new Date().toISOString()
+      };
+      
+      users.push(newUser);
+      localStorage.setItem('localUsers', JSON.stringify(users));
+      
+      setSuccess('Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
+      setActiveTab('login');
+    } catch (error: any) {
+      setError(error.message || 'Erreur lors de l\'inscription');
     } finally {
       setIsLoading(false);
     }
@@ -100,7 +104,7 @@ const Auth = () => {
             à votre service
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            Connectez-vous pour synchroniser vos données
+            Accédez à vos outils personnalisés
           </p>
         </div>
 
@@ -108,7 +112,7 @@ const Auth = () => {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Authentification</CardTitle>
             <CardDescription>
-              Accédez à tous vos outils et synchronisez vos données
+              Accédez à tous vos outils personnalisés
             </CardDescription>
           </CardHeader>
           
@@ -134,18 +138,18 @@ const Auth = () => {
               <TabsContent value="login" className="space-y-4 mt-6">
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="login-email" className="flex items-center gap-2">
-                      <Mail className="w-4 h-4" />
-                      Email
+                    <Label htmlFor="login-name" className="flex items-center gap-2">
+                      <User className="w-4 h-4" />
+                      Nom complet
                     </Label>
                     <Input
-                      id="login-email"
-                      type="email"
-                      placeholder="votre@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      id="login-name"
+                      type="text"
+                      placeholder="Votre nom complet"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
                       required
-                      autoComplete="email"
+                      autoComplete="name"
                       disabled={isLoading}
                     />
                   </div>
@@ -203,22 +207,7 @@ const Auth = () => {
                     />
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email" className="flex items-center gap-2">
-                      <Mail className="w-4 h-4" />
-                      Email
-                    </Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="votre@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      autoComplete="email"
-                      disabled={isLoading}
-                    />
-                  </div>
+
                   
                   <div className="space-y-2">
                     <Label htmlFor="signup-password" className="flex items-center gap-2">

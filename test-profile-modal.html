@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test ProfileModal Functionality</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .danger {
+            background-color: #dc3545;
+        }
+        .danger:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 ProfileModal Functionality Test</h1>
+    
+    <div class="test-container">
+        <h2>Test User Setup for ProfileModal</h2>
+        <button onclick="createTestUser()">Create Test User in localStorage</button>
+        <button onclick="clearTestUser()" class="danger">Clear User from localStorage</button>
+        <div id="userSetupResult"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>ProfileModal Test Instructions</h2>
+        <div class="info">
+            <p><strong>Manual Test Steps:</strong></p>
+            <ol>
+                <li>Click "Create Test User" above to ensure user data exists</li>
+                <li>Open the main application: <a href="http://localhost:5184/" target="_blank">http://localhost:5184/</a></li>
+                <li>Look for the user avatar in the top-right header (should show "TU" initials)</li>
+                <li>Click on the user avatar to open the dropdown menu</li>
+                <li>Click on "Profil" menu item</li>
+                <li>Verify that the ProfileModal opens with the debug alert</li>
+                <li>Test the form functionality (name, email, avatar selection)</li>
+                <li>Test saving the profile data</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Automated ProfileModal Tests</h2>
+        <button onclick="testProfileModalElements()">Test ProfileModal Elements</button>
+        <button onclick="testLocalStorageIntegration()">Test localStorage Integration</button>
+        <div id="automatedTestResults"></div>
+    </div>
+
+    <script>
+        function createTestUser() {
+            const testUser = {
+                id: 'test-user-123',
+                email: 'test@example.com',
+                name: 'Test User',
+                avatar: 'https://via.placeholder.com/40',
+                createdAt: new Date().toISOString()
+            };
+            
+            try {
+                localStorage.setItem('currentUser', JSON.stringify(testUser));
+                document.getElementById('userSetupResult').innerHTML = `
+                    <div class="test-result success">
+                        <strong>✅ Test user created successfully!</strong><br><br>
+                        <pre>${JSON.stringify(testUser, null, 2)}</pre>
+                    </div>
+                `;
+                console.log('✅ Test user created:', testUser);
+            } catch (error) {
+                document.getElementById('userSetupResult').innerHTML = `
+                    <div class="test-result error">
+                        <strong>❌ Failed to create test user:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+                console.error('❌ Failed to create test user:', error);
+            }
+        }
+
+        function clearTestUser() {
+            try {
+                localStorage.removeItem('currentUser');
+                document.getElementById('userSetupResult').innerHTML = `
+                    <div class="test-result info">
+                        <strong>🗑️ Test user cleared from localStorage</strong>
+                    </div>
+                `;
+                console.log('🗑️ Test user cleared');
+            } catch (error) {
+                document.getElementById('userSetupResult').innerHTML = `
+                    <div class="test-result error">
+                        <strong>❌ Failed to clear test user:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+                console.error('❌ Failed to clear test user:', error);
+            }
+        }
+
+        function testProfileModalElements() {
+            const results = [];
+            
+            // Test if user data exists
+            const userData = localStorage.getItem('currentUser');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    results.push(`✅ User data found: ${user.name} (${user.email})`);
+                } catch (error) {
+                    results.push(`❌ Invalid user data in localStorage: ${error.message}`);
+                }
+            } else {
+                results.push(`⚠️ No user data found in localStorage`);
+            }
+            
+            // Test localStorage functionality
+            try {
+                const testKey = 'profileModal_test_' + Date.now();
+                const testValue = { test: 'data' };
+                localStorage.setItem(testKey, JSON.stringify(testValue));
+                const retrieved = JSON.parse(localStorage.getItem(testKey));
+                localStorage.removeItem(testKey);
+                
+                if (retrieved && retrieved.test === 'data') {
+                    results.push(`✅ localStorage read/write functionality working`);
+                } else {
+                    results.push(`❌ localStorage read/write test failed`);
+                }
+            } catch (error) {
+                results.push(`❌ localStorage test error: ${error.message}`);
+            }
+            
+            document.getElementById('automatedTestResults').innerHTML = `
+                <div class="test-result info">
+                    <strong>ProfileModal Elements Test Results:</strong><br><br>
+                    ${results.map(result => `• ${result}`).join('<br>')}
+                </div>
+            `;
+        }
+
+        function testLocalStorageIntegration() {
+            const results = [];
+            
+            try {
+                // Test profile data structure
+                const currentUser = localStorage.getItem('currentUser');
+                if (currentUser) {
+                    const user = JSON.parse(currentUser);
+                    const requiredFields = ['id', 'email', 'name'];
+                    const missingFields = requiredFields.filter(field => !user[field]);
+                    
+                    if (missingFields.length === 0) {
+                        results.push(`✅ All required user fields present`);
+                    } else {
+                        results.push(`❌ Missing required fields: ${missingFields.join(', ')}`);
+                    }
+                    
+                    // Test avatar field
+                    if (user.avatar) {
+                        results.push(`✅ Avatar field present: ${user.avatar}`);
+                    } else {
+                        results.push(`⚠️ Avatar field missing (optional)`);
+                    }
+                    
+                    // Test date field
+                    if (user.createdAt) {
+                        const date = new Date(user.createdAt);
+                        if (!isNaN(date.getTime())) {
+                            results.push(`✅ Valid createdAt date: ${user.createdAt}`);
+                        } else {
+                            results.push(`❌ Invalid createdAt date format`);
+                        }
+                    } else {
+                        results.push(`⚠️ createdAt field missing`);
+                    }
+                } else {
+                    results.push(`❌ No user data found for integration test`);
+                }
+                
+            } catch (error) {
+                results.push(`❌ localStorage integration test error: ${error.message}`);
+            }
+            
+            document.getElementById('automatedTestResults').innerHTML = `
+                <div class="test-result info">
+                    <strong>localStorage Integration Test Results:</strong><br><br>
+                    ${results.map(result => `• ${result}`).join('<br>')}
+                </div>
+            `;
+        }
+
+        // Auto-run basic tests on page load
+        window.addEventListener('load', function() {
+            console.log('🧪 ProfileModal test page loaded');
+            testProfileModalElements();
+        });
+    </script>
+</body>
+</html>

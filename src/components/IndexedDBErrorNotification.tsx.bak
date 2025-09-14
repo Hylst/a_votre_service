@@ -1,0 +1,219 @@
+/**
+ * IndexedDBErrorNotification.tsx
+ * Component for displaying IndexedDB errors and providing recovery options
+ */
+
+import React, { useEffect, useState } from 'react';
+import { AlertTriangle, RefreshCw, X, Info, CheckCircle, Tabs, Database } from 'lucide-react';
+import { toast } from 'sonner';
+
+interface IndexedDBError {
+  type: 'blocked' | 'version_error' | 'quota_exceeded' | 'unknown';
+  message: string;
+  retryable: boolean;
+}
+
+interface ErrorState {
+  isBlocked: boolean;
+  lastError: IndexedDBError | null;
+  retryCount: number;
+  hasMultipleTabs: boolean;
+}
+
+interface IndexedDBErrorState {
+  type: 'blocked' | 'version_conflict' | 'quota_exceeded' | 'unknown';
+  message: string;
+  timestamp: number;
+  retryCount: number;
+}
+
+interface IndexedDBErrorNotificationProps {
+  initialError?: IndexedDBErrorState | null;
+}
+
+/**
+ * Enhanced IndexedDB Error Notification Component
+ * 
+ * Provides comprehensive error handling and user guidance for IndexedDB issues
+ * including blocked upgrades, quota exceeded, and version conflicts.
+ * 
+ * Features:
+ * - Automatic retry mechanisms
+ * - Multiple tab detection
+ * - User-friendly error messages
+ * - Detailed troubleshooting suggestions
+ * - Toast notifications for status updates
+ */
+const IndexedDBErrorNotification: React.FC<IndexedDBErrorNotificationProps> = ({
+  initialError = null
+}) => {
+  const [error, setError] = useState<IndexedDBErrorState | null>(initialError);
+  const [isVisible, setIsVisible] = useState(!!initialError);
+  const [isRetrying, setIsRetrying] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+
+  // Handle initialError changes
+  useEffect(() => {
+    if (initialError) {
+      setError(initialError);
+      setIsVisible(true);
+    }
+  }, [initialError]);
+
+  useEffect(() => {
+    const handleIndexedDBError = (event: CustomEvent<IndexedDBErrorState>) => {
+      console.log('🔴 IndexedDB Error received:', event.detail);
+      setError(event.detail);
+      setIsVisible(true);
+      
+      // Show toast notification
+      toast.error(`IndexedDB Error: ${event.detail.message}`, {
+        duration: 5000,
+        action: {
+          label: 'Retry',
+          onClick: handleRetry
+        }
+      });
+    };
+
+    // Listen for IndexedDB errors
+    window.addEventListener('indexeddb-error', handleIndexedDBError as EventListener);
+    
+    return () => {
+      window.removeEventListener('indexeddb-error', handleIndexedDBError as EventListener);
+    };
+  }, []);
+
+  const handleRetry = async () => {
+    if (!error) return;
+    
+    setIsRetrying(true);
+    try {
+      // Trigger a page reload to reinitialize IndexedDB
+      window.location.reload();
+    } catch (retryError) {
+      toast.error('Retry failed', {
+        description: 'Please try again or contact support.'
+      });
+      setIsRetrying(false);
+    }
+  };
+
+  const handleClearError = () => {
+    setError(null);
+    setIsVisible(false);
+    toast.info('Error notification cleared', {
+      description: 'You can retry the operation manually if needed.'
+    });
+  };
+
+  const getErrorIcon = (type: IndexedDBErrorState['type']) => {
+    switch (type) {
+      case 'blocked':
+        return <Tabs className="h-4 w-4" />;
+      case 'version_conflict':
+        return <Database className="h-4 w-4" />;
+      case 'quota_exceeded':
+        return <AlertTriangle className="h-4 w-4" />;
+      default:
+        return <AlertTriangle className="h-4 w-4" />;
+    }
+  };
+
+  const getErrorColor = (type: IndexedDBErrorState['type']) => {
+    switch (type) {
+      case 'blocked':
+        return 'border-yellow-500 bg-yellow-50 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200';
+      case 'version_conflict':
+        return 'border-blue-500 bg-blue-50 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200';
+      case 'quota_exceeded':
+        return 'border-red-500 bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-200';
+      default:
+        return 'border-gray-500 bg-gray-50 text-gray-800 dark:bg-gray-900/20 dark:text-gray-200';
+    }
+  };
+
+  const getErrorSuggestion = (type: IndexedDBErrorState['type']) => {
+    switch (type) {
+      case 'blocked':
+        return 'Close other browser tabs using this application and try again.';
+      case 'version_conflict':
+        return 'Refresh the page to update the database schema.';
+      case 'quota_exceeded':
+        return 'Clear browser data or free up storage space.';
+      default:
+        return 'Try refreshing the page or contact support if the issue persists.';
+    }
+  };
+
+
+
+  // Don't render if no error or not visible
+  if (!error || !isVisible) {
+    return null;
+  }
+
+  return (
+    <div className="fixed top-4 right-4 z-50 max-w-md">
+      <div className={`rounded-lg border-2 p-4 shadow-lg transition-all duration-300 ${getErrorColor(error.type)}`}>
+        <div className="flex items-start justify-between">
+          <div className="flex items-center space-x-3">
+            {getErrorIcon(error.type)}
+            <div className="flex-1">
+              <h3 className="font-semibold text-sm">
+                IndexedDB {error.type === 'blocked' ? 'Blocked' : 
+                         error.type === 'quota_exceeded' ? 'Storage Full' : 
+                         error.type === 'version_conflict' ? 'Version Conflict' : 'Error'}
+              </h3>
+              <p className="text-xs mt-1 opacity-90">
+                {error.message}
+              </p>
+            </div>
+          </div>
+          
+          <button
+            onClick={handleClearError}
+            className="ml-2 p-1 rounded-full hover:bg-black/10 transition-colors"
+            aria-label="Close notification"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        {/* Action buttons */}
+        <div className="mt-3 flex items-center justify-between">
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            className="text-xs underline hover:no-underline transition-all"
+          >
+            {showDetails ? 'Hide' : 'Show'} Details
+          </button>
+          
+          <div className="flex space-x-2">
+            <button
+              onClick={handleRetry}
+              disabled={isRetrying}
+              className="flex items-center space-x-1 px-3 py-1 bg-white/20 hover:bg-white/30 rounded text-xs font-medium transition-colors disabled:opacity-50"
+            >
+              <RefreshCw className={`h-3 w-3 ${isRetrying ? 'animate-spin' : ''}`} />
+              <span>{isRetrying ? 'Retrying...' : 'Retry'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Error details */}
+        {showDetails && (
+          <div className="mt-3 pt-3 border-t border-current/20">
+            <div className="text-xs space-y-1">
+              <p><strong>Suggestion:</strong> {getErrorSuggestion(error.type)}</p>
+              <p><strong>Retry Count:</strong> {error.retryCount}</p>
+              <p><strong>Timestamp:</strong> {new Date(error.timestamp).toLocaleTimeString()}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default IndexedDBErrorNotification;

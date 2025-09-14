@@ -58,3 +58,6 @@ export const ProductivitySuiteModular = () => {
     </div>
   );
 };
+
+// Add default export for React lazy loading compatibility
+export default ProductivitySuiteModular;

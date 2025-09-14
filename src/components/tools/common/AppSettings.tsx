@@ -1,8 +1,8 @@
 
 /**
- * AppSettings.tsx - Application Settings Component
- * Manages user preferences for data storage modes (Local vs Supabase)
- * and synchronization settings with improved UI and terminology
+ * AppSettings.tsx - Local Application Settings Component
+ * Manages user preferences for local storage only (no backend)
+ * Handles theme, display preferences, and data export/import
  */
 
 import { useState, useEffect } from 'react';
@@ -10,194 +10,115 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Settings, Cloud, CloudOff, Wifi, WifiOff, Loader2, RefreshCw, Database, HardDrive, CheckCircle, XCircle } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
+import { Settings, Download, Upload, Palette, Monitor, Sun, Moon, HardDrive, FileText, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useUnifiedDexieManager } from '@/hooks/useUnifiedDexieManager';
-import { useNetworkStatus } from '@/hooks/useNetworkStatus';
+import { useTheme } from 'next-themes';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 /**
- * User application settings interface
- * @interface UserAppSettings
- * @property {boolean} local_mode - True for local-only storage, false for Supabase sync
- * @property {boolean} sync_enabled - Enable automatic synchronization (only applies in Supabase mode)
- * @property {string} last_sync - ISO timestamp of last successful sync
+ * Local application settings interface
+ * @interface LocalAppSettings
+ * @property {string} theme - Theme preference: 'light', 'dark', or 'system'
+ * @property {boolean} auto_save - Enable automatic saving of data
+ * @property {boolean} compact_view - Use compact view for lists
+ * @property {boolean} show_notifications - Show toast notifications
+ * @property {string} language - Application language
+ * @property {string} last_backup - ISO timestamp of last data backup
  */
-interface UserAppSettings {
-  local_mode: boolean;  // Renamed from offline_mode for clarity
-  sync_enabled: boolean;
-  last_sync?: string;
+interface LocalAppSettings {
+  theme: 'light' | 'dark' | 'system';
+  auto_save: boolean;
+  compact_view: boolean;
+  show_notifications: boolean;
+  language: 'fr' | 'en';
+  last_backup?: string;
 }
 
 /**
- * AppSettings Component - Main settings management component
- * Handles local vs Supabase storage modes with improved UX
+ * AppSettings Component - Local settings management
+ * Handles theme, preferences, and data management for local-only app
  */
 export const AppSettings = () => {
-  const { user } = useAuth();
   const { toast } = useToast();
-  const { exportAllData } = useUnifiedDexieManager();
+  const { theme, setTheme } = useTheme();
   
-  // Initialize with local mode as default (as requested by user)
-  const [settings, setSettings] = useState<UserAppSettings>({
-    local_mode: true,  // Default to local mode
-    sync_enabled: false  // Disabled by default in local mode
+  // Initialize with default local settings
+  const [settings, setSettings] = useState<LocalAppSettings>({
+    theme: 'system',
+    auto_save: true,
+    compact_view: false,
+    show_notifications: true,
+    language: 'fr'
   });
-  const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
-  
-  // Enhanced network connectivity detection with actual network testing
-  // This replaces the unreliable navigator.onLine with real connectivity checks
-  const { isOnline, isConnecting, lastChecked, checkNow, isReliable } = useNetworkStatus({
-    checkInterval: 30000, // Check every 30 seconds
-    timeout: 5000 // 5 second timeout for network tests
-  });
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
 
   /**
-   * Load user settings from Supabase with localStorage fallback
-   * Maintains backward compatibility with old property names
+   * Load user settings from localStorage on component mount
    */
   useEffect(() => {
-    const loadSettings = async () => {
-      // Always try to load from localStorage first
-      const localSettings = localStorage.getItem('app_settings');
-      if (localSettings) {
-        try {
+    const loadSettings = () => {
+      try {
+        const localSettings = localStorage.getItem('app_settings');
+        if (localSettings) {
           const parsed = JSON.parse(localSettings);
           setSettings({
-            local_mode: parsed.local_mode ?? parsed.offline_mode ?? true,  // Backward compatibility
-            sync_enabled: parsed.sync_enabled ?? false,
-            last_sync: parsed.last_sync
+            theme: parsed.theme || 'system',
+            auto_save: parsed.auto_save ?? true,
+            compact_view: parsed.compact_view ?? false,
+            show_notifications: parsed.show_notifications ?? true,
+            language: parsed.language || 'fr',
+            last_backup: parsed.last_backup
           });
-        } catch (error) {
-          console.error('Error parsing local settings:', error);
-        }
-      }
-
-      // If user is logged in, try to load from Supabase
-      if (!user) {
-        setIsLoading(false);
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('user_app_settings')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (error && error.code !== 'PGRST116') {
-          console.error('Erreur lors du chargement des paramètres:', error);
-          return;
-        }
-
-        if (data) {
-          const loadedSettings = {
-            local_mode: data.local_mode ?? data.offline_mode ?? true,  // Backward compatibility
-            sync_enabled: data.sync_enabled ?? false,
-            last_sync: data.last_sync || undefined
-          };
-          setSettings(loadedSettings);
           
-          // Also save to localStorage for faster access
-          localStorage.setItem('app_settings', JSON.stringify(loadedSettings));
+          // Apply theme if different from current
+          if (parsed.theme && parsed.theme !== theme) {
+            setTheme(parsed.theme);
+          }
         }
       } catch (error) {
-        console.error('Erreur lors du chargement des paramètres:', error);
-      } finally {
-        setIsLoading(false);
+        console.error('Error loading settings:', error);
+        toast({
+          title: "Erreur de chargement",
+          description: "Impossible de charger les paramètres",
+          variant: "destructive",
+        });
       }
     };
 
     loadSettings();
-  }, [user]);
+  }, [theme, setTheme, toast]);
 
   /**
-   * Save settings to localStorage first, then to Supabase if in Supabase mode
-   * This ensures data is always saved locally before attempting remote sync
+   * Save settings to localStorage
    */
-  const saveSettings = async (newSettings: Partial<UserAppSettings>) => {
+  const saveSettings = async (newSettings: Partial<LocalAppSettings>) => {
     setIsSaving(true);
     try {
       const updatedSettings = { ...settings, ...newSettings };
-      const syncTime = new Date().toISOString();
+      const saveTime = new Date().toISOString();
       
-      // Always save to localStorage first (as requested by user)
+      // Save to localStorage
       localStorage.setItem('app_settings', JSON.stringify({
         ...updatedSettings,
-        last_sync: syncTime
+        last_updated: saveTime
       }));
       
-      // Update local state immediately
-      setSettings({
-        ...updatedSettings,
-        last_sync: syncTime
-      });
-
-      // If user is logged in and not in local mode, also save to Supabase
-      if (user && !updatedSettings.local_mode) {
-        try {
-          // Check if record exists
-          const { data: existingData } = await supabase
-            .from('user_app_settings')
-            .select('id')
-            .eq('user_id', user.id)
-            .maybeSingle();
-
-          if (existingData) {
-            // Update existing record
-            const { error } = await supabase
-              .from('user_app_settings')
-              .update({
-                local_mode: updatedSettings.local_mode,
-                sync_enabled: updatedSettings.sync_enabled,
-                last_sync: syncTime,
-                updated_at: syncTime
-              })
-              .eq('user_id', user.id);
-
-            if (error) throw error;
-          } else {
-            // Insert new record
-            const { error } = await supabase
-              .from('user_app_settings')
-              .insert({
-                user_id: user.id,
-                local_mode: updatedSettings.local_mode,
-                sync_enabled: updatedSettings.sync_enabled,
-                last_sync: syncTime,
-                updated_at: syncTime
-              });
-
-            if (error) throw error;
-          }
-        } catch (supabaseError) {
-          console.error('Supabase save error (data still saved locally):', supabaseError);
-          toast({
-            title: "Sauvegarde partielle",
-            description: "Paramètres sauvés localement, synchronisation échouée",
-            variant: "destructive",
-          });
-          return;
-        }
+      // Update local state
+      setSettings(updatedSettings);
+      
+      if (settings.show_notifications) {
+        toast({
+          title: "Paramètres sauvegardés",
+          description: "Vos préférences ont été enregistrées",
+        });
       }
       
-      toast({
-        title: "Paramètres sauvegardés",
-        description: updatedSettings.local_mode 
-          ? "Vos préférences ont été sauvées localement"
-          : "Vos préférences ont été synchronisées",
-      });
-      
-      console.log('✅ Paramètres utilisateur sauvegardés avec succès');
+      console.log('✅ Settings saved successfully');
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde:', error);
+      console.error('Error saving settings:', error);
       toast({
         title: "Erreur de sauvegarde",
         description: "Impossible de sauvegarder les paramètres",
@@ -209,304 +130,376 @@ export const AppSettings = () => {
   };
 
   /**
-   * Toggle between local mode and Supabase mode
-   * Local mode: data saved only in localStorage (default)
-   * Supabase mode: data saved in localStorage first, then synced to Supabase
+   * Handle theme change
    */
-  const handleLocalModeToggle = async (enabled: boolean) => {
-    await saveSettings({ local_mode: !enabled });
-    
-    toast({
-      title: enabled ? "Mode en ligne activé" : "Mode hors ligne activé",
-      description: enabled 
-        ? "Synchronisation avec le serveur activée"
-        : "Les données sont sauvegardées localement uniquement",
-    });
+  const handleThemeChange = async (newTheme: 'light' | 'dark' | 'system') => {
+    setTheme(newTheme);
+    await saveSettings({ theme: newTheme });
   };
 
   /**
-   * Toggle automatic synchronization when in Supabase mode
-   * Only relevant when local_mode is false
+   * Export all application data as JSON
    */
-  const handleSyncToggle = async (enabled: boolean) => {
-    await saveSettings({ sync_enabled: enabled });
-  };
-
-  /**
-   * Manually trigger synchronization with Supabase
-   * Only available when user is logged in and not in local mode
-   */
-  const handleManualSync = async () => {
-    if (!user || settings.local_mode) {
-      toast({
-        title: "Synchronisation impossible",
-        description: "Vous devez être connecté et en mode Supabase",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSyncing(true);
+  const handleExportData = async () => {
+    setIsExporting(true);
     try {
-      // Force a save to Supabase with current settings
-      const syncTime = new Date().toISOString();
+      // Collect all localStorage data
+      const exportData = {
+        settings,
+        timestamp: new Date().toISOString(),
+        version: '1.0',
+        data: {}
+      };
       
-      // Check if record exists
-      const { data: existingData } = await supabase
-        .from('user_app_settings')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (existingData) {
-        // Update existing record
-        const { error } = await supabase
-          .from('user_app_settings')
-          .update({
-            local_mode: settings.local_mode,
-            sync_enabled: settings.sync_enabled,
-            last_sync: syncTime,
-            updated_at: syncTime
-          })
-          .eq('user_id', user.id);
-
-        if (error) throw error;
-      } else {
-        // Insert new record
-        const { error } = await supabase
-          .from('user_app_settings')
-          .insert({
-            user_id: user.id,
-            local_mode: settings.local_mode,
-            sync_enabled: settings.sync_enabled,
-            last_sync: syncTime,
-            updated_at: syncTime
-          });
-
-        if (error) throw error;
+      // Add all localStorage items that belong to the app
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('app_') || key.startsWith('user_'))) {
+          try {
+            exportData.data[key] = JSON.parse(localStorage.getItem(key) || '{}');
+          } catch {
+            exportData.data[key] = localStorage.getItem(key);
+          }
+        }
       }
       
-      // Update local state and localStorage
-      const updatedSettings = { ...settings, last_sync: syncTime };
-      setSettings(updatedSettings);
-      localStorage.setItem('app_settings', JSON.stringify(updatedSettings));
+      // Create and download file
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+        type: 'application/json'
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `app-backup-${format(new Date(), 'yyyy-MM-dd-HHmm')}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      // Update last backup time
+      await saveSettings({ last_backup: new Date().toISOString() });
       
       toast({
-        title: "Synchronisation réussie",
-        description: "Vos données ont été synchronisées avec Supabase",
+        title: "Export réussi",
+        description: "Vos données ont été exportées",
       });
     } catch (error) {
-      console.error('Erreur de synchronisation:', error);
+      console.error('Export error:', error);
       toast({
-        title: "Erreur de synchronisation",
-        description: "Impossible de synchroniser avec Supabase",
+        title: "Erreur d'export",
+        description: "Impossible d'exporter les données",
         variant: "destructive",
       });
     } finally {
-      setIsSyncing(false);
+      setIsExporting(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <Card>
-        <CardContent className="p-6 text-center">
-          <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
-          <p className="text-sm text-gray-500">Chargement des paramètres...</p>
-        </CardContent>
-      </Card>
-    );
-  }
+  /**
+   * Import application data from JSON file
+   */
+  const handleImportData = async () => {
+    setIsImporting(true);
+    try {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      
+      input.onchange = async (e) => {
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (!file) return;
+        
+        try {
+          const text = await file.text();
+          const importData = JSON.parse(text);
+          
+          if (importData.data) {
+            // Import all data
+            Object.entries(importData.data).forEach(([key, value]) => {
+              localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+            });
+            
+            // Update settings if available
+            if (importData.settings) {
+              setSettings(importData.settings);
+              if (importData.settings.theme) {
+                setTheme(importData.settings.theme);
+              }
+            }
+            
+            toast({
+              title: "Import réussi",
+              description: "Vos données ont été importées",
+            });
+            
+            // Reload page to apply changes
+            setTimeout(() => window.location.reload(), 1000);
+          }
+        } catch (error) {
+          console.error('Import error:', error);
+          toast({
+            title: "Erreur d'import",
+            description: "Fichier invalide ou corrompu",
+            variant: "destructive",
+          });
+        } finally {
+          setIsImporting(false);
+        }
+      };
+      
+      input.click();
+    } catch (error) {
+      console.error('Import error:', error);
+      setIsImporting(false);
+    }
+  };
+
+  /**
+   * Clear all application data
+   */
+  const handleClearData = async () => {
+    if (confirm('Êtes-vous sûr de vouloir effacer toutes les données ? Cette action est irréversible.')) {
+      try {
+        // Clear all app-related localStorage items
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.startsWith('app_') || key.startsWith('user_'))) {
+            keysToRemove.push(key);
+          }
+        }
+        
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+        
+        // Reset settings to default
+        const defaultSettings = {
+          theme: 'system' as const,
+          auto_save: true,
+          compact_view: false,
+          show_notifications: true,
+          language: 'fr' as const
+        };
+        
+        setSettings(defaultSettings);
+        setTheme('system');
+        
+        toast({
+          title: "Données effacées",
+          description: "Toutes les données ont été supprimées",
+        });
+        
+        // Reload page
+        setTimeout(() => window.location.reload(), 1000);
+      } catch (error) {
+        console.error('Clear data error:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible d'effacer les données",
+          variant: "destructive",
+        });
+      }
+    }
+  };
 
   return (
-    <Card className="border-2">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center justify-between text-lg">
-          <div className="flex items-center gap-2">
-            <Database className="w-5 h-5" />
-            Sauvegarde données
-          </div>
-          <div className="flex items-center gap-2">
-            {isSaving && (
-              <Badge variant="outline" className="text-xs">
-                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                Sauvegarde...
-              </Badge>
-            )}
-            <div className="flex items-center gap-2">
-              <Badge 
-                variant={isOnline ? "default" : "secondary"} 
-                className={`text-xs cursor-pointer transition-colors ${
-                  isConnecting ? 'animate-pulse' : ''
-                }`}
-                onClick={checkNow}
-                title={`Cliquez pour vérifier la connectivité${lastChecked ? ` • Dernière vérification: ${format(lastChecked, 'HH:mm:ss')}` : ''}`}
-              >
-                {isConnecting ? (
-                  <>
-                    <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                    Test...
-                  </>
-                ) : isOnline ? (
-                  <>
-                    <Wifi className="w-3 h-3 mr-1" />
-                    En ligne {isReliable ? '✓' : '?'}
-                  </>
-                ) : (
-                  <>
-                    <WifiOff className="w-3 h-3 mr-1" />
-                    Hors ligne {isReliable ? '✗' : '?'}
-                  </>
-                )}
-              </Badge>
-            </div>
-          </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Mode local/supabase */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                {settings.local_mode ? (
-                  <HardDrive className="w-4 h-4 text-orange-500" />
-                ) : (
-                  <Cloud className="w-4 h-4 text-blue-500" />
-                )}
-                <span className="font-medium">Mode de stockage</span>
-              </div>
-              <p className="text-sm text-gray-500">
-                {settings.local_mode 
-                  ? "Les données sont sauvegardées localement uniquement"
-                  : "Synchronisation automatique avec le serveur"
-                }
-              </p>
-            </div>
-            <Switch
-              checked={!settings.local_mode}
-              onCheckedChange={handleLocalModeToggle}
-              disabled={isSaving}
-            />
-          </div>
-
-          {/* Mode Supabase */}
-          {!settings.local_mode && (
-            <div className="flex items-center justify-between p-4 border rounded-lg bg-background">
-              <div className="flex-1">
+    <div className="space-y-6">
+      {/* Theme Settings */}
+      <Card className="border-2">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Palette className="w-5 h-5" />
+            Apparence
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <Cloud className="h-4 w-4" />
-                  <span className="text-sm font-medium">Mode Supabase</span>
+                  <Sun className="w-4 h-4" />
+                  <span className="font-medium">Thème clair</span>
                 </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Données sauvées localement puis synchronisées avec Supabase
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">
-                  Actif
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Synchronisation automatique */}
-          {!settings.local_mode && (
-            <div className="flex items-center justify-between p-4 border rounded-lg bg-background">
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <RefreshCw className="h-4 w-4" />
-                  <span className="text-sm font-medium">Synchronisation automatique</span>
-                </div>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Synchroniser automatiquement avec Supabase en arrière-plan
+                <p className="text-sm text-muted-foreground">
+                  Interface avec couleurs claires
                 </p>
               </div>
               <Switch
-                checked={settings.sync_enabled}
-                onCheckedChange={handleSyncToggle}
+                checked={settings.theme === 'light'}
+                onCheckedChange={() => handleThemeChange('light')}
                 disabled={isSaving}
               />
             </div>
-          )}
-        </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Moon className="w-4 h-4" />
+                  <span className="font-medium">Thème sombre</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Interface avec couleurs sombres
+                </p>
+              </div>
+              <Switch
+                checked={settings.theme === 'dark'}
+                onCheckedChange={() => handleThemeChange('dark')}
+                disabled={isSaving}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Monitor className="w-4 h-4" />
+                  <span className="font-medium">Automatique</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Suit les préférences du système
+                </p>
+              </div>
+              <Switch
+                checked={settings.theme === 'system'}
+                onCheckedChange={() => handleThemeChange('system')}
+                disabled={isSaving}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-        {/* Bouton de synchronisation manuelle */}
-        {!settings.local_mode && isOnline && (
-          <div className="pt-4 border-t">
+      {/* Display Preferences */}
+      <Card className="border-2">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Settings className="w-5 h-5" />
+            Préférences d'affichage
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="font-medium">Sauvegarde automatique</span>
+              <p className="text-sm text-muted-foreground">
+                Sauvegarder automatiquement les modifications
+              </p>
+            </div>
+            <Switch
+              checked={settings.auto_save}
+              onCheckedChange={(checked) => saveSettings({ auto_save: checked })}
+              disabled={isSaving}
+            />
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="font-medium">Vue compacte</span>
+              <p className="text-sm text-muted-foreground">
+                Affichage plus dense des listes
+              </p>
+            </div>
+            <Switch
+              checked={settings.compact_view}
+              onCheckedChange={(checked) => saveSettings({ compact_view: checked })}
+              disabled={isSaving}
+            />
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="font-medium">Notifications</span>
+              <p className="text-sm text-muted-foreground">
+                Afficher les notifications de l'application
+              </p>
+            </div>
+            <Switch
+              checked={settings.show_notifications}
+              onCheckedChange={(checked) => saveSettings({ show_notifications: checked })}
+              disabled={isSaving}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Data Management */}
+      <Card className="border-2">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <HardDrive className="w-5 h-5" />
+            Gestion des données
+            <Badge variant="outline" className="text-xs">
+              Local uniquement
+            </Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Button
-              onClick={handleManualSync}
-              disabled={isSyncing || isSaving}
+              onClick={handleExportData}
+              disabled={isExporting}
               variant="outline"
               className="w-full"
             >
-              {isSyncing ? (
+              {isExporting ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Synchronisation en cours...
+                  <FileText className="w-4 h-4 mr-2 animate-pulse" />
+                  Export en cours...
                 </>
               ) : (
                 <>
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Synchroniser maintenant
+                  <Download className="w-4 h-4 mr-2" />
+                  Exporter les données
                 </>
               )}
             </Button>
-            <p className="text-xs text-gray-500 text-center mt-2">
-              Synchronisation manuelle des données locales vers le serveur
-            </p>
-          </div>
-        )}
-
-        {/* Indicateurs de statut */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="p-3 border rounded-lg text-center bg-background">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              {settings.local_mode ? (
-                <HardDrive className="h-4 w-4 text-orange-500" />
+            
+            <Button
+              onClick={handleImportData}
+              disabled={isImporting}
+              variant="outline"
+              className="w-full"
+            >
+              {isImporting ? (
+                <>
+                  <FileText className="w-4 h-4 mr-2 animate-pulse" />
+                  Import en cours...
+                </>
               ) : (
-                <Cloud className="h-4 w-4 text-blue-500" />
+                <>
+                  <Upload className="w-4 h-4 mr-2" />
+                  Importer les données
+                </>
               )}
-              <span className="text-sm font-medium">
-                {settings.local_mode ? 'Local' : 'Supabase'}
-              </span>
+            </Button>
+          </div>
+          
+          <div className="pt-4 border-t">
+            <Button
+              onClick={handleClearData}
+              variant="destructive"
+              className="w-full"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Effacer toutes les données
+            </Button>
+            <p className="text-xs text-muted-foreground text-center mt-2">
+              Cette action est irréversible. Pensez à exporter vos données avant.
+            </p>
+          </div>
+          
+          {settings.last_backup && (
+            <div className="text-center p-3 border rounded-lg bg-card">
+              <p className="text-sm text-card-foreground">
+                Dernière sauvegarde :
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {format(new Date(settings.last_backup), "dd/MM/yyyy 'à' HH:mm", { locale: fr })}
+              </p>
             </div>
-            <p className="text-xs text-muted-foreground">
-              {settings.local_mode ? 'Navigateur uniquement' : 'Local + Cloud'}
-            </p>
-          </div>
-
-          <div className="p-3 border rounded-lg text-center bg-background">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              {settings.sync_enabled && !settings.local_mode ? (
-                <CheckCircle className="h-4 w-4 text-green-500" />
-              ) : settings.local_mode ? (
-                <XCircle className="h-4 w-4 text-muted-foreground" />
-              ) : (
-                <XCircle className="h-4 w-4 text-gray-400" />
-              )}
-              <span className="text-sm font-medium">
-                {settings.local_mode ? 'N/A' : (settings.sync_enabled ? 'Activée' : 'Désactivée')}
-              </span>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {settings.local_mode ? 'Mode local' : 'Synchronisation'}
-            </p>
-          </div>
-        </div>
-
-        {/* Dernière synchronisation */}
-        {settings.last_sync && !settings.local_mode && (
-          <div className="text-center p-3 border rounded-lg bg-background">
-            <p className="text-sm text-foreground">
-              Dernière synchronisation :
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              {format(new Date(settings.last_sync), "dd/MM/yyyy 'à' HH:mm", { locale: fr })}
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
+
+export default AppSettings;

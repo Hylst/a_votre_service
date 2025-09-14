@@ -4,7 +4,6 @@ import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/s
 import { AppSidebar } from "@/components/AppSidebar";
 
 // Lazy load all tool components for better performance
-const UserProfile = lazy(() => import("@/components/UserProfile"));
 const UnitConverter = lazy(() => import("@/components/tools/UnitConverter"));
 const CalculatorImproved = lazy(() => import("@/components/tools/CalculatorImproved").then(module => ({ default: module.CalculatorImproved })));
 const TodoListEnhanced = lazy(() => import("@/components/tools/TodoListEnhanced"));
@@ -34,6 +33,7 @@ import CareerInfoModal from "@/components/modals/CareerInfoModal";
 import HealthInfoModal from "@/components/modals/HealthInfoModal";
 import DateTimeInfoModal from "@/components/modals/DateTimeInfoModal";
 import TextUtilsInfoModal from "@/components/modals/TextUtilsInfoModal";
+import { ProfileModal } from "@/components/modals/ProfileModal";
 
 // New design system components
 import { Container } from "@/components/ui/container";
@@ -56,6 +56,7 @@ const Index = () => {
   const [isCareerInfoModalOpen, setIsCareerInfoModalOpen] = useState(false);
   const [isHealthInfoModalOpen, setIsHealthInfoModalOpen] = useState(false);
   const [isTextUtilsInfoModalOpen, setIsTextUtilsInfoModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // Gérer la navigation via URL params (depuis Settings)
   useEffect(() => {
@@ -87,7 +88,6 @@ const Index = () => {
       case "text-utils-advanced": return "Outils Texte";
       case "data-manager": return "Gestionnaire de Données";
       case "settings": return "Paramètres";
-      case "profile": return "Mon Profil";
       case "about": return "À propos";
       default: return "À votre service";
     }
@@ -193,12 +193,7 @@ const Index = () => {
             </Suspense>
           </div>
         );
-      case "profile":
-        return (
-          <Suspense fallback={<LoadingFallback />}>
-            <UserProfile />
-          </Suspense>
-        );
+
       case "about":
         return (
           <Suspense fallback={<LoadingFallback />}>
@@ -550,7 +545,7 @@ const Index = () => {
                   <ThemeToggle />
                   
                   {user ? (
-                    <UserMenu />
+                    <UserMenu onProfileClick={() => setIsProfileModalOpen(true)} />
                   ) : (
                     <Button 
                       variant="outline" 
@@ -594,6 +589,10 @@ const Index = () => {
               <TextUtilsInfoModal 
                 isOpen={isTextUtilsInfoModalOpen} 
                 onClose={() => setIsTextUtilsInfoModalOpen(false)} 
+              />
+              <ProfileModal 
+                isOpen={isProfileModalOpen} 
+                onClose={() => setIsProfileModalOpen(false)} 
               />
             </div>
             

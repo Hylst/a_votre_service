@@ -1,5 +1,10 @@
 
-import { useState } from 'react';
+/**
+ * GoalManagerEnhanced.tsx - Enhanced Goals Management Component
+ * Optimized version with better performance, UX improvements, and debouncing
+ */
+
+import React, { useState, useMemo, useCallback, memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,11 +13,181 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { Target, Plus, Search, Edit, Trash2, Trophy, Calendar, Flag, TrendingUp, CheckCircle, Circle, Users } from 'lucide-react';
+import { Target, Plus, Search, Edit, Trash2, Trophy, Calendar, Flag, TrendingUp, CheckCircle, Circle, Users, Filter, X } from 'lucide-react';
 import { format, differenceInDays } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { useGoalManagerEnhanced, Goal, Milestone } from '../hooks/useGoalManagerEnhanced';
 import { DataImportExport } from '../../common/DataImportExport';
+import { useDebounce } from '@/hooks/useDebounce';
+
+// Memoized Goal Card Component for better performance
+const GoalCard = memo(({ 
+  goal, 
+  onEdit, 
+  onDelete, 
+  onUpdateProgress, 
+  onToggleMilestone 
+}: {
+  goal: Goal;
+  onEdit: (goal: Goal) => void;
+  onDelete: (id: string) => void;
+  onUpdateProgress: (id: string, progress: number) => void;
+  onToggleMilestone: (goalId: string, milestoneId: string) => void;
+}) => {
+  const getTypeIcon = useCallback((type: string) => {
+    switch (type) {
+      case 'professional': return '💼';
+      case 'health': return '🏃';
+      case 'learning': return '📚';
+      case 'financial': return '💰';
+      default: return '🎯';
+    }
+  }, []);
+
+  const getStatusColor = useCallback((status: string) => {
+    switch (status) {
+      case 'completed': return 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200';
+      case 'active': return 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-200';
+      case 'paused': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200';
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900/50 dark:text-gray-200';
+    }
+  }, []);
+
+  const getPriorityColor = useCallback((priority: string) => {
+    switch (priority) {
+      case 'high': return 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-200';
+      default: return 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-200';
+    }
+  }, []);
+
+  const getDaysRemaining = useCallback((targetDate: string) => {
+    return differenceInDays(new Date(targetDate), new Date());
+  }, []);
+
+  const daysRemaining = getDaysRemaining(goal.targetDate);
+  const isOverdue = daysRemaining < 0;
+  const isNearDeadline = daysRemaining <= 7 && daysRemaining >= 0;
+
+  return (
+    <Card className="bg-card text-card-foreground hover:shadow-md transition-shadow duration-200">
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">{getTypeIcon(goal.type)}</span>
+            <div>
+              <CardTitle className="text-lg font-semibold">{goal.title}</CardTitle>
+              <div className="flex gap-2 mt-1">
+                <Badge className={getStatusColor(goal.status)}>
+                  {goal.status === 'active' ? 'Actif' : 
+                   goal.status === 'completed' ? 'Terminé' : 
+                   goal.status === 'paused' ? 'En pause' : 'Annulé'}
+                </Badge>
+                <Badge className={getPriorityColor(goal.priority)}>
+                  {goal.priority === 'high' ? 'Haute' : 
+                   goal.priority === 'medium' ? 'Moyenne' : 'Basse'}
+                </Badge>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onEdit(goal)}
+              className="h-8 w-8 p-0"
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onDelete(goal.id)}
+              className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {goal.description && (
+          <p className="text-sm text-muted-foreground">{goal.description}</p>
+        )}
+        
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-sm font-medium">Progrès</span>
+            <span className="text-sm text-muted-foreground">{goal.progress}%</span>
+          </div>
+          <Progress value={goal.progress} className="h-2" />
+        </div>
+
+        <div className="flex justify-between text-sm text-muted-foreground">
+          <span>Début: {format(new Date(goal.startDate), 'dd/MM/yyyy', { locale: fr })}</span>
+          <span className={isOverdue ? 'text-red-500 font-medium' : isNearDeadline ? 'text-yellow-500 font-medium' : ''}>
+            Fin: {format(new Date(goal.targetDate), 'dd/MM/yyyy', { locale: fr })}
+            {isOverdue && ' (En retard)'}
+            {isNearDeadline && ' (Bientôt)'}
+          </span>
+        </div>
+
+        {goal.targetValue && (
+          <div className="text-sm">
+            <span className="text-muted-foreground">Objectif: </span>
+            <span className="font-medium">
+              {goal.currentValue || 0} / {goal.targetValue} {goal.unit}
+            </span>
+          </div>
+        )}
+
+        {goal.milestones.length > 0 && (
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium">Étapes ({goal.milestones.filter(m => m.completed).length}/{goal.milestones.length})</h4>
+            <div className="space-y-1">
+              {goal.milestones.slice(0, 3).map((milestone) => (
+                <div key={milestone.id} className="flex items-center gap-2 text-sm">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onToggleMilestone(goal.id, milestone.id)}
+                    className="h-6 w-6 p-0"
+                  >
+                    {milestone.completed ? (
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    ) : (
+                      <Circle className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                  <span className={milestone.completed ? 'line-through text-muted-foreground' : ''}>
+                    {milestone.title}
+                  </span>
+                </div>
+              ))}
+              {goal.milestones.length > 3 && (
+                <p className="text-xs text-muted-foreground ml-8">
+                  +{goal.milestones.length - 3} autres étapes
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
+        {goal.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {goal.tags.map((tag, index) => (
+              <Badge key={index} variant="outline" className="text-xs">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+});
+
+GoalCard.displayName = 'GoalCard';
 
 export const GoalManagerEnhanced = () => {
   const {
@@ -41,8 +216,20 @@ export const GoalManagerEnhanced = () => {
     resetData
   } = useGoalManagerEnhanced();
 
+  // Local search state with debouncing
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+  const debouncedSearchTerm = useDebounce(localSearchTerm, 300);
+
+  // Update the global search term when debounced value changes
+  React.useEffect(() => {
+    if (debouncedSearchTerm !== searchTerm) {
+      setSearchTerm(debouncedSearchTerm);
+    }
+  }, [debouncedSearchTerm, searchTerm, setSearchTerm]);
+
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
   const [newGoal, setNewGoal] = useState({
     title: '',
     description: '',
@@ -63,7 +250,79 @@ export const GoalManagerEnhanced = () => {
     targetDate: ''
   });
 
-  const handleAddGoal = async () => {
+  // Memoized callbacks for better performance
+  const handleEditGoal = useCallback((goal: Goal) => {
+    setEditingGoal(goal);
+    setNewGoal({
+      title: goal.title,
+      description: goal.description || '',
+      type: goal.type,
+      priority: goal.priority,
+      targetValue: goal.targetValue?.toString() || '',
+      currentValue: goal.currentValue?.toString() || '',
+      unit: goal.unit || '',
+      startDate: goal.startDate,
+      targetDate: goal.targetDate,
+      tags: goal.tags.join(', ')
+    });
+    setShowAddForm(true);
+  }, []);
+
+  const handleDeleteGoal = useCallback(async (goalId: string) => {
+    if (window.confirm('Êtes-vous sûr de vouloir supprimer cet objectif ?')) {
+      await deleteGoal(goalId);
+    }
+  }, [deleteGoal]);
+
+  const handleUpdateProgress = useCallback(async (goalId: string, progress: number) => {
+    await updateProgress(goalId, progress);
+  }, [updateProgress]);
+
+  const handleToggleMilestone = useCallback(async (goalId: string, milestoneId: string) => {
+    await toggleMilestone(goalId, milestoneId);
+  }, [toggleMilestone]);
+
+  // Memoized filtered goals count
+  const filteredGoalsCount = useMemo(() => {
+    return goals.length;
+  }, [goals.length]);
+
+  // Active filters count
+  const activeFiltersCount = useMemo(() => {
+    let count = 0;
+    if (filterType !== 'all') count++;
+    if (filterStatus !== 'all') count++;
+    if (filterPriority !== 'all') count++;
+    if (localSearchTerm.trim()) count++;
+    return count;
+  }, [filterType, filterStatus, filterPriority, localSearchTerm]);
+
+  // Clear all filters
+  const clearAllFilters = useCallback(() => {
+    setLocalSearchTerm('');
+    setFilterType('all');
+    setFilterStatus('all');
+    setFilterPriority('all');
+  }, [setFilterType, setFilterStatus, setFilterPriority]);
+
+  const resetForm = useCallback(() => {
+    setNewGoal({
+      title: '',
+      description: '',
+      type: 'personal',
+      priority: 'medium',
+      targetValue: '',
+      currentValue: '',
+      unit: '',
+      startDate: new Date().toISOString().split('T')[0],
+      targetDate: '',
+      tags: ''
+    });
+    setShowAddForm(false);
+    setEditingGoal(null);
+  }, []);
+
+  const handleAddGoal = useCallback(async () => {
     if (!newGoal.title.trim() || !newGoal.targetDate) return;
 
     await addGoal({
@@ -83,9 +342,9 @@ export const GoalManagerEnhanced = () => {
     });
 
     resetForm();
-  };
+  }, [newGoal, addGoal, resetForm]);
 
-  const handleUpdateGoal = async () => {
+  const handleUpdateGoal = useCallback(async () => {
     if (!editingGoal || !newGoal.title.trim() || !newGoal.targetDate) return;
 
     await updateGoal(editingGoal.id, {
@@ -102,43 +361,11 @@ export const GoalManagerEnhanced = () => {
     });
 
     resetForm();
-  };
+  }, [editingGoal, newGoal, updateGoal, resetForm]);
 
-  const resetForm = () => {
-    setNewGoal({
-      title: '',
-      description: '',
-      type: 'personal',
-      priority: 'medium',
-      targetValue: '',
-      currentValue: '',
-      unit: '',
-      startDate: new Date().toISOString().split('T')[0],
-      targetDate: '',
-      tags: ''
-    });
-    setShowAddForm(false);
-    setEditingGoal(null);
-  };
+  // Remove old startEdit function - replaced by handleEditGoal
 
-  const startEdit = (goal: Goal) => {
-    setEditingGoal(goal);
-    setNewGoal({
-      title: goal.title,
-      description: goal.description || '',
-      type: goal.type,
-      priority: goal.priority,
-      targetValue: goal.targetValue?.toString() || '',
-      currentValue: goal.currentValue?.toString() || '',
-      unit: goal.unit || '',
-      startDate: goal.startDate,
-      targetDate: goal.targetDate,
-      tags: goal.tags.join(', ')
-    });
-    setShowAddForm(true);
-  };
-
-  const handleAddMilestone = async () => {
+  const handleAddMilestone = useCallback(async () => {
     if (!newMilestone.goalId || !newMilestone.title.trim()) return;
 
     await addMilestone(newMilestone.goalId, {
@@ -154,7 +381,7 @@ export const GoalManagerEnhanced = () => {
       description: '',
       targetDate: ''
     });
-  };
+  }, [newMilestone, addMilestone]);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -244,8 +471,8 @@ export const GoalManagerEnhanced = () => {
               <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
               <Input
                 placeholder="Rechercher..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                value={localSearchTerm}
+                onChange={(e) => setLocalSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
@@ -420,10 +647,10 @@ export const GoalManagerEnhanced = () => {
                           <Badge className={getStatusColor(goal.status)}>{goal.status}</Badge>
                           <Badge className={getPriorityColor(goal.priority)}>{goal.priority}</Badge>
                           <div className="flex gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => startEdit(goal)}>
+                            <Button variant="ghost" size="sm" onClick={() => handleEditGoal(goal)}>
                               <Edit className="w-4 h-4" />
                             </Button>
-                            <Button variant="ghost" size="sm" onClick={() => deleteGoal(goal.id)}>
+                            <Button variant="ghost" size="sm" onClick={() => handleDeleteGoal(goal.id)}>
                               <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
@@ -481,7 +708,7 @@ export const GoalManagerEnhanced = () => {
                           <div className="space-y-1">
                             {goal.milestones.map(milestone => (
                               <div key={milestone.id} className="flex items-center gap-2 text-sm">
-                                <button onClick={() => toggleMilestone(goal.id, milestone.id)}>
+                                <button onClick={() => handleToggleMilestone(goal.id, milestone.id)}>
                                   {milestone.completed ? (
                                     <CheckCircle className="w-4 h-4 text-green-600" />
                                   ) : (

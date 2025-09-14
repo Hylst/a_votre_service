@@ -1,5 +1,5 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useOfflineDataManager } from '@/hooks/useOfflineDataManager';
 
 export interface Goal {
@@ -44,20 +44,21 @@ interface GoalsData {
   };
 }
 
-const defaultGoalsData: GoalsData = {
-  goals: [],
-  categories: ['Personnel', 'Professionnel', 'Santé', 'Apprentissage', 'Financier'],
-  stats: {
-    totalGoals: 0,
-    activeGoals: 0,
-    completedGoals: 0,
-    averageProgress: 0,
-    onTrackGoals: 0,
-    overdueGoals: 0
-  }
-};
-
 export const useGoalManagerEnhanced = () => {
+  // Memoize defaultData to prevent recreation on every render
+  const defaultGoalsData = useMemo<GoalsData>(() => ({
+    goals: [],
+    categories: ['Personnel', 'Professionnel', 'Santé', 'Apprentissage', 'Financier'],
+    stats: {
+      totalGoals: 0,
+      activeGoals: 0,
+      completedGoals: 0,
+      averageProgress: 0,
+      onTrackGoals: 0,
+      overdueGoals: 0
+    }
+  }), []);
+
   const {
     data: goalsData,
     setData: setGoalsData,

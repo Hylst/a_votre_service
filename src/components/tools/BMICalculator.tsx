@@ -12,3 +12,5 @@ export const BMICalculator = () => {
     />
   );
 };
+
+export default BMICalculator;

@@ -552,3 +552,5 @@ export const TodoListEnhanced = () => {
     </div>
   );
 };
+
+export default TodoListEnhanced;

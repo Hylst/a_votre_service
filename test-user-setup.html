@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test User Setup</title>
+</head>
+<body>
+    <h1>Test User Setup for Profile Modal Testing</h1>
+    <button onclick="createTestUser()">Create Test User</button>
+    <button onclick="clearUsers()">Clear All Users</button>
+    <button onclick="showCurrentUser()">Show Current User</button>
+    <div id="output"></div>
+
+    <script>
+        function createTestUser() {
+            const testUser = {
+                id: '1',
+                fullName: 'Test User',
+                password: 'test123',
+                createdAt: new Date().toISOString(),
+                full_name: 'Test User',
+                avatar_url: 'https://via.placeholder.com/150'
+            };
+
+            // Add to users list
+            const users = JSON.parse(localStorage.getItem('localUsers') || '[]');
+            const existingIndex = users.findIndex(u => u.id === testUser.id);
+            if (existingIndex >= 0) {
+                users[existingIndex] = testUser;
+            } else {
+                users.push(testUser);
+            }
+            localStorage.setItem('localUsers', JSON.stringify(users));
+
+            // Set as current user
+            localStorage.setItem('currentUser', JSON.stringify(testUser));
+
+            document.getElementById('output').innerHTML = '<p style="color: green;">✅ Test user created and set as current user!</p>';
+            console.log('Test user created:', testUser);
+        }
+
+        function clearUsers() {
+            localStorage.removeItem('localUsers');
+            localStorage.removeItem('currentUser');
+            document.getElementById('output').innerHTML = '<p style="color: red;">❌ All users cleared!</p>';
+        }
+
+        function showCurrentUser() {
+            const currentUser = localStorage.getItem('currentUser');
+            const users = localStorage.getItem('localUsers');
+            document.getElementById('output').innerHTML = `
+                <h3>Current User:</h3>
+                <pre>${currentUser || 'None'}</pre>
+                <h3>All Users:</h3>
+                <pre>${users || 'None'}</pre>
+            `;
+        }
+
+        // Auto-show current state on load
+        window.onload = showCurrentUser;
+    </script>
+</body>
+</html>

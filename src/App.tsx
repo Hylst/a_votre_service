@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Index from './pages/Index';
 import Auth from './pages/Auth';
@@ -10,22 +9,18 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from './components/ui/toaster';
-import { useIndexedDBFix } from './hooks/useIndexedDBFix';
 import SEOHead from './components/SEOHead';
-import { useEffect } from 'react';
 
 const queryClient = new QueryClient();
 
 function AppContent() {
-  const { fixDatabase } = useIndexedDBFix();
-
-  useEffect(() => {
-    // Initialiser la réparation IndexedDB au démarrage
-    fixDatabase();
-  }, [fixDatabase]);
-
   return (
-    <Router>
+    <Router
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       <SEOHead />
       <Routes>
         <Route path="/" element={<Index />} />

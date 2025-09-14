@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAppDatabase } from './useAppDatabase';
 import { useToast } from './use-toast';
 
@@ -19,20 +19,54 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
     isLoading: dbLoading 
   } = useAppDatabase();
   
+  // Use ref to store defaultData to prevent dependency changes
+  const defaultDataRef = useRef(defaultData);
+  defaultDataRef.current = defaultData;
+  
   const [data, setData] = useState<T>(defaultData);
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState<string | null>(null);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   // Simuler le statut en ligne (puisque nous utilisons IndexedDB localement)
   const isOnline = true;
 
-  // Charger les données au démarrage
+  // Debouncing refs to prevent rapid reloads
+  const loadTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastLoadTimeRef = useRef<number>(0);
+  const DEBOUNCE_DELAY = 500; // 500ms debounce
+  const MIN_LOAD_INTERVAL = 1000; // Minimum 1 second between loads
+
+  // Charger les données au démarrage avec debouncing amélioré
   useEffect(() => {
     const loadInitialData = async () => {
       if (!isInitialized) return;
       
+      // Prevent multiple loads if already loaded once
+      if (hasLoadedOnce) {
+        console.log(`🚫 Évitement du rechargement pour ${toolName} - déjà chargé`);
+        return;
+      }
+      
+      // Clear any existing timeout
+      if (loadTimeoutRef.current) {
+        clearTimeout(loadTimeoutRef.current);
+      }
+      
+      // Check if we loaded recently
+      const now = Date.now();
+      const timeSinceLastLoad = now - lastLoadTimeRef.current;
+      
+      if (timeSinceLastLoad < MIN_LOAD_INTERVAL) {
+        console.log(`⏳ Debouncing load for ${toolName} (${MIN_LOAD_INTERVAL - timeSinceLastLoad}ms remaining)`);
+        loadTimeoutRef.current = setTimeout(loadInitialData, MIN_LOAD_INTERVAL - timeSinceLastLoad);
+        return;
+      }
+      
+      lastLoadTimeRef.current = now;
       setIsLoading(true);
+      
       try {
         console.log(`🔄 Chargement des données pour ${toolName}...`);
         
@@ -44,9 +78,11 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
           setLastSyncTime(new Date().toISOString());
           console.log(`✅ Données chargées pour ${toolName}:`, loadedData);
         } else {
-          setData(defaultData);
+          setData(defaultDataRef.current);
           console.log(`📝 Données par défaut utilisées pour ${toolName}`);
         }
+        
+        setHasLoadedOnce(true);
       } catch (error) {
         console.error(`❌ Erreur lors du chargement des données pour ${toolName}:`, error);
         
@@ -61,6 +97,7 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
               setData(retryData);
               setLastSyncTime(new Date().toISOString());
               console.log(`✅ Récupération réussie pour ${toolName}`);
+              setHasLoadedOnce(true);
               return;
             }
           } catch (retryError) {
@@ -68,7 +105,8 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
           }
         }
         
-        setData(defaultData);
+        setData(defaultDataRef.current);
+        setHasLoadedOnce(true);
         toast({
           title: "Erreur de chargement",
           description: "Impossible de charger les données sauvegardées. Les données par défaut seront utilisées.",
@@ -80,7 +118,14 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
     };
 
     loadInitialData();
-  }, [toolName, isInitialized, defaultData, loadData, toast]);
+    
+    // Cleanup timeout on unmount
+    return () => {
+      if (loadTimeoutRef.current) {
+        clearTimeout(loadTimeoutRef.current);
+      }
+    };
+  }, [toolName, isInitialized, loadData, toast]); // Removed defaultData dependency
 
   // Sauvegarder les données
   const updateData = useCallback(async (newData: T) => {

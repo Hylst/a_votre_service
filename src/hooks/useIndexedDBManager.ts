@@ -21,7 +21,95 @@ interface StoredItem {
   lastModified: string;
 }
 
+interface IndexedDBError {
+  type: 'blocked' | 'version_error' | 'quota_exceeded' | 'unknown';
+  message: string;
+  retryable: boolean;
+}
+
+// Global state to track IndexedDB issues
+let globalDBState = {
+  isBlocked: false,
+  lastError: null as IndexedDBError | null,
+  retryCount: 0
+};
+
+// Event dispatcher for IndexedDB errors
+const dispatchIndexedDBError = (error: IndexedDBError) => {
+  const event = new CustomEvent('indexeddb-error', {
+    detail: error
+  });
+  window.dispatchEvent(event);
+};
+
+// Event dispatcher for IndexedDB recovery
+const dispatchIndexedDBRecovery = () => {
+  const event = new CustomEvent('indexeddb-recovery');
+  window.dispatchEvent(event);
+};
+
 export const useIndexedDBManager = (config: DatabaseConfig) => {
+  // Utility function to detect multiple tabs
+  const detectMultipleTabs = (): boolean => {
+    try {
+      const tabId = Date.now().toString();
+      const storageKey = `indexeddb_tab_${config.dbName}`;
+      
+      // Store our tab ID
+      sessionStorage.setItem(storageKey, tabId);
+      
+      // Check if other tabs are using the same DB
+      const allTabs = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key && key.startsWith(`indexeddb_tab_${config.dbName}`)) {
+          allTabs.push(sessionStorage.getItem(key));
+        }
+      }
+      
+      return allTabs.length > 1;
+    } catch (error) {
+      console.warn('Could not detect multiple tabs:', error);
+      return false;
+    }
+  };
+
+  // Function to create user-friendly error messages
+  const createErrorMessage = (error: any): IndexedDBError => {
+    if (error?.name === 'QuotaExceededError') {
+      return {
+        type: 'quota_exceeded',
+        message: 'Storage quota exceeded. Please free up some space.',
+        retryable: false
+      };
+    }
+    
+    if (error?.name === 'VersionError') {
+      return {
+        type: 'version_error',
+        message: 'Database version conflict detected.',
+        retryable: true
+      };
+    }
+    
+    if (globalDBState.isBlocked) {
+      const multipleTabs = detectMultipleTabs();
+      return {
+        type: 'blocked',
+        message: multipleTabs 
+          ? 'Database upgrade blocked by other tabs. Please close other tabs and try again.'
+          : 'Database upgrade blocked. Attempting automatic recovery...',
+        retryable: true
+      };
+    }
+    
+    return {
+      type: 'unknown',
+      message: error?.message || 'Unknown database error occurred.',
+      retryable: true
+    };
+  };
+
   // Function to get the current database version
   const getCurrentDBVersion = async (): Promise<number> => {
     return new Promise((resolve) => {
@@ -36,34 +124,55 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
     });
   };
 
-  const openDB = async (): Promise<IDBDatabase> => {
+  const openDB = async (retryCount = 0): Promise<IDBDatabase> => {
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 1000; // 1 second
+    
     return new Promise(async (resolve, reject) => {
       try {
-        // Get current version and use the higher of config.version or current+1
+        // Get current version and use stable version calculation
         const currentVersion = await getCurrentDBVersion();
-        const targetVersion = Math.max(config.version, currentVersion + (currentVersion >= config.version ? 1 : 0));
+        // Only use config.version unless we need to upgrade from an older version
+        const targetVersion = Math.max(config.version, currentVersion);
         
-        console.log(`🔧 Opening IndexedDB ${config.dbName} - Current: ${currentVersion}, Target: ${targetVersion}`);
+        // Prevent unnecessary upgrades if we're already at the target version
+        if (currentVersion === config.version && retryCount === 0) {
+          console.log(`✅ IndexedDB ${config.dbName} already at target version ${config.version}`);
+        }
+        
+        // Only log on first attempt or errors
+        if (retryCount === 0) {
+          console.log(`🔧 Opening IndexedDB ${config.dbName} - Current: ${currentVersion}, Target: ${targetVersion}`);
+        }
         
         const request = indexedDB.open(config.dbName, targetVersion);
+        let blockedTimeout: NodeJS.Timeout;
 
         request.onerror = () => {
           console.error(`❌ IndexedDB open error for ${config.dbName}:`, request.error);
+          const errorInfo = createErrorMessage(request.error);
+          globalDBState.lastError = errorInfo;
+          dispatchIndexedDBError(errorInfo);
+          if (blockedTimeout) clearTimeout(blockedTimeout);
           reject(request.error);
         };
         
         request.onsuccess = () => {
-          console.log(`✅ IndexedDB ${config.dbName} opened successfully at version ${targetVersion}`);
+          if (blockedTimeout) clearTimeout(blockedTimeout);
+          // Dispatch recovery event if we had previous errors
+          if (globalDBState.lastError) {
+            console.log(`✅ IndexedDB ${config.dbName} recovered successfully`);
+            dispatchIndexedDBRecovery();
+            globalDBState.lastError = null;
+          }
           resolve(request.result);
         };
 
         request.onupgradeneeded = (event) => {
-          console.log(`🔄 Upgrading IndexedDB ${config.dbName} from ${event.oldVersion} to ${targetVersion}`);
           const db = (event.target as IDBOpenDBRequest).result;
           
           config.stores.forEach(store => {
             if (!db.objectStoreNames.contains(store.name)) {
-              console.log(`📦 Creating object store: ${store.name}`);
               const objectStore = db.createObjectStore(store.name, {
                 keyPath: store.keyPath
               });
@@ -79,7 +188,66 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
         };
         
         request.onblocked = () => {
-          console.warn(`⚠️ IndexedDB ${config.dbName} upgrade blocked. Please close other tabs.`);
+          globalDBState.isBlocked = true;
+          globalDBState.retryCount = retryCount;
+          
+          const errorInfo = createErrorMessage({ name: 'BlockedError' });
+          globalDBState.lastError = errorInfo;
+          dispatchIndexedDBError(errorInfo);
+          
+          console.warn(`⚠️ IndexedDB ${config.dbName} upgrade blocked. ${errorInfo.message}`);
+          
+          // Set a timeout to automatically retry after a delay
+          blockedTimeout = setTimeout(async () => {
+            console.log(`🔄 Retrying IndexedDB connection after blocked state...`);
+            
+            if (retryCount < MAX_RETRIES) {
+              try {
+                // Try to force close any existing connections
+                const databases = await indexedDB.databases();
+                const targetDB = databases.find(db => db.name === config.dbName);
+                
+                if (targetDB) {
+                  // Try opening with current version first to close existing connections
+                  const tempRequest = indexedDB.open(config.dbName);
+                  tempRequest.onsuccess = () => {
+                    tempRequest.result.close();
+                    // Retry the original request
+                    setTimeout(() => {
+                      globalDBState.isBlocked = false;
+                      openDB(retryCount + 1).then(resolve).catch(reject);
+                    }, RETRY_DELAY);
+                  };
+                  tempRequest.onerror = () => {
+                    // If temp request fails, just retry normally
+                    setTimeout(() => {
+                      globalDBState.isBlocked = false;
+                      openDB(retryCount + 1).then(resolve).catch(reject);
+                    }, RETRY_DELAY);
+                  };
+                } else {
+                  // No existing DB found, retry normally
+                  setTimeout(() => {
+                    globalDBState.isBlocked = false;
+                    openDB(retryCount + 1).then(resolve).catch(reject);
+                  }, RETRY_DELAY);
+                }
+              } catch (error) {
+                console.error(`❌ Error during blocked state recovery:`, error);
+                const recoveryError = createErrorMessage(error);
+                globalDBState.lastError = recoveryError;
+                setTimeout(() => {
+                  globalDBState.isBlocked = false;
+                  openDB(retryCount + 1).then(resolve).catch(reject);
+                }, RETRY_DELAY);
+              }
+            } else {
+              const finalError = createErrorMessage(new Error(`IndexedDB upgrade blocked after ${MAX_RETRIES} attempts`));
+              globalDBState.lastError = finalError;
+              console.error(`❌ Max retries reached for IndexedDB ${config.dbName}. ${finalError.message}`);
+              reject(new Error(finalError.message));
+            }
+          }, 2000); // Wait 2 seconds before retrying
         };
       } catch (error) {
         console.error(`❌ Error in openDB for ${config.dbName}:`, error);
@@ -112,7 +280,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       });
 
       db.close();
-      console.log(`💾 Data saved successfully to ${tool}`);
       return true;
     } catch (error) {
       console.error(`❌ Failed to save data to ${tool}:`, error);
@@ -136,7 +303,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       });
 
       db.close();
-      console.log(`📖 Data loaded successfully from ${tool}`);
       
       if (result) {
         return result.data;
@@ -253,6 +419,37 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
     }
   };
 
+  // Recovery function to manually retry blocked operations
+  const retryConnection = async (): Promise<boolean> => {
+    try {
+      globalDBState.isBlocked = false;
+      globalDBState.lastError = null;
+      globalDBState.retryCount = 0;
+      
+      const db = await openDB();
+      db.close();
+      return true;
+    } catch (error) {
+      console.error('Manual retry failed:', error);
+      return false;
+    }
+  };
+
+  // Function to get current error state
+  const getErrorState = () => ({
+    isBlocked: globalDBState.isBlocked,
+    lastError: globalDBState.lastError,
+    retryCount: globalDBState.retryCount,
+    hasMultipleTabs: detectMultipleTabs()
+  });
+
+  // Function to clear error state
+  const clearErrorState = () => {
+    globalDBState.isBlocked = false;
+    globalDBState.lastError = null;
+    globalDBState.retryCount = 0;
+  };
+
   const isInitialized = true; // IndexedDB est toujours disponible dans les navigateurs modernes
   const isLoading = false; // Pas de chargement initial pour IndexedDB
 
@@ -264,6 +461,9 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
     exportAllData,
     clearAllData,
     getStorageInfo,
+    retryConnection,
+    getErrorState,
+    clearErrorState,
     isInitialized,
     isLoading
   };
