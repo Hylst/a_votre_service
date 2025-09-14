@@ -87,7 +87,7 @@ export const useUnifiedDexieManager = () => {
         version: '2.0'
       });
       
-      console.log(`✅ Données sauvegardées avec Dexie unifié pour ${tool}:${key}`);
+
       return true;
     } catch (error) {
       console.error(`❌ Erreur Dexie unifié pour ${tool}:${key}:`, error);
@@ -95,7 +95,7 @@ export const useUnifiedDexieManager = () => {
       // Fallback vers localStorage si Dexie échoue
       try {
         localStorage.setItem(`unified-fallback-${tool}-${key}`, JSON.stringify(data));
-        console.log(`📦 Fallback localStorage pour ${tool}:${key}`);
+
         return true;
       } catch (localError) {
         console.error(`❌ Erreur localStorage pour ${tool}:${key}:`, localError);
@@ -115,7 +115,7 @@ export const useUnifiedDexieManager = () => {
           console.warn(`⚠️ Checksum invalide pour ${tool}:${key}`);
         }
         
-        console.log(`✅ Données chargées avec Dexie unifié pour ${tool}:${key}`);
+
         return record.data;
       }
       
@@ -123,7 +123,7 @@ export const useUnifiedDexieManager = () => {
       try {
         const fallbackData = localStorage.getItem(`unified-fallback-${tool}-${key}`);
         if (fallbackData) {
-          console.log(`📦 Fallback chargé depuis localStorage pour ${tool}:${key}`);
+
           return JSON.parse(fallbackData);
         }
       } catch (localError) {

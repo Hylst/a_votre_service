@@ -137,19 +137,13 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
         
         // Prevent unnecessary upgrades if we're already at the target version
         if (currentVersion === config.version && retryCount === 0) {
-          console.log(`✅ IndexedDB ${config.dbName} already at target version ${config.version}`);
-        }
-        
-        // Only log on first attempt or errors
-        if (retryCount === 0) {
-          console.log(`🔧 Opening IndexedDB ${config.dbName} - Current: ${currentVersion}, Target: ${targetVersion}`);
+          // Already at target version
         }
         
         const request = indexedDB.open(config.dbName, targetVersion);
         let blockedTimeout: NodeJS.Timeout;
 
         request.onerror = () => {
-          console.error(`❌ IndexedDB open error for ${config.dbName}:`, request.error);
           const errorInfo = createErrorMessage(request.error);
           globalDBState.lastError = errorInfo;
           dispatchIndexedDBError(errorInfo);
@@ -161,7 +155,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
           if (blockedTimeout) clearTimeout(blockedTimeout);
           // Dispatch recovery event if we had previous errors
           if (globalDBState.lastError) {
-            console.log(`✅ IndexedDB ${config.dbName} recovered successfully`);
             dispatchIndexedDBRecovery();
             globalDBState.lastError = null;
           }
@@ -195,11 +188,10 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
           globalDBState.lastError = errorInfo;
           dispatchIndexedDBError(errorInfo);
           
-          console.warn(`⚠️ IndexedDB ${config.dbName} upgrade blocked. ${errorInfo.message}`);
+          // IndexedDB upgrade blocked
           
           // Set a timeout to automatically retry after a delay
           blockedTimeout = setTimeout(async () => {
-            console.log(`🔄 Retrying IndexedDB connection after blocked state...`);
             
             if (retryCount < MAX_RETRIES) {
               try {
@@ -233,7 +225,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
                   }, RETRY_DELAY);
                 }
               } catch (error) {
-                console.error(`❌ Error during blocked state recovery:`, error);
                 const recoveryError = createErrorMessage(error);
                 globalDBState.lastError = recoveryError;
                 setTimeout(() => {
@@ -244,13 +235,11 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
             } else {
               const finalError = createErrorMessage(new Error(`IndexedDB upgrade blocked after ${MAX_RETRIES} attempts`));
               globalDBState.lastError = finalError;
-              console.error(`❌ Max retries reached for IndexedDB ${config.dbName}. ${finalError.message}`);
               reject(new Error(finalError.message));
             }
           }, 2000); // Wait 2 seconds before retrying
         };
       } catch (error) {
-        console.error(`❌ Error in openDB for ${config.dbName}:`, error);
         reject(error);
       }
     });
@@ -274,7 +263,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
         const request = store.put(item);
         request.onsuccess = () => resolve();
         request.onerror = () => {
-          console.error(`❌ Error saving data to ${tool}:`, request.error);
           reject(request.error);
         };
       });
@@ -282,7 +270,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       db.close();
       return true;
     } catch (error) {
-      console.error(`❌ Failed to save data to ${tool}:`, error);
       return false;
     }
   };
@@ -297,7 +284,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
         const request = store.get(key);
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => {
-          console.error(`❌ Error loading data from ${tool}:`, request.error);
           reject(request.error);
         };
       });
@@ -309,7 +295,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       }
       return null;
     } catch (error) {
-      console.error(`❌ Failed to load data from ${tool}:`, error);
       return null;
     }
   };
@@ -329,7 +314,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       db.close();
       return true;
     } catch (error) {
-      console.error(`Erreur suppression IndexedDB pour ${tool}:`, error);
       return false;
     }
   };
@@ -349,7 +333,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       db.close();
       return keys;
     } catch (error) {
-      console.error(`Erreur récupération clés IndexedDB pour ${tool}:`, error);
       return [];
     }
   };
@@ -375,7 +358,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       db.close();
       return allData;
     } catch (error) {
-      console.error('Erreur export toutes données IndexedDB:', error);
       return {};
     }
   };
@@ -398,7 +380,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       db.close();
       return true;
     } catch (error) {
-      console.error('Erreur nettoyage toutes données IndexedDB:', error);
       return false;
     }
   };
@@ -414,7 +395,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       }
       return { estimatedSize: 0, quota: 0 };
     } catch (error) {
-      console.error('Erreur info stockage:', error);
       return { estimatedSize: 0, quota: 0 };
     }
   };
@@ -430,7 +410,6 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
       db.close();
       return true;
     } catch (error) {
-      console.error('Manual retry failed:', error);
       return false;
     }
   };

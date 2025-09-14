@@ -47,7 +47,6 @@ export const useOptimizedDataManager = <T>({
         const syncData = await memoizedLoadFromSync();
         if (syncData) {
           setData(syncData);
-          console.log(`📥 Données chargées depuis la sync pour ${toolName}`);
           return;
         }
 
@@ -55,10 +54,8 @@ export const useOptimizedDataManager = <T>({
         const localData = await memoizedLoadFromDexie(toolName);
         if (localData) {
           setData(localData);
-          console.log(`💾 Données chargées depuis Dexie pour ${toolName}`);
         } else {
           setData(defaultData);
-          console.log(`📝 Données par défaut pour ${toolName}`);
         }
       } catch (error) {
         console.error(`❌ Erreur de chargement pour ${toolName}:`, error);
@@ -86,7 +83,6 @@ export const useOptimizedDataManager = <T>({
         await saveToSync(newData);
         
         setHasChanges(false);
-        console.log(`🔄 Auto-save terminé pour ${toolName}`);
       } catch (error) {
         console.error(`❌ Erreur auto-save pour ${toolName}:`, error);
       }

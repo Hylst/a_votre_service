@@ -80,8 +80,6 @@ export const useDexieDB = () => {
         checksum,
         synced: false
       });
-      
-      console.log(`✅ Données sauvegardées avec Dexie pour ${tool}`);
       return true;
     } catch (error) {
       console.error(`❌ Erreur Dexie pour ${tool}:`, error);
@@ -89,7 +87,6 @@ export const useDexieDB = () => {
       // Fallback vers localStorage si Dexie échoue
       try {
         localStorage.setItem(`dexie-fallback-${tool}`, JSON.stringify(data));
-        console.log(`📦 Fallback localStorage pour ${tool}`);
         return true;
       } catch (localError) {
         console.error(`❌ Erreur localStorage pour ${tool}:`, localError);
@@ -109,7 +106,6 @@ export const useDexieDB = () => {
           console.warn(`⚠️ Checksum invalide pour ${tool}`);
         }
         
-        console.log(`✅ Données chargées avec Dexie pour ${tool}`);
         return record.data;
       }
       
@@ -117,7 +113,6 @@ export const useDexieDB = () => {
       try {
         const fallbackData = localStorage.getItem(`dexie-fallback-${tool}`);
         if (fallbackData) {
-          console.log(`📦 Fallback chargé depuis localStorage pour ${tool}`);
           return JSON.parse(fallbackData);
         }
       } catch (localError) {
@@ -132,7 +127,6 @@ export const useDexieDB = () => {
       try {
         const fallbackData = localStorage.getItem(`dexie-fallback-${tool}`);
         if (fallbackData) {
-          console.log(`📦 Fallback chargé depuis localStorage pour ${tool}`);
           return JSON.parse(fallbackData);
         }
       } catch (localError) {

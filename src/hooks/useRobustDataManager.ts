@@ -29,14 +29,12 @@ export const useRobustDataManager = () => {
       // Primary: localStorage
       try {
         localStorage.setItem(`robust_${key}`, serializedData);
-        console.log(`✅ Sauvegarde localStorage réussie pour ${key}`);
       } catch (localError) {
         console.warn(`⚠️ localStorage échoué pour ${key}:`, localError);
         
         // Fallback: sessionStorage
         try {
           sessionStorage.setItem(`robust_${key}`, serializedData);
-          console.log(`📦 Fallback sessionStorage pour ${key}`);
         } catch (sessionError) {
           console.error(`❌ Tous les systèmes de stockage échoués pour ${key}`);
           return false;
@@ -76,11 +74,9 @@ export const useRobustDataManager = () => {
       // Fallback to sessionStorage
       if (!rawData) {
         rawData = sessionStorage.getItem(`robust_${key}`);
-        console.log(`📦 Chargement depuis sessionStorage pour ${key}`);
       }
 
       if (!rawData) {
-        console.log(`ℹ️ Aucune donnée trouvée pour ${key}`);
         return null;
       }
 
@@ -92,7 +88,6 @@ export const useRobustDataManager = () => {
         return parsedData; // Return as-is for backward compatibility
       }
 
-      console.log(`✅ Chargement réussi pour ${key}`);
       return parsedData.data;
     } catch (error) {
       console.error(`❌ Erreur chargement ${key}:`, error);
@@ -100,7 +95,6 @@ export const useRobustDataManager = () => {
       // Try to recover from backup
       const backupData = await recoverFromBackup(key);
       if (backupData) {
-        console.log(`🔄 Récupération depuis sauvegarde pour ${key}`);
         return backupData;
       }
       

@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +15,7 @@ import { MentalHealthTracker } from './health/MentalHealthTracker';
 import { MedicationReminder } from './health/MedicationReminder';
 import { FitnessGoals } from './health/FitnessGoals';
 import { HealthMetrics } from './health/HealthMetrics';
-import { WeightTracker } from './health/WeightTracker';
+import WeightTracker from './health/WeightTracker';
 // DataImportExport removed as requested
 import { useOfflineDataManager } from '@/hooks/useOfflineDataManager';
 
@@ -23,9 +23,7 @@ interface HealthWellnessSuiteProps {
   spacing?: 'xxs' | 'xs' | 'sm' | 'md' | 'lg';
 }
 
-const HealthWellnessSuite = ({ spacing = 'md' }: HealthWellnessSuiteProps) => {
-  console.log('HealthWellnessSuite component loading...');
-  
+const HealthWellnessSuite = React.memo(({ spacing = 'md' }: HealthWellnessSuiteProps) => {
   const {
     data: healthData,
     setData,
@@ -43,8 +41,8 @@ const HealthWellnessSuite = ({ spacing = 'md' }: HealthWellnessSuiteProps) => {
   const [activeTab, setActiveTab] = useState('bmi');
   const [showInfoModal, setShowInfoModal] = useState(false);
 
-  const handleDataChange = (toolName: string, newData: any) => {
-    console.log(`Data change for ${toolName}:`, newData);
+  // Memoize handleDataChange to prevent unnecessary re-renders
+  const handleDataChange = useCallback((toolName: string, newData: any) => {
     const currentData = healthData && typeof healthData === 'object' ? healthData : {};
     const updatedData = {
       ...currentData,
@@ -52,7 +50,7 @@ const HealthWellnessSuite = ({ spacing = 'md' }: HealthWellnessSuiteProps) => {
       lastModified: new Date().toISOString()
     };
     setData(updatedData);
-  };
+  }, [healthData, setData]);
 
   const tabs = [
     {
@@ -127,12 +125,11 @@ const HealthWellnessSuite = ({ spacing = 'md' }: HealthWellnessSuiteProps) => {
     }
   ];
 
-  const categories = [...new Set(tabs.map(tab => tab.category))];
+  // Memoize categories calculation
+  const categories = useMemo(() => [...new Set(tabs.map(tab => tab.category))], []);
 
-  console.log('HealthWellnessSuite rendering with tabs:', tabs.length);
-
-  // Apply compact spacing based on prop
-  const getSpacingClass = () => {
+  // Memoize spacing classes
+  const spacingClass = useMemo(() => {
     switch (spacing) {
       case 'xxs': return 'space-y-1';
       case 'xs': return 'space-y-2';
@@ -140,9 +137,9 @@ const HealthWellnessSuite = ({ spacing = 'md' }: HealthWellnessSuiteProps) => {
       case 'lg': return 'space-y-6 lg:space-y-8';
       default: return 'space-y-4 lg:space-y-6';
     }
-  };
+  }, [spacing]);
 
-  const getGridGapClass = () => {
+  const gridGapClass = useMemo(() => {
     switch (spacing) {
       case 'xxs': return 'gap-1';
       case 'xs': return 'gap-2';
@@ -150,10 +147,10 @@ const HealthWellnessSuite = ({ spacing = 'md' }: HealthWellnessSuiteProps) => {
       case 'lg': return 'gap-6 lg:gap-8';
       default: return 'gap-4 lg:gap-6';
     }
-  };
+  }, [spacing]);
 
   return (
-    <div className={getSpacingClass()}>
+    <div className={spacingClass}>
       {/* Main Tools Panel */}
       <Card>
         <CardContent className="p-0">
@@ -284,6 +281,8 @@ const HealthWellnessSuite = ({ spacing = 'md' }: HealthWellnessSuiteProps) => {
       />
     </div>
   );
-};
+});
+
+HealthWellnessSuite.displayName = 'HealthWellnessSuite';
 
 export default HealthWellnessSuite;

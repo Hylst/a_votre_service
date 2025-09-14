@@ -45,7 +45,6 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
       
       // Prevent multiple loads if already loaded once
       if (hasLoadedOnce) {
-        console.log(`🚫 Évitement du rechargement pour ${toolName} - déjà chargé`);
         return;
       }
       
@@ -59,7 +58,6 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
       const timeSinceLastLoad = now - lastLoadTimeRef.current;
       
       if (timeSinceLastLoad < MIN_LOAD_INTERVAL) {
-        console.log(`⏳ Debouncing load for ${toolName} (${MIN_LOAD_INTERVAL - timeSinceLastLoad}ms remaining)`);
         loadTimeoutRef.current = setTimeout(loadInitialData, MIN_LOAD_INTERVAL - timeSinceLastLoad);
         return;
       }
@@ -68,18 +66,14 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
       setIsLoading(true);
       
       try {
-        console.log(`🔄 Chargement des données pour ${toolName}...`);
-        
         // Charger les données principales
         const loadedData = await loadData(toolName, 'main-data');
         
         if (loadedData) {
           setData(loadedData);
           setLastSyncTime(new Date().toISOString());
-          console.log(`✅ Données chargées pour ${toolName}:`, loadedData);
         } else {
           setData(defaultDataRef.current);
-          console.log(`📝 Données par défaut utilisées pour ${toolName}`);
         }
         
         setHasLoadedOnce(true);
@@ -88,7 +82,6 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
         
         // Check if it's a version error and attempt recovery
         if (error instanceof Error && error.name === 'VersionError') {
-          console.log(`🔄 Tentative de récupération après erreur de version pour ${toolName}`);
           try {
             // Wait a bit and try again - the version should be auto-corrected now
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -96,7 +89,6 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
             if (retryData) {
               setData(retryData);
               setLastSyncTime(new Date().toISOString());
-              console.log(`✅ Récupération réussie pour ${toolName}`);
               setHasLoadedOnce(true);
               return;
             }
@@ -130,15 +122,12 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
   // Sauvegarder les données
   const updateData = useCallback(async (newData: T) => {
     if (!isInitialized) {
-      console.warn(`⚠️ Base de données non initialisée pour ${toolName}`);
       setData(newData);
       return;
     }
 
     setIsSyncing(true);
     try {
-      console.log(`💾 Sauvegarde des données pour ${toolName}...`);
-      
       // Ajouter des métadonnées
       const dataWithMetadata = {
         data: newData,
@@ -152,16 +141,17 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
       if (success) {
         setData(newData);
         setLastSyncTime(new Date().toISOString());
-        console.log(`✅ Données sauvegardées pour ${toolName}`);
       } else {
         throw new Error('Échec de la sauvegarde');
       }
     } catch (error) {
-      console.error(`❌ Erreur lors de la sauvegarde pour ${toolName}:`, error);
+      // Only log critical errors, not routine operations
+      if (!(error instanceof Error && error.name === 'VersionError')) {
+        console.error(`❌ Erreur lors de la sauvegarde pour ${toolName}:`, error);
+      }
       
       // Check if it's a version error and attempt recovery
       if (error instanceof Error && error.name === 'VersionError') {
-        console.log(`🔄 Tentative de récupération après erreur de version lors de la sauvegarde pour ${toolName}`);
         try {
           // Wait a bit and try again - the version should be auto-corrected now
           await new Promise(resolve => setTimeout(resolve, 1000));
@@ -175,12 +165,11 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
           if (retrySuccess) {
             setData(newData);
             setLastSyncTime(new Date().toISOString());
-            console.log(`✅ Récupération de sauvegarde réussie pour ${toolName}`);
             setIsSyncing(false);
             return;
           }
         } catch (retryError) {
-          console.error(`❌ Échec de la récupération de sauvegarde pour ${toolName}:`, retryError);
+          // Silent retry failure - avoid console spam
         }
       }
       
@@ -224,7 +213,7 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
         description: "Les données ont été exportées avec succès",
       });
       
-      console.log(`📤 Export réussi pour ${toolName}`);
+      // Export successful
     } catch (error) {
       console.error(`❌ Erreur d'export pour ${toolName}:`, error);
       toast({
@@ -253,7 +242,7 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
         description: "Les données ont été importées avec succès",
       });
       
-      console.log(`📥 Import réussi pour ${toolName}:`, importedData.data);
+      // Import successful
       return true;
     } catch (error) {
       console.error(`❌ Erreur d'import pour ${toolName}:`, error);
@@ -271,7 +260,7 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
     try {
       if (isInitialized) {
         await deleteData(toolName, 'main-data');
-        console.log(`🗑️ Données supprimées pour ${toolName}`);
+        // Data deleted successfully
       }
       
       await updateData(defaultData);
@@ -281,7 +270,7 @@ export const useOfflineDataManager = <T>({ toolName, defaultData = null }: DataM
         description: "Toutes les données ont été supprimées",
       });
       
-      console.log(`🔄 Réinitialisation terminée pour ${toolName}`);
+      // Reset completed successfully
     } catch (error) {
       console.error(`❌ Erreur de réinitialisation pour ${toolName}:`, error);
       // En cas d'erreur, on remet quand même les données par défaut
