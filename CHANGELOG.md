@@ -1,5 +1,56 @@
 # Changelog
 
+## [2025-01-13] - WeightTracker Local Storage Migration
+
+### ✅ Done
+
+#### WeightTracker Supabase Dependencies Removal
+- **Problème résolu** : L'outil Suivi du Poids dans la page Santé > Poids tentait d'utiliser Supabase et générait des erreurs console
+- **Erreur** : "GET https://efqfljrvnovinoiopzoi.supabase.co/rest/v1/user_offline_data?select=*&user_id=eq.1757776088004&tool_name=eq.weight-tracker 400 (Bad Request)"
+- **Cause** : Le composant WeightTracker utilisait useOptimizedDataManager avec des appels Supabase et des IDs utilisateur invalides
+- **Solution** : Migration complète vers localStorage uniquement
+  - Suppression de useOptimizedDataManager et useDataSync
+  - Implémentation d'un système de gestion de données basé sur localStorage
+  - Conservation de toutes les fonctionnalités (ajout d'entrées, poids cible, tendances, export/import, reset)
+  - Suppression des indicateurs de synchronisation et éléments UI liés au backend
+  - Correction de l'erreur UUID en utilisant des clés localStorage appropriées
+
+#### WeightTracker Component Refactoring
+- **WeightTracker.tsx** : Migration vers stockage local exclusif
+  - Remplacement de useOptimizedDataManager par useState avec localStorage
+  - Implémentation de useEffect pour le chargement/sauvegarde automatique
+  - Mise à jour de toutes les opérations de données (addEntry, updateTargetWeight, getWeightTrend)
+  - Réimplémentation des fonctions export/import/reset pour localStorage
+  - Suppression de l'indicateur "Sauvegarde automatique en cours..."
+  - Conservation de l'interface utilisateur existante
+
+#### Local Storage Implementation
+- **Système de stockage local** : Gestion complète des données de poids
+  - Clé localStorage : 'weight-tracker-data'
+  - Structure de données maintenue : { entries, targetWeight }
+  - Sauvegarde automatique à chaque modification
+  - Chargement automatique au démarrage du composant
+  - Gestion des erreurs de parsing JSON
+
+#### Error Resolution
+- **Erreurs Supabase éliminées** :
+  - Plus d'appels GET vers efqfljrvnovinoiopzoi.supabase.co
+  - Plus d'erreurs "invalid input syntax for type uuid: '1757776088004'"
+  - Plus d'erreurs de synchronisation avec le backend
+  - Console propre sans warnings Supabase
+
+#### Fichiers Modifiés
+- `src/components/tools/health/WeightTracker.tsx` - Migration complète vers localStorage
+
+#### Impact
+- **AVANT** : Erreurs console Supabase, tentatives de connexion échouées, IDs UUID invalides
+- **APRÈS** : Outil Suivi du Poids fonctionnel sans erreurs, stockage entièrement local
+- **Performance** : Élimination des tentatives de connexion réseau inutiles
+- **UX** : Fonctionnement fluide de l'outil sans interruptions
+- **Architecture** : Composant entièrement local, cohérent avec le reste du système
+
+---
+
 ## [2025-01-13] - Goals Tool Browser Crash Fix & Hoisting Issue Resolution
 
 ### ✅ Done

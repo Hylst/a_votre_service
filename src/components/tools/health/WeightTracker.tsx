@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Scale, TrendingUp, Target } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
-import { useOptimizedDataManager } from '@/hooks/useOptimizedDataManager';
 
 interface WeightEntry {
   id: string;
@@ -26,43 +25,66 @@ interface WeightTrackerProps {
 }
 
 export const WeightTracker = ({ data: propData, onDataChange }: WeightTrackerProps) => {
-  // Utiliser le nouveau gestionnaire de données optimisé
-  const {
-    data: managedData,
-    setData: setManagedData,
-    isLoading,
-    hasChanges,
-    exportData,
-    importData,
-    resetData
-  } = useOptimizedDataManager<WeightData>({
-    toolName: 'weight-tracker',
-    defaultData: {
-      entries: [],
-      targetWeight: '',
-      lastUpdated: new Date().toISOString()
-    },
-    autoSave: true,
-    syncInterval: 30000
+  // localStorage key for weight tracker data
+  const STORAGE_KEY = 'weight-tracker-data';
+  
+  // Local state for weight data
+  const [data, setData] = useState<WeightData>({
+    entries: [],
+    targetWeight: '',
+    lastUpdated: new Date().toISOString()
   });
-
+  
   const [currentWeight, setCurrentWeight] = useState('');
   const [notes, setNotes] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   // Memoize onDataChange to prevent infinite re-renders
   const memoizedOnDataChange = useCallback(onDataChange, []);
 
-  // Synchroniser avec les props pour compatibilité (only on mount or when propData actually changes)
+  // Load data from localStorage on component mount
   useEffect(() => {
-    if (propData && Object.keys(propData).length > 0 && JSON.stringify(propData) !== JSON.stringify(managedData)) {
-      setManagedData(propData);
-    }
+    const loadData = () => {
+      try {
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        if (savedData) {
+          const parsedData = JSON.parse(savedData);
+          setData(parsedData);
+        } else if (propData && Object.keys(propData).length > 0) {
+          // Use prop data if no localStorage data exists
+          setData(propData);
+        }
+      } catch (error) {
+        console.error('Error loading weight data from localStorage:', error);
+        toast({
+          title: "Erreur de chargement",
+          description: "Impossible de charger les données sauvegardées",
+          variant: "destructive"
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadData();
   }, [propData]);
 
-  // Notifier les changements pour compatibilité (memoized to prevent infinite loops)
+  // Save data to localStorage whenever data changes
   useEffect(() => {
-    memoizedOnDataChange(managedData);
-  }, [managedData, memoizedOnDataChange]);
+    if (!isLoading) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        memoizedOnDataChange(data);
+      } catch (error) {
+        console.error('Error saving weight data to localStorage:', error);
+        toast({
+          title: "Erreur de sauvegarde",
+          description: "Impossible de sauvegarder les données",
+          variant: "destructive"
+        });
+      }
+    }
+  }, [data, isLoading, memoizedOnDataChange]);
 
   const addEntry = () => {
     if (!currentWeight) {
@@ -82,12 +104,12 @@ export const WeightTracker = ({ data: propData, onDataChange }: WeightTrackerPro
     };
 
     const newData = {
-      ...managedData,
-      entries: [entry, ...managedData.entries],
+      ...data,
+      entries: [entry, ...data.entries],
       lastUpdated: new Date().toISOString()
     };
 
-    setManagedData(newData);
+    setData(newData);
     setCurrentWeight('');
     setNotes('');
 
@@ -99,21 +121,91 @@ export const WeightTracker = ({ data: propData, onDataChange }: WeightTrackerPro
 
   const updateTargetWeight = (newTarget: string) => {
     const newData = {
-      ...managedData,
+      ...data,
       targetWeight: newTarget,
       lastUpdated: new Date().toISOString()
     };
-    setManagedData(newData);
+    setData(newData);
   };
 
   const getWeightTrend = () => {
-    if (managedData.entries.length < 2) return null;
-    const recent = managedData.entries.slice(0, 2);
+    if (data.entries.length < 2) return null;
+    const recent = data.entries.slice(0, 2);
     const diff = recent[0].weight - recent[1].weight;
     return {
       direction: diff > 0 ? 'up' : diff < 0 ? 'down' : 'stable',
       amount: Math.abs(diff)
     };
+  };
+
+  // Export data function
+  const exportData = () => {
+    try {
+      const dataStr = JSON.stringify(data, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `weight-tracker-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Export réussi",
+        description: "Vos données ont été exportées"
+      });
+    } catch (error) {
+      toast({
+        title: "Erreur d'export",
+        description: "Impossible d'exporter les données",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Import data function
+  const importData = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const importedData = JSON.parse(e.target?.result as string);
+        if (importedData.entries && Array.isArray(importedData.entries)) {
+          setData({
+            ...importedData,
+            lastUpdated: new Date().toISOString()
+          });
+          toast({
+            title: "Import réussi",
+            description: "Vos données ont été importées"
+          });
+        } else {
+          throw new Error('Format de fichier invalide');
+        }
+      } catch (error) {
+        toast({
+          title: "Erreur d'import",
+          description: "Format de fichier invalide",
+          variant: "destructive"
+        });
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  // Reset data function
+  const resetData = () => {
+    const defaultData = {
+      entries: [],
+      targetWeight: '',
+      lastUpdated: new Date().toISOString()
+    };
+    setData(defaultData);
+    toast({
+      title: "Données réinitialisées",
+      description: "Toutes les données ont été supprimées"
+    });
   };
 
   const trend = getWeightTrend();
@@ -131,12 +223,6 @@ export const WeightTracker = ({ data: propData, onDataChange }: WeightTrackerPro
 
   return (
     <div className="space-y-6">
-      {/* Indicateur de changements */}
-      {hasChanges && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
-          💾 Sauvegarde automatique en cours...
-        </div>
-      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
@@ -177,14 +263,14 @@ export const WeightTracker = ({ data: propData, onDataChange }: WeightTrackerPro
               type="number"
               step="0.1"
               placeholder="Poids cible (kg)"
-              value={managedData.targetWeight}
+              value={data.targetWeight}
               onChange={(e) => updateTargetWeight(e.target.value)}
             />
-            {managedData.entries.length > 0 && managedData.targetWeight && (
+            {data.entries.length > 0 && data.targetWeight && (
               <div className="text-center p-3 bg-blue-50 dark:bg-blue-950 rounded-lg">
                 <div className="text-sm">À perdre/gagner</div>
                 <div className="text-lg font-bold">
-                  {(managedData.entries[0].weight - parseFloat(managedData.targetWeight)).toFixed(1)}kg
+                  {(data.entries[0].weight - parseFloat(data.targetWeight)).toFixed(1)}kg
                 </div>
               </div>
             )}
@@ -211,14 +297,14 @@ export const WeightTracker = ({ data: propData, onDataChange }: WeightTrackerPro
         </Card>
       )}
 
-      {managedData.entries.length > 0 && (
+      {data.entries.length > 0 && (
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm">Historique</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {managedData.entries.slice(0, 10).map((entry) => (
+              {data.entries.slice(0, 10).map((entry) => (
                 <div key={entry.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
                   <div>
                     <div className="font-medium">{entry.weight}kg</div>

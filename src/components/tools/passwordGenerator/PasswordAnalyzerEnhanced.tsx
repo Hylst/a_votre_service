@@ -107,6 +107,15 @@ export const PasswordAnalyzerEnhanced = ({
         </CardHeader>
         <CardContent className="space-y-4">
           <form onSubmit={(e) => e.preventDefault()}>
+            {/* Hidden username field for accessibility compliance */}
+            <input
+              type="text"
+              name="username"
+              autoComplete="username"
+              style={{ display: 'none' }}
+              tabIndex={-1}
+              aria-hidden="true"
+            />
             <div className="flex gap-2">
               <div className="relative flex-1">
                 <Input

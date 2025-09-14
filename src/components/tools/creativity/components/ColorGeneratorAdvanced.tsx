@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,18 +25,18 @@ export const ColorGeneratorAdvanced = () => {
   const [favorites, setFavorites] = useState<ColorInfo[]>([]);
   const [inputColor, setInputColor] = useState("");
 
-  const generateRandomColor = () => {
+  const generateRandomColor = useCallback(() => {
     return "#" + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-  };
+  }, []);
 
-  const hexToRgb = (hex: string) => {
+  const hexToRgb = useCallback((hex: string) => {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
     const b = parseInt(hex.slice(5, 7), 16);
     return `rgb(${r}, ${g}, ${b})`;
-  };
+  }, []);
 
-  const hexToHsl = (hex: string) => {
+  const hexToHsl = useCallback((hex: string) => {
     const r = parseInt(hex.slice(1, 3), 16) / 255;
     const g = parseInt(hex.slice(3, 5), 16) / 255;
     const b = parseInt(hex.slice(5, 7), 16) / 255;
@@ -57,9 +57,9 @@ export const ColorGeneratorAdvanced = () => {
     }
 
     return `hsl(${Math.round(h * 360)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
-  };
+  }, []);
 
-  const hexToCmyk = (hex: string) => {
+  const hexToCmyk = useCallback((hex: string) => {
     const r = parseInt(hex.slice(1, 3), 16) / 255;
     const g = parseInt(hex.slice(3, 5), 16) / 255;
     const b = parseInt(hex.slice(5, 7), 16) / 255;
@@ -70,9 +70,9 @@ export const ColorGeneratorAdvanced = () => {
     const y = k < 1 ? (1 - b - k) / (1 - k) : 0;
 
     return `cmyk(${Math.round(c * 100)}%, ${Math.round(m * 100)}%, ${Math.round(y * 100)}%, ${Math.round(k * 100)}%)`;
-  };
+  }, []);
 
-  const getColorName = (hex: string) => {
+  const getColorName = useCallback((hex: string) => {
     const colorNames: { [key: string]: string } = {
       "#FF0000": "Rouge",
       "#00FF00": "Vert",
@@ -84,25 +84,25 @@ export const ColorGeneratorAdvanced = () => {
       "#FFFFFF": "Blanc",
     };
     return colorNames[hex.toUpperCase()] || "Couleur personnalisée";
-  };
+  }, []);
 
-  const createColorInfo = (hex: string): ColorInfo => ({
+  const createColorInfo = useCallback((hex: string): ColorInfo => ({
     hex,
     rgb: hexToRgb(hex),
     hsl: hexToHsl(hex),
     cmyk: hexToCmyk(hex),
     name: getColorName(hex),
     isFavorite: false,
-  });
+  }), [hexToRgb, hexToHsl, hexToCmyk, getColorName]);
 
-  const generateNewColor = () => {
+  const generateNewColor = useCallback(() => {
     const newColor = generateRandomColor();
     setCurrentColor(newColor);
     const colorInfo = createColorInfo(newColor);
     setColorHistory(prev => [colorInfo, ...prev.slice(0, 19)]);
-  };
+  }, [generateRandomColor, createColorInfo]);
 
-  const handleColorInput = () => {
+  const handleColorInput = useCallback(() => {
     if (inputColor.match(/^#[0-9A-F]{6}$/i)) {
       setCurrentColor(inputColor);
       const colorInfo = createColorInfo(inputColor);
@@ -115,17 +115,17 @@ export const ColorGeneratorAdvanced = () => {
         variant: "destructive",
       });
     }
-  };
+  }, [inputColor, createColorInfo]);
 
-  const copyToClipboard = (text: string, format: string) => {
+  const copyToClipboard = useCallback((text: string, format: string) => {
     navigator.clipboard.writeText(text);
     toast({
       title: "Couleur copiée !",
       description: `Format ${format} copié dans le presse-papiers.`,
     });
-  };
+  }, []);
 
-  const toggleFavorite = (color: ColorInfo) => {
+  const toggleFavorite = useCallback((color: ColorInfo) => {
     if (favorites.some(fav => fav.hex === color.hex)) {
       setFavorites(prev => prev.filter(fav => fav.hex !== color.hex));
       toast({
@@ -139,29 +139,31 @@ export const ColorGeneratorAdvanced = () => {
         description: "Couleur ajoutée à vos favoris.",
       });
     }
-  };
+  }, [favorites]);
 
-  const exportColors = () => {
+  const exportColors = useCallback(() => {
     const data = {
-      current: createColorInfo(currentColor),
+      favorites,
       history: colorHistory,
-      favorites: favorites,
-      exportDate: new Date().toISOString(),
+      current: currentColor,
+      timestamp: new Date().toISOString(),
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'couleurs-export.json';
+    a.download = `couleurs-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
     toast({
-      title: "Export réussi !",
+      title: "Export réussi",
       description: "Vos couleurs ont été exportées avec succès.",
     });
-  };
+  }, [favorites, colorHistory, currentColor]);
 
-  const currentColorInfo = createColorInfo(currentColor);
+  const currentColorInfo = useMemo(() => createColorInfo(currentColor), [currentColor, createColorInfo]);
 
   return (
     <div className="space-y-6">
