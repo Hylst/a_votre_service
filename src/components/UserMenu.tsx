@@ -19,6 +19,11 @@ interface UserMenuProps {
   onProfileClick?: () => void;
 }
 
+// Avatar presets - emojis that should be displayed directly
+const AVATAR_PRESETS = [
+  '👤', '👨', '👩', '🧑', '👨‍💼', '👩‍💼', '👨‍🎓', '👩‍🎓', '🧑‍💻', '👨‍🔬'
+];
+
 export const UserMenu = ({ onProfileClick }: UserMenuProps) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
@@ -74,8 +79,16 @@ export const UserMenu = ({ onProfileClick }: UserMenuProps) => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.avatar_url} alt="Avatar" />
-            <AvatarFallback>{userInitials}</AvatarFallback>
+            {user.avatar_url && AVATAR_PRESETS.includes(user.avatar_url) ? (
+              <div className="flex items-center justify-center w-full h-full text-lg">
+                {user.avatar_url}
+              </div>
+            ) : (
+              <>
+                <AvatarImage src={user.avatar_url} alt="Avatar" />
+                <AvatarFallback>{userInitials}</AvatarFallback>
+              </>
+            )}
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
