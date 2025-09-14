@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -19,6 +20,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import { User, Save, X } from 'lucide-react';
 
 interface UserProfile {
@@ -42,6 +44,7 @@ const AVATAR_PRESETS = [
 const STORAGE_KEY = 'user_profile';
 
 export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) => {
+  const { user, updateProfile } = useAuth();
   
   const [profile, setProfile] = useState<UserProfile>({
     name: '',
@@ -55,21 +58,38 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
   
 
 
-  // Load profile from localStorage on component mount
+  // Load profile from localStorage and auth context on component mount
   useEffect(() => {
+    if (!isOpen) return;
+    
+    // First try to load from saved profile
     const savedProfile = localStorage.getItem(STORAGE_KEY);
+    let profileData = {
+      name: user?.fullName || user?.full_name || '',
+      email: '',
+      avatar: user?.avatar_url || AVATAR_PRESETS[0],
+      avatarType: (user?.avatar_url && !AVATAR_PRESETS.includes(user.avatar_url)) ? 'custom' as const : 'preset' as const,
+      notes: ''
+    };
+    
     if (savedProfile) {
       try {
         const parsedProfile = JSON.parse(savedProfile);
-        setProfile(parsedProfile);
-        if (parsedProfile.avatarType === 'custom') {
-          setCustomAvatarUrl(parsedProfile.avatar);
-        }
+        // Merge saved profile with auth data, prioritizing auth data for name
+        profileData = {
+          ...parsedProfile,
+          name: user?.fullName || user?.full_name || parsedProfile.name,
+        };
       } catch (error) {
         console.error('Error parsing saved profile:', error);
       }
     }
-  }, [isOpen]);
+    
+    setProfile(profileData);
+    if (profileData.avatarType === 'custom') {
+      setCustomAvatarUrl(profileData.avatar);
+    }
+  }, [isOpen, user]);
 
   const handleSave = async () => {
     // Validate required fields
@@ -94,13 +114,24 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
 
     setIsSaving(true);
     try {
+      const finalAvatar = profile.avatarType === 'custom' ? customAvatarUrl : profile.avatar;
+      
       const profileToSave = {
         ...profile,
-        avatar: profile.avatarType === 'custom' ? customAvatarUrl : profile.avatar,
+        avatar: finalAvatar,
         updatedAt: new Date().toISOString()
       };
 
+      // Save to localStorage
       localStorage.setItem(STORAGE_KEY, JSON.stringify(profileToSave));
+      
+      // Update auth context with name and avatar
+      if (user) {
+        await updateProfile({
+          full_name: profile.name,
+          avatar_url: finalAvatar
+        });
+      }
       
       toast({
         title: "Succès",
@@ -121,18 +152,31 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
   };
 
   const handleCancel = () => {
-    // Reset form to saved state
+    // Reset form to saved state or auth data
     const savedProfile = localStorage.getItem(STORAGE_KEY);
+    let resetData = {
+      name: user?.fullName || user?.full_name || '',
+      email: '',
+      avatar: user?.avatar_url || AVATAR_PRESETS[0],
+      avatarType: (user?.avatar_url && !AVATAR_PRESETS.includes(user.avatar_url)) ? 'custom' as const : 'preset' as const,
+      notes: ''
+    };
+    
     if (savedProfile) {
       try {
         const parsedProfile = JSON.parse(savedProfile);
-        setProfile(parsedProfile);
-        if (parsedProfile.avatarType === 'custom') {
-          setCustomAvatarUrl(parsedProfile.avatar);
-        }
+        resetData = {
+          ...parsedProfile,
+          name: user?.fullName || user?.full_name || parsedProfile.name,
+        };
       } catch (error) {
         console.error('Error resetting profile:', error);
       }
+    }
+    
+    setProfile(resetData);
+    if (resetData.avatarType === 'custom') {
+      setCustomAvatarUrl(resetData.avatar);
     }
     onClose();
   };
@@ -161,6 +205,9 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose }) =
             <User className="w-5 h-5" />
             Mon Profil
           </DialogTitle>
+          <DialogDescription>
+            Gérez vos informations personnelles, choisissez votre avatar et ajoutez des notes.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
