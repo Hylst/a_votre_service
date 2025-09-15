@@ -519,6 +519,36 @@ export const About = () => {
           ]
         },
         {
+          name: "Guide Cybersécurité Intégré",
+          features: [
+            "Onglet 'Conseils cybersécurité' dédié",
+            "Scénarios de sécurité du monde réel",
+            "Bonnes pratiques de gestion des mots de passe",
+            "Recommandations de mise à jour logicielle",
+            "Conseils de protection contre le phishing",
+            "Sections pliables avec guidance détaillée",
+            "Éducation à la sécurité progressive",
+            "Recommandations professionnelles",
+            "Mise à jour continue des menaces",
+            "Interface intuitive et accessible"
+          ]
+        },
+        {
+          name: "Interface Utilisateur Optimisée",
+          features: [
+            "Interface épurée sans badges de fonctionnalités",
+            "Organisation par onglets professionnelle",
+            "Intégration éducation cybersécurité",
+            "Navigation intuitive et fluide",
+            "Thème adaptatif dark/light",
+            "Accessibilité WCAG 2.1 complète",
+            "Responsive design multi-appareils",
+            "Performance optimisée",
+            "Expérience utilisateur cohérente",
+            "Design moderne et professionnel"
+          ]
+        },
+        {
           name: "Export/Import Universel",
           features: [
             "Sauvegarde complète chiffrée",

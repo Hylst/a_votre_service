@@ -187,23 +187,14 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
                 </>
               )}
               {activeSection === "password-generator-advanced" && (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsPasswordGeneratorInfoModalOpen(true)}
-                    className="p-1 h-8 w-8 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900"
-                  >
-                    <Info className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                  </Button>
-                  <div className="hidden lg:flex items-center gap-1 ml-2">
-                    <Badge variant="secondary" className="text-xs">Génération</Badge>
-                    <Badge variant="secondary" className="text-xs">Analyse</Badge>
-                    <Badge variant="secondary" className="text-xs">Import/Export</Badge>
-                    <Badge variant="secondary" className="text-xs">Historique</Badge>
-                    <Badge variant="secondary" className="text-xs">Chiffrement</Badge>
-                  </div>
-                </>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsPasswordGeneratorInfoModalOpen(true)}
+                  className="p-1 h-8 w-8 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900"
+                >
+                  <Info className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                </Button>
               )}
 
             </div>
