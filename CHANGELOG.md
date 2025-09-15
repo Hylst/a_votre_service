@@ -1,5 +1,50 @@
 # Changelog
 
+## [2025-01-15] - PWA Console Errors Resolution & Configuration Fix
+
+### ✅ Done
+
+#### MIME Type Error Resolution
+- **Problème résolu** : Erreur console "The script has an unsupported MIME type ('text/html')"
+- **Cause** : Enregistrement manuel incorrect du service worker dans src/main.tsx
+- **Solution** : Suppression de l'enregistrement manuel du service worker
+  - VitePWA gère automatiquement l'enregistrement via registerSW.js
+  - Élimination du conflit entre enregistrement manuel et automatique
+  - Service worker correctement servi avec le bon type MIME
+
+#### PWA Icon Loading Error Fix
+- **Problème résolu** : "Error while trying to use the following icon from the Manifest: http://localhost:5190/pwa-192x192.png (Download error or resource isn't a valid image)"
+- **Cause** : Conflit entre public/manifest.json et la configuration manifest dans vite.config.ts
+- **Solution** : Résolution du conflit de configuration
+  - Suppression de public/manifest.json pour éviter les doublons
+  - Mise à jour de vite.config.ts avec les chemins d'icônes corrects (avec /)
+  - Suppression du lien manuel vers manifest.json dans index.html
+  - VitePWA génère automatiquement le manifest optimisé
+
+#### PWA Configuration Optimization
+- **Manifest mis à jour** :
+  - Chemins d'icônes corrigés : `/pwa-192x192.png`, `/pwa-512x512.png`
+  - Ajout de `purpose: 'any maskable'` pour toutes les icônes
+  - Mise à jour du theme_color vers #2563eb (cohérent avec le design)
+  - Ajout de la langue française (`lang: 'fr'`)
+  - Description mise à jour pour refléter les outils utilitaires
+
+#### Fichiers Modifiés
+- `src/main.tsx` - Suppression de l'enregistrement manuel du service worker
+- `vite.config.ts` - Correction des chemins d'icônes et optimisation du manifest
+- `index.html` - Suppression du lien manuel vers manifest.json, mise à jour theme-color
+- `public/manifest.json` - Supprimé pour éviter les conflits
+
+#### Impact
+- **AVANT** : Erreurs console MIME type et chargement d'icônes PWA
+- **APRÈS** : PWA complètement fonctionnelle sans erreurs console
+- **Console** : Aucune erreur PWA dans les logs du navigateur ✓
+- **Service Worker** : Enregistrement automatique correct via VitePWA ✓
+- **Icônes** : Chargement réussi des icônes PWA avec chemins absolus ✓
+- **Installation** : Bouton d'installation PWA disponible sans erreurs ✓
+
+---
+
 ## [2025-01-15] - PWA Service Worker Registration & Install Button Final Fix
 
 ### ✅ Done

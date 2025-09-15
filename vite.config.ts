@@ -15,28 +15,25 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'À Votre Service - Suite Productivité',
+        name: 'À Votre Service - Outils Utilitaires',
         short_name: 'À Votre Service',
-        description: 'Suite complète de 77 outils de productivité intégrés',
-        theme_color: '#0f172a',
+        description: 'Une collection d\'outils utilitaires pour simplifier votre quotidien - calculatrices, convertisseurs et plus encore',
+        theme_color: '#2563eb',
         background_color: '#ffffff',
         display: 'standalone',
         scope: '/',
         start_url: '/',
         orientation: 'portrait-primary',
+        lang: 'fr',
         icons: [
           {
-            src: 'pwa-192x192.png',
+            src: '/pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any maskable'
           },
           {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
+            src: '/pwa-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
