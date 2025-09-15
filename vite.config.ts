@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
+import { VitePWA } from 'vite-plugin-pwa';
 import path from "path";
 
 // https://vitejs.dev/config/
@@ -10,6 +11,104 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      manifest: {
+        name: 'À Votre Service - Suite Productivité',
+        short_name: 'À Votre Service',
+        description: 'Suite complète de 77 outils de productivité intégrés',
+        theme_color: '#0f172a',
+        background_color: '#ffffff',
+        display: 'standalone',
+        scope: '/',
+        start_url: '/',
+        orientation: 'portrait-primary',
+        icons: [
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png'
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any maskable'
+          }
+        ],
+        categories: ['productivity', 'utilities', 'business'],
+        shortcuts: [
+          {
+            name: 'Calculatrice',
+            short_name: 'Calc',
+            description: 'Calculatrice avancée',
+            url: '/?tool=calculator',
+            icons: [{ src: 'pwa-192x192.png', sizes: '96x96' }]
+          },
+          {
+            name: 'Convertisseur',
+            short_name: 'Convert',
+            description: 'Convertisseur d\'unités',
+            url: '/?tool=converter',
+            icons: [{ src: 'pwa-192x192.png', sizes: '96x96' }]
+          }
+        ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365
+              },
+              plugins: [
+                {
+                  cacheKeyWillBeUsed: async ({ request }) => {
+                    return `${request.url}?version=1`;
+                  }
+                }
+              ]
+            }
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'gstatic-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365
+              }
+            }
+          },
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 30
+              }
+            }
+          }
+        ]
+      },
+      devOptions: {
+        enabled: true
+      }
+    })
   ],
   resolve: {
     alias: {

@@ -10,6 +10,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from './components/ui/toaster';
 import SEOHead from './components/SEOHead';
+import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ function App() {
         <AuthProvider>
           <AppContent />
           <Toaster />
+          <PWAInstallPrompt />
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
