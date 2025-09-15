@@ -36,6 +36,7 @@ import DateTimeInfoModal from "@/components/modals/DateTimeInfoModal";
 import TextUtilsInfoModal from "@/components/modals/TextUtilsInfoModal";
 import { PasswordGeneratorInfoModal } from "@/components/modals/PasswordGeneratorInfoModal";
 import { ProfileModal } from "@/components/modals/ProfileModal";
+import { FinanceBudgetInfoModal } from "@/components/modals/FinanceBudgetInfoModal";
 
 // New design system components
 import { Container } from "@/components/ui/container";
@@ -399,10 +400,9 @@ const Index = () => {
                       <Calculator className="w-6 h-6 text-green-600 dark:text-green-400" />
                     )}
                     {activeSection === "finance-budget" && (
-                       <DollarSign className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                     )}
-                    {activeSection === "finance-budget" && (
                       <>
+                        <DollarSign className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                        <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">Finance & Budget</h1>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -443,9 +443,7 @@ const Index = () => {
                     {activeSection === "password-generator-advanced" && (
                       <span className="text-2xl">🔐</span>
                     )}
-                    <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
-                      {getSectionTitle()}
-                    </h1>
+
                     {activeSection === "unit-converter" && (
                       <>
                         <Button
@@ -684,6 +682,12 @@ const Index = () => {
           </SidebarInset>
         </div>
       </SidebarProvider>
+      
+      {/* Modals */}
+      <FinanceBudgetInfoModal
+        isOpen={isFinanceBudgetInfoModalOpen}
+        onClose={() => setIsFinanceBudgetInfoModalOpen(false)}
+      />
     </div>
   );
 };
