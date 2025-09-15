@@ -11,7 +11,7 @@ const ColorGenerator = lazy(() => import("@/components/tools/ColorGenerator").th
 const BMICalculator = lazy(() => import("@/components/tools/BMICalculator"));
 const TextUtilsAdvanced = lazy(() => import("@/components/tools/TextUtilsAdvanced"));
 const DateCalculatorAdvanced = lazy(() => import("@/components/tools/DateCalculatorAdvanced"));
-const ProductivitySuiteModular = lazy(() => import("@/components/tools/ProductivitySuiteModular").then(module => ({ default: module.ProductivitySuiteModular })));
+const ProductivitySuiteModular = lazy(() => import("@/components/tools/ProductivitySuiteModular"));
 const PasswordGeneratorAdvancedEnhanced = lazy(() => import("@/components/tools/PasswordGeneratorAdvancedEnhanced").then(module => ({ default: module.PasswordGeneratorAdvancedEnhanced })));
 const QRCodeGenerator = lazy(() => import("@/components/tools/QRCodeGenerator"));
 const HealthWellnessSuite = lazy(() => import("@/components/tools/HealthWellnessSuite"));
@@ -241,6 +241,7 @@ const Index = () => {
                     icon="⚖️"
                     tools={["12 Types d'unités", "Temps réel", "Notes explicatives", "Standards SI", "Débounce optimisé"]}
                     onClick={() => setActiveSection("unit-converter")}
+                    variant="highlighted"
                   />
                   
                   <ToolCard
@@ -249,6 +250,7 @@ const Index = () => {
                     icon="🧮"
                     tools={["Scientifique", "Clavier", "Mémoire", "Historique"]}
                     onClick={() => setActiveSection("calculator")}
+                    variant="highlighted"
                   />
                   
                   <ToolCard
@@ -257,6 +259,7 @@ const Index = () => {
                     icon="📅"
                     tools={["Différences", "Ajout/Soustraction", "Âge", "Planning", "Fuseaux horaires"]}
                     onClick={() => setActiveSection("date-calculator-advanced")}
+                    variant="highlighted"
                   />
                   
                   <ToolCard
@@ -274,6 +277,7 @@ const Index = () => {
                     icon="🔐"
                     tools={["Templates sécurisés", "Analyse de force", "Historique", "Export/Import", "Chiffrement"]}
                     onClick={() => setActiveSection("password-generator-advanced")}
+                    variant="highlighted"
                   />
                   
                   <ToolCard
@@ -282,6 +286,7 @@ const Index = () => {
                     icon="🎨"
                     tools={["Couleurs", "Palettes", "Design", "Inspiration"]}
                     onClick={() => setActiveSection("color-generator")}
+                    variant="highlighted"
                   />
                   
                   <ToolCard
@@ -299,6 +304,7 @@ const Index = () => {
                     icon="💪"
                     tools={["IMC Avancé", "Nutrition", "Hydratation", "Sommeil", "Exercices", "Mental", "Médicaments", "Métriques", "Poids", "Objectifs"]}
                     onClick={() => setActiveSection("health-wellness-suite")}
+                    variant="highlighted"
                   />
                   
                   <ToolCard
@@ -307,6 +313,7 @@ const Index = () => {
                     icon="📝"
                     tools={["Compteur avancé", "Formatage", "Analyse sentiment", "Transformation", "SEO", "Markdown", "Colorisation", "Emojis"]}
                     onClick={() => setActiveSection("text-utils-advanced")}
+                    variant="highlighted"
                   />
 
                   <ToolCard
@@ -315,6 +322,7 @@ const Index = () => {
                     icon="🗃️"
                     tools={["Export universel", "Import/Export", "Statistiques", "Performance", "Tests intégrés"]}
                     onClick={() => setActiveSection("data-manager")}
+                    variant="highlighted"
                   />
                   
                   <ToolCard
@@ -323,6 +331,7 @@ const Index = () => {
                     icon="ℹ️"
                     tools={["Auteur", "Technologies", "Version", "Licence"]}
                     onClick={() => setActiveSection("about")}
+                    variant="highlighted"
                   />
                 </Grid>
               </Container>
