@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Calendar, Home, Calculator, CheckSquare, Palette, Heart, FileText, Shield, Settings, Info, Database, Briefcase } from "lucide-react";
+import { Calendar, Home, Calculator, CheckSquare, Palette, Heart, FileText, Shield, Settings, Info, Database, Briefcase, DollarSign } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -44,6 +44,7 @@ export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps)
     { id: "home", label: "Accueil", icon: Home },
     { id: "unit-converter", label: "Convertisseurs", icon: Calculator },
     { id: "calculator", label: "Calculatrices", icon: Calculator },
+    { id: "finance-budget", label: "Finance & Budget", icon: DollarSign },
     { id: "date-calculator-advanced", label: "Dates & Temps", icon: Calendar },
     { id: "productivity-suite", label: "Organisation productive", icon: CheckSquare },
     { id: "password-generator-advanced", label: "Sécurité Avancée", icon: Shield },

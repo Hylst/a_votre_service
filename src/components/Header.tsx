@@ -1,5 +1,5 @@
 
-import { Menu, Home, Scale, Info, Calculator, Brain, Palette } from "lucide-react";
+import { Menu, Home, Scale, Info, Calculator, Brain, Palette, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -61,6 +61,7 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
       case "password-generator-advanced": return "Gestion de mots de passe et sécurité";
       case "qr-code": return "Générateur QR Code";
       case "color-generator": return "Créativité";
+      case "finance-budget": return "Finance & Budget";
 
       case "bmi-calculator": return "Calculateur IMC";
       case "text-utils": return "Utilitaires Texte";
@@ -81,6 +82,12 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
             <Menu className="w-5 h-5" />
           </Button>
           
+          {activeSection === "finance-budget" && (
+            <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
+              {getSectionTitle()}
+            </h1>
+          )}
+          
           <div className="flex items-center space-x-2">
             {activeSection !== "home" && (
               <Button
@@ -94,25 +101,33 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
               </Button>
             )}
             <div className="flex items-center gap-2">
-              {activeSection === "unit-converter" && (
-                <Scale className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              )}
-              {activeSection === "calculator" && (
-                <Calculator className="w-6 h-6 text-green-600 dark:text-green-400" />
-              )}
-              {activeSection === "productivity-suite" && (
-                <Brain className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-              )}
-              {activeSection === "color-generator" && (
-                <Palette className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-              )}
-              {activeSection === "password-generator-advanced" && (
-                <span className="text-2xl">🔐</span>
-              )}
+              {activeSection === "finance-budget" ? (
+                <>
+                  <DollarSign className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                </>
+              ) : (
+                <>
+                  {activeSection === "unit-converter" && (
+                    <Scale className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                  )}
+                  {activeSection === "calculator" && (
+                    <Calculator className="w-6 h-6 text-green-600 dark:text-green-400" />
+                  )}
+                  {activeSection === "productivity-suite" && (
+                    <Brain className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                  )}
+                  {activeSection === "color-generator" && (
+                    <Palette className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  )}
+                  {activeSection === "password-generator-advanced" && (
+                    <span className="text-2xl">🔐</span>
+                  )}
 
-              <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
-                {getSectionTitle()}
-              </h1>
+                  <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
+                    {getSectionTitle()}
+                  </h1>
+                </>
+              )}
               {activeSection === "unit-converter" && (
                 <>
                   <Button
@@ -195,6 +210,17 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
                 >
                   <Info className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 </Button>
+              )}
+              {activeSection === "finance-budget" && (
+                <>
+                  <div className="hidden lg:flex items-center gap-1 ml-2">
+                    <Badge variant="secondary" className="text-xs">7 outils</Badge>
+                    <Badge variant="secondary" className="text-xs">Prêts & Épargne</Badge>
+                    <Badge variant="secondary" className="text-xs">Budget intelligent</Badge>
+                    <Badge variant="secondary" className="text-xs">Crypto temps réel</Badge>
+                    <Badge variant="secondary" className="text-xs">Taxes FR</Badge>
+                  </div>
+                </>
               )}
 
             </div>

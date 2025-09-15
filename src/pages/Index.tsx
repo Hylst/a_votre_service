@@ -19,11 +19,12 @@ const About = lazy(() => import("@/components/About").then(module => ({ default:
 const UniversalDataManager = lazy(() => import("@/components/tools/common/UniversalDataManager").then(module => ({ default: module.UniversalDataManager })));
 const AppSettings = lazy(() => import("@/components/tools/common/AppSettings"));
 const CareerSuite = lazy(() => import("@/components/tools/career/CareerSuite").then(module => ({ default: module.CareerSuite })));
+const FinanceBudgetSuite = lazy(() => import("@/components/tools/FinanceBudgetSuite").then(module => ({ default: module.FinanceBudgetSuite })));
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { UserMenu } from "@/components/UserMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Scale, Info, Home, Calculator, Brain, Palette, Heart, Calendar, FileText, Briefcase } from "lucide-react";
+import { Scale, Info, Home, Calculator, Brain, Palette, Heart, Calendar, FileText, Briefcase, DollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { UnitConverterInfoModal } from "@/components/modals/UnitConverterInfoModal";
 import { CalculatorInfoModal } from "@/components/modals/CalculatorInfoModal";
@@ -58,6 +59,7 @@ const Index = () => {
   const [isHealthInfoModalOpen, setIsHealthInfoModalOpen] = useState(false);
   const [isTextUtilsInfoModalOpen, setIsTextUtilsInfoModalOpen] = useState(false);
   const [isPasswordGeneratorInfoModalOpen, setIsPasswordGeneratorInfoModalOpen] = useState(false);
+  const [isFinanceBudgetInfoModalOpen, setIsFinanceBudgetInfoModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // Gérer la navigation via URL params (depuis Settings)
@@ -83,6 +85,7 @@ const Index = () => {
       case "productivity-suite": return "Organisation productive";
       case "password-generator-advanced": return "Gestion de mots de passe et sécurité";
       case "color-generator": return "Créativité";
+      case "finance-budget": return "Finance & Budget";
       case "career-generator": return "Carrière/Pro";
       case "health": return "Santé";
       case "health-wellness-suite": return "Santé";
@@ -148,6 +151,12 @@ const Index = () => {
         return (
           <Suspense fallback={<LoadingFallback />}>
             <ColorGenerator />
+          </Suspense>
+        );
+      case "finance-budget":
+        return (
+          <Suspense fallback={<LoadingFallback />}>
+            <FinanceBudgetSuite />
           </Suspense>
         );
       case "career-generator":
@@ -252,6 +261,15 @@ const Index = () => {
                     icon="🧮"
                     tools={["Scientifique", "Clavier", "Mémoire", "Historique"]}
                     onClick={() => setActiveSection("calculator")}
+                    variant="highlighted"
+                  />
+                  
+                  <ToolCard
+                    title="Finance & Budget"
+                    description="Suite complète de gestion financière et budgétaire"
+                    icon="💰"
+                    tools={["Calculateur de prêts", "Planificateur budgétaire", "Épargne & intérêts", "Simulateur retraite", "Crypto-monnaies", "Taxes & déductions", "Gestionnaire dépenses"]}
+                    onClick={() => setActiveSection("finance-budget")}
                     variant="highlighted"
                   />
                   
@@ -379,6 +397,30 @@ const Index = () => {
 
                     {activeSection === "calculator" && (
                       <Calculator className="w-6 h-6 text-green-600 dark:text-green-400" />
+                    )}
+                    {activeSection === "finance-budget" && (
+                       <DollarSign className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                     )}
+                    {activeSection === "finance-budget" && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsFinanceBudgetInfoModalOpen(true)}
+                          className="p-1 h-8 w-8 rounded-full hover:bg-emerald-100 dark:hover:bg-emerald-900"
+                        >
+                          <Info className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                        </Button>
+                        <div className="hidden lg:flex items-center gap-1 ml-2">
+                          <Badge variant="secondary" className="text-xs">Prêts</Badge>
+                          <Badge variant="secondary" className="text-xs">Budget</Badge>
+                          <Badge variant="secondary" className="text-xs">Épargne</Badge>
+                          <Badge variant="secondary" className="text-xs">Retraite</Badge>
+                          <Badge variant="secondary" className="text-xs">Crypto</Badge>
+                          <Badge variant="secondary" className="text-xs">Taxes</Badge>
+                          <Badge variant="secondary" className="text-xs">Dépenses</Badge>
+                        </div>
+                      </>
                     )}
                     {activeSection === "date-calculator-advanced" && (
                       <Calendar className="w-6 h-6 text-blue-600 dark:text-blue-400" />

@@ -1500,6 +1500,57 @@ export const About = () => {
         </CardContent>
       </Card>
 
+      {/* Avertissement légal et responsabilité */}
+      <Card className="w-full bg-yellow-50 dark:bg-yellow-900/10 border-yellow-200 dark:border-yellow-800">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+            Avertissement légal et limitation de responsabilité
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="text-sm text-yellow-800 dark:text-yellow-200 space-y-3">
+            <div>
+              <h4 className="font-semibold mb-2">⚠️ Utilisation des outils financiers</h4>
+              <p>
+                Les outils de calcul financier (Calculateur de Prêts, Planificateur Budget, Calculateur Épargne) 
+                peuvent comporter des erreurs encore non décelées et pourraient ne plus être à jour au moment où vous les utilisez. 
+                Les calculs, projections et suggestions fournis sont donnés à titre indicatif uniquement et ne constituent 
+                pas des conseils financiers, d'investissement ou budgétaires professionnels.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-2">🛡️ Limitation de responsabilité</h4>
+              <p>
+                Le créateur de cette application ne saurait en aucun cas être tenu pour responsable d'une perte financière, 
+                d'un préjudice économique, ou de toute conséquence découlant de l'utilisation des outils proposés. 
+                Cette application est fournie gracieusement, sans garantie de fonctionnement, sans promesse de résultat 
+                ni d'exactitude des calculs.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-2">💡 Recommandations</h4>
+              <p>
+                Avant de prendre toute décision financière importante (investissement, emprunt, planification budgétaire), 
+                consultez toujours un conseiller financier qualifié, un expert-comptable ou votre établissement bancaire. 
+                Vérifiez systématiquement les calculs avec des sources officielles et des professionnels du secteur.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-2">📋 Utilisation générale</h4>
+              <p>
+                L'ensemble des outils de cette application sont fournis "en l'état" sans garantie d'aucune sorte. 
+                L'utilisateur assume l'entière responsabilité de l'usage qu'il fait des résultats obtenus. 
+                Les informations peuvent être incomplètes, inexactes ou obsolètes.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Copyright */}
       <div className="text-center py-4 w-full">
         <p className="text-sm text-muted-foreground">
