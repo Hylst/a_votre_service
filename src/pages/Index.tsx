@@ -443,7 +443,11 @@ const Index = () => {
                     {activeSection === "password-generator-advanced" && (
                       <span className="text-2xl">🔐</span>
                     )}
-
+                    {activeSection !== "finance-budget" && (
+                      <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
+                        {getSectionTitle()}
+                      </h1>
+                    )}
                     {activeSection === "unit-converter" && (
                       <>
                         <Button
