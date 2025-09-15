@@ -61,6 +61,8 @@ export interface PasswordEntry {
   notes?: string;
   usageCount?: number;
   lastUsed?: number;
+  siteName?: string;  // Optional name, URL or domain associated with the password
+  username?: string;  // Optional identifier/username associated with the password
 }
 
 export interface PasswordTemplate {
@@ -472,7 +474,11 @@ export const usePasswordGeneratorEnhanced = () => {
   }, []);
 
   // Enhanced password generation
-  const generatePassword = useCallback(async (customSettings?: Partial<PasswordSettings>): Promise<string> => {
+  const generatePassword = useCallback(async (
+    customSettings?: Partial<PasswordSettings>,
+    siteName?: string,
+    username?: string
+  ): Promise<string> => {
     setIsGenerating(true);
     
     try {
@@ -499,12 +505,12 @@ export const usePasswordGeneratorEnhanced = () => {
       if (activeSettings.minimumEntropy && strength.entropy < activeSettings.minimumEntropy) {
         // Retry with longer length
         const newSettings = { ...activeSettings, length: activeSettings.length + 2 };
-        return generatePassword(newSettings);
+        return generatePassword(newSettings, siteName, username);
       }
 
       // Save to history if auto-save is enabled
       if (passwordData?.settings?.autoSave !== false) {
-        await savePasswordToHistory(password, strength, activeSettings);
+        await savePasswordToHistory(password, strength, activeSettings, undefined, siteName, username);
       }
 
       setCurrentPassword(password);
@@ -703,7 +709,9 @@ export const usePasswordGeneratorEnhanced = () => {
     password: string,
     strength: PasswordStrength,
     usedSettings: PasswordSettings,
-    templateId?: string
+    templateId?: string,
+    siteName?: string,
+    username?: string
   ) => {
     if (!passwordData) return;
 
@@ -716,7 +724,9 @@ export const usePasswordGeneratorEnhanced = () => {
       isFavorite: false,
       isCopied: false,
       templateId,
-      usageCount: 0
+      usageCount: 0,
+      siteName: siteName || undefined,
+      username: username || undefined
     };
 
     const updatedHistory = [entry, ...passwordData.history];

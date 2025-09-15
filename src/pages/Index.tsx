@@ -33,6 +33,7 @@ import CareerInfoModal from "@/components/modals/CareerInfoModal";
 import HealthInfoModal from "@/components/modals/HealthInfoModal";
 import DateTimeInfoModal from "@/components/modals/DateTimeInfoModal";
 import TextUtilsInfoModal from "@/components/modals/TextUtilsInfoModal";
+import { PasswordGeneratorInfoModal } from "@/components/modals/PasswordGeneratorInfoModal";
 import { ProfileModal } from "@/components/modals/ProfileModal";
 
 // New design system components
@@ -56,6 +57,7 @@ const Index = () => {
   const [isCareerInfoModalOpen, setIsCareerInfoModalOpen] = useState(false);
   const [isHealthInfoModalOpen, setIsHealthInfoModalOpen] = useState(false);
   const [isTextUtilsInfoModalOpen, setIsTextUtilsInfoModalOpen] = useState(false);
+  const [isPasswordGeneratorInfoModalOpen, setIsPasswordGeneratorInfoModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // Gérer la navigation via URL params (depuis Settings)
@@ -79,7 +81,7 @@ const Index = () => {
       case "calculator": return "Calculatrices";
       case "date-calculator-advanced": return "Dates & Temps";
       case "productivity-suite": return "Organisation productive";
-      case "password-generator-advanced": return "Générateur de Mots de Passe";
+      case "password-generator-advanced": return "Gestion de mots de passe et sécurité";
       case "color-generator": return "Créativité";
       case "career-generator": return "Carrière/Pro";
       case "health": return "Santé";
@@ -396,6 +398,9 @@ const Index = () => {
                     {activeSection === "text-utils-advanced" && (
                       <FileText className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                     )}
+                    {activeSection === "password-generator-advanced" && (
+                      <span className="text-2xl">🔐</span>
+                    )}
                     <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
                       {getSectionTitle()}
                     </h1>
@@ -547,6 +552,25 @@ const Index = () => {
                         </div>
                       </>
                     )}
+                    {activeSection === "password-generator-advanced" && (
+                      <>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setIsPasswordGeneratorInfoModalOpen(true)}
+                          className="p-1 h-8 w-8 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900"
+                        >
+                          <Info className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        </Button>
+                        <div className="hidden lg:flex items-center gap-1 ml-2">
+                          <Badge variant="secondary" className="text-xs">Génération</Badge>
+                          <Badge variant="secondary" className="text-xs">Analyse</Badge>
+                          <Badge variant="secondary" className="text-xs">Import/Export</Badge>
+                          <Badge variant="secondary" className="text-xs">Historique</Badge>
+                          <Badge variant="secondary" className="text-xs">Chiffrement</Badge>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
                 
@@ -598,6 +622,10 @@ const Index = () => {
               <TextUtilsInfoModal 
                 isOpen={isTextUtilsInfoModalOpen} 
                 onClose={() => setIsTextUtilsInfoModalOpen(false)} 
+              />
+              <PasswordGeneratorInfoModal 
+                isOpen={isPasswordGeneratorInfoModalOpen} 
+                onClose={() => setIsPasswordGeneratorInfoModalOpen(false)} 
               />
               <ProfileModal 
                 isOpen={isProfileModalOpen} 

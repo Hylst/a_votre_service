@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Copy, Star, StarOff, Search, Trash2, History, Calendar, Shield } from "lucide-react";
+import { Copy, Star, StarOff, Search, Trash2, History, Calendar, Shield, Globe, User } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -44,6 +44,8 @@ interface PasswordHistoryEntry {
   notes?: string;
   usageCount?: number;
   lastUsed?: number;
+  siteName?: string;  // Optional name, URL or domain associated with the password
+  username?: string;  // Optional identifier/username associated with the password
 }
 
 interface Template {
@@ -78,7 +80,9 @@ export const PasswordHistoryAdvanced = ({
   const filteredHistory = history.filter(entry => {
     const matchesSearch = searchTerm === '' || 
       entry.password.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      getTemplateName(entry.templateId).toLowerCase().includes(searchTerm.toLowerCase());
+      getTemplateName(entry.templateId).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (entry.siteName && entry.siteName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (entry.username && entry.username.toLowerCase().includes(searchTerm.toLowerCase()));
     
     if (!matchesSearch) return false;
 
@@ -199,6 +203,24 @@ export const PasswordHistoryAdvanced = ({
                         <span>• Copié {entry.usageCount} fois</span>
                       )}
                     </div>
+                    
+                    {/* Display metadata fields if available */}
+                    {(entry.siteName || entry.username) && (
+                      <div className="flex flex-wrap gap-3 mt-2 text-xs">
+                        {entry.siteName && (
+                          <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded">
+                            <Globe className="w-3 h-3" />
+                            {entry.siteName}
+                          </span>
+                        )}
+                        {entry.username && (
+                          <span className="flex items-center gap-1 text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded">
+                            <User className="w-3 h-3" />
+                            {entry.username}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                   
                   <div className="flex items-center gap-2">

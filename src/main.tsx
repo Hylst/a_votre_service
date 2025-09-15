@@ -10,4 +10,8 @@ import './index.css'
 // PWA service worker is automatically registered by VitePWA plugin
 // No manual registration needed
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);

@@ -9,6 +9,7 @@ import { UnitConverterInfoModal } from "@/components/modals/UnitConverterInfoMod
 import { CalculatorInfoModal } from "@/components/modals/CalculatorInfoModal";
 import { ProductivityInfoModal } from "@/components/modals/ProductivityInfoModal";
 import { CreativityInfoModal } from "@/components/modals/CreativityInfoModal";
+import { PasswordGeneratorInfoModal } from "@/components/modals/PasswordGeneratorInfoModal";
 import { ProfileModal } from "@/components/modals/ProfileModal";
 
 import { Badge } from "@/components/ui/badge";
@@ -38,6 +39,7 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
   const [isCalculatorInfoModalOpen, setIsCalculatorInfoModalOpen] = useState(false);
   const [isProductivityInfoModalOpen, setIsProductivityInfoModalOpen] = useState(false);
   const [isCreativityInfoModalOpen, setIsCreativityInfoModalOpen] = useState(false);
+  const [isPasswordGeneratorInfoModalOpen, setIsPasswordGeneratorInfoModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   
   // Debug: Log ProfileModal state changes
@@ -56,6 +58,7 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
       case "todo": return "Productivité";
       case "productivity-suite": return "Organisation productive";
       case "password-generator": return "Générateur de Mots de Passe";
+      case "password-generator-advanced": return "Gestion de mots de passe et sécurité";
       case "qr-code": return "Générateur QR Code";
       case "color-generator": return "Créativité";
 
@@ -102,6 +105,9 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
               )}
               {activeSection === "color-generator" && (
                 <Palette className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              )}
+              {activeSection === "password-generator-advanced" && (
+                <span className="text-2xl">🔐</span>
               )}
 
               <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-100">
@@ -180,6 +186,25 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
                   </div>
                 </>
               )}
+              {activeSection === "password-generator-advanced" && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsPasswordGeneratorInfoModalOpen(true)}
+                    className="p-1 h-8 w-8 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900"
+                  >
+                    <Info className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  </Button>
+                  <div className="hidden lg:flex items-center gap-1 ml-2">
+                    <Badge variant="secondary" className="text-xs">Génération</Badge>
+                    <Badge variant="secondary" className="text-xs">Analyse</Badge>
+                    <Badge variant="secondary" className="text-xs">Import/Export</Badge>
+                    <Badge variant="secondary" className="text-xs">Historique</Badge>
+                    <Badge variant="secondary" className="text-xs">Chiffrement</Badge>
+                  </div>
+                </>
+              )}
 
             </div>
           </div>
@@ -224,6 +249,10 @@ export const Header = ({ onMenuClick, activeSection, setActiveSection }: HeaderP
       <CreativityInfoModal 
         isOpen={isCreativityInfoModalOpen} 
         onClose={() => setIsCreativityInfoModalOpen(false)} 
+      />
+      <PasswordGeneratorInfoModal 
+        isOpen={isPasswordGeneratorInfoModalOpen} 
+        onClose={() => setIsPasswordGeneratorInfoModalOpen(false)} 
       />
       <ProfileModal 
         isOpen={isProfileModalOpen} 
