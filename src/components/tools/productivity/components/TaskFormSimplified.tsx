@@ -6,11 +6,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Plus, Scissors, Brain, Calendar, Tag, AlertCircle, Clock, CheckCircle } from 'lucide-react';
+import { DatePickerWithPresets } from '@/components/ui/DatePickerWithPresets';
+import { Plus, Scissors, Brain, Calendar, Tag, AlertCircle, Clock, CheckCircle, BookOpen, Sparkles } from 'lucide-react';
 import { Task } from '../hooks/useTaskManager';
 import { useTaskDecomposition } from '../hooks/useTaskDecomposition';
 import { CategoryPresets } from './CategoryPresets';
 import { useToast } from '@/hooks/use-toast';
+import { PresetSelectorTrigger } from './PresetSelector';
+import { PresetSelection } from '@/types/taskPresets';
+import { usePresetConverter } from '@/hooks/usePresetLibrary';
 
 interface TaskFormProps {
   isEditing: boolean;
@@ -44,7 +48,27 @@ export const TaskFormSimplified = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const { decomposeWithAI, splitTask, isProcessing, hasConfiguredProvider } = useTaskDecomposition();
+  const { convertTaskPreset } = usePresetConverter();
   const { toast } = useToast();
+  
+  // Handle preset selection
+  const handlePresetSelect = (selection: PresetSelection) => {
+    const convertedTask = convertTaskPreset(selection.preset, selection.customizations);
+    
+    setNewTask({
+      ...newTask,
+      title: convertedTask.title,
+      description: convertedTask.description || '',
+      priority: convertedTask.priority,
+      tags: convertedTask.tags || '',
+      estimatedDuration: selection.preset.estimatedDuration?.toString() || ''
+    });
+    
+    toast({
+      title: "Preset appliqué !",
+      description: `Le preset "${selection.preset.title}" a été appliqué au formulaire.`,
+    });
+  };
 
   const validateForm = (): boolean => {
     const errors: string[] = [];
@@ -125,6 +149,38 @@ export const TaskFormSimplified = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Preset Selector */}
+        {!isEditing && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                <Sparkles className="w-4 h-4" />
+                Utiliser un preset
+              </label>
+              <Badge variant="secondary" className="text-xs">
+                Nouveau !
+              </Badge>
+            </div>
+            <PresetSelectorTrigger 
+              type="task" 
+              onSelect={handlePresetSelect}
+              className="w-full justify-start h-auto p-4 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/20 dark:to-blue-950/20 border-dashed hover:from-green-100 hover:to-blue-100 dark:hover:from-green-900/30 dark:hover:to-blue-900/30"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                  <BookOpen className="w-5 h-5 text-green-600" />
+                </div>
+                <div className="text-left">
+                  <div className="font-medium text-sm">Choisir un preset de tâche</div>
+                  <div className="text-xs text-muted-foreground">Modèles prédéfinis pour Tâches Pro</div>
+                </div>
+              </div>
+            </PresetSelectorTrigger>
+          </div>
+        )}
+        
+        {!isEditing && <Separator className="my-4" />}
+        
         {/* Erreurs de validation */}
         {validationErrors.length > 0 && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-3">
@@ -223,10 +279,10 @@ export const TaskFormSimplified = ({
               <Calendar className="w-4 h-4" />
               Date d'échéance
             </label>
-            <Input
-              type="date"
+            <DatePickerWithPresets
               value={newTask.dueDate}
-              onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+              onChange={(value) => setNewTask({ ...newTask, dueDate: value })}
+              placeholder="Sélectionner une date d'échéance"
               className="border-blue-200 focus:border-blue-400"
             />
           </div>

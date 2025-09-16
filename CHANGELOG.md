@@ -1,5 +1,69 @@
 # Changelog - À Votre Service
 
+## [2025-01-17] - Sélecteur de Date Ergonomique
+
+### ✅ Terminé
+
+#### Amélioration UX - Sélecteur de Date
+- **DatePickerWithPresets.tsx** : Nouveau composant de sélection de date ergonomique
+  - Options rapides : Pas d'échéance, Aujourd'hui, Dans une semaine, Dans un mois, Dans un an
+  - Interface utilisateur moderne avec popover et calendrier intégré
+  - Saisie manuelle et sélection par calendrier
+  - Thème adaptatif (sombre/clair) avec couleurs cohérentes
+  - Gestion des formats de date français (dd/MM/yyyy)
+
+- **TaskFormSimplified.tsx** : Intégration du sélecteur de date amélioré
+  - Remplacement de l'input date standard par DatePickerWithPresets
+  - Interface plus intuitive pour la sélection des échéances
+  - Amélioration de l'expérience utilisateur dans Tâches Pro
+
+- **TodoListEnhanced.tsx** : Intégration du sélecteur de date amélioré
+  - Sélecteur de date ergonomique pour les tâches de la To-Do List
+  - Options de preset pour une sélection rapide des échéances
+  - Interface cohérente avec les autres outils
+
+- **GoalManagerEnhanced.tsx** : Intégration du sélecteur de date amélioré
+  - Sélecteur de date pour les dates de début et d'échéance des objectifs
+  - Interface utilisateur améliorée dans l'outil Objectifs
+  - Cohérence visuelle avec les autres composants
+
+## [2025-01-17] - Correction Bug Presets Tâches Pro
+
+### ✅ Terminé
+
+#### Corrections de bugs
+- **TaskFormSimplified.tsx** : Correction TypeError lors de l'utilisation des presets
+  - Fix erreur `convertedTask.tags?.join is not a function`
+  - Suppression de l'appel `.join()` redondant sur les tags déjà convertis en string
+  - Vérification de compatibilité avec tous les outils utilisant `convertTaskPreset`
+  - Tests de fonctionnement validés sur l'interface utilisateur
+
+## [2024-01-XX] - Intégration Système de Presets et Corrections DOM
+
+### ✅ Terminé
+
+#### Système de Presets Intégré
+- **PomodoroTimer.tsx** : Intégration complète du système de presets
+  - Ajout du PresetSelectorTrigger avec interface utilisateur moderne
+  - Fonction handlePresetSelect pour conversion automatique des presets
+  - Interface conditionnelle (visible uniquement quand le timer n'est pas en cours)
+  - Toast notifications pour confirmer l'application des presets
+  - Styles adaptatifs avec thème sombre/clair
+
+- **TaskFormSimplified.tsx** : Système de presets pour Tâches Pro
+  - PresetSelectorTrigger intégré dans le formulaire de création
+  - Conversion automatique des presets en données de tâche
+  - Interface utilisateur avec badge "Nouveau !" et icônes
+  - Gestion des erreurs et validation des données converties
+  - Affichage conditionnel (masqué en mode édition)
+
+- **GoalManagerEnhanced.tsx** : Presets pour la gestion d'objectifs
+  - Intégration du PresetSelectorTrigger dans le formulaire d'ajout
+  - Fonction handlePresetSelect avec conversion spécialisée pour les objectifs
+  - Interface utilisateur cohérente avec les autres outils
+  - Support des presets avec valeurs cibles, dates et catégories
+  - Toast notifications et gestion d'erreurs
+
 ## [2024-01-XX] - Corrections DOM Nesting et Import/Export Inter-Outils
 
 ### ✅ Terminé

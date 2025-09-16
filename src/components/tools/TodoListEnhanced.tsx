@@ -8,10 +8,15 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Plus, Edit, Save, X, Calendar, Clock, Star, Filter, CheckSquare2, Target } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { DatePickerWithPresets } from "@/components/ui/DatePickerWithPresets";
+import { Trash2, Plus, Edit, Save, X, Calendar, Clock, Star, Filter, CheckSquare2, Target, BookOpen, Sparkles } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { PresetSelectorTrigger } from "@/components/tools/productivity/components/PresetSelector";
+import { PresetSelection } from "@/types/taskPresets";
+import { usePresetConverter } from "@/hooks/usePresetLibrary";
 
 interface Todo {
   id: number;
@@ -63,6 +68,9 @@ export const TodoListEnhanced = () => {
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
+  
+  // Hook for preset conversion
+  const { convertTaskPreset } = usePresetConverter();
 
   // Charger les données depuis localStorage
   useEffect(() => {
@@ -116,6 +124,35 @@ export const TodoListEnhanced = () => {
         description: `"${inputValue}" a été ajoutée à votre liste.`,
       });
     }
+  };
+  
+  // Handle preset selection
+  const handlePresetSelect = (selection: PresetSelection) => {
+    const convertedTask = convertTaskPreset(selection.preset, selection.customizations);
+    
+    // Apply converted task data to form
+    setInputValue(convertedTask.title);
+    setNewDescription(convertedTask.description || "");
+    setNewPriority(convertedTask.priority);
+    
+    // Map preset category to existing categories or use default
+    const matchingCategory = categories.find(cat => 
+      cat.name.toLowerCase().includes(selection.preset.category.toLowerCase()) ||
+      selection.preset.category.toLowerCase().includes(cat.name.toLowerCase())
+    );
+    setNewCategory(matchingCategory?.id || 'personal');
+    
+    // Set due date if estimated duration is provided
+    if (selection.preset.estimatedDuration) {
+      const dueDate = new Date();
+      dueDate.setHours(dueDate.getHours() + Math.ceil(selection.preset.estimatedDuration / 60));
+      setNewDueDate(dueDate.toISOString().split('T')[0]);
+    }
+    
+    toast({
+      title: "Preset appliqué !",
+      description: `Le preset "${selection.preset.title}" a été appliqué au formulaire.`,
+    });
   };
 
   const toggleTodo = (id: number) => {
@@ -231,6 +268,36 @@ export const TodoListEnhanced = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Preset Selector */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    <Sparkles className="w-4 h-4" />
+                    Utiliser un preset
+                  </label>
+                  <Badge variant="secondary" className="text-xs">
+                    Nouveau !
+                  </Badge>
+                </div>
+                <PresetSelectorTrigger 
+                  type="task" 
+                  onSelect={handlePresetSelect}
+                  className="w-full justify-start h-auto p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border-dashed hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-900/30 dark:hover:to-purple-900/30"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                      <BookOpen className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="text-left">
+                      <div className="font-medium text-sm">Choisir un preset de tâche</div>
+                      <div className="text-xs text-muted-foreground">Sélectionnez parmi des modèles prédéfinis</div>
+                    </div>
+                  </div>
+                </PresetSelectorTrigger>
+              </div>
+              
+              <Separator className="my-4" />
+              
               <div className="space-y-2">
                 <label className="text-sm font-medium">Titre de la tâche *</label>
                 <Input
@@ -287,10 +354,10 @@ export const TodoListEnhanced = () => {
                 
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Date d'échéance</label>
-                  <Input
-                    type="date"
+                  <DatePickerWithPresets
                     value={newDueDate}
-                    onChange={(e) => setNewDueDate(e.target.value)}
+                    onChange={(value) => setNewDueDate(value)}
+                    placeholder="Sélectionner une date d'échéance"
                   />
                 </div>
               </div>

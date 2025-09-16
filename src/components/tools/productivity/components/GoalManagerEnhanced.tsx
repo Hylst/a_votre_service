@@ -13,12 +13,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
-import { Target, Plus, Search, Edit, Trash2, Trophy, Calendar, Flag, TrendingUp, CheckCircle, Circle, Users, Filter, X } from 'lucide-react';
+import { DatePickerWithPresets } from '@/components/ui/DatePickerWithPresets';
+import { Target, Plus, Search, Edit, Trash2, Trophy, Calendar, Flag, TrendingUp, CheckCircle, Circle, Users, Filter, X, BookOpen, Sparkles } from 'lucide-react';
 import { format, differenceInDays } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { useGoalManagerEnhanced, Goal, Milestone } from '../hooks/useGoalManagerEnhanced';
 import { DataImportExport } from '../../common/DataImportExport';
 import { useDebounce } from '@/hooks/useDebounce';
+import { PresetSelectorTrigger } from './PresetSelector';
+import { PresetSelection } from '@/types/taskPresets';
+import { usePresetConverter } from '@/hooks/usePresetLibrary';
+import { useToast } from '@/hooks/use-toast';
 
 // Memoized Goal Card Component for better performance
 const GoalCard = memo(({ 
@@ -216,6 +221,10 @@ export const GoalManagerEnhanced = () => {
     resetData
   } = useGoalManagerEnhanced();
 
+  // Preset conversion functionality
+  const { convertPresetToGoal } = usePresetConverter();
+  const { toast } = useToast();
+
   // Local search state with debouncing
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
   const debouncedSearchTerm = useDebounce(localSearchTerm, 300);
@@ -277,6 +286,28 @@ export const GoalManagerEnhanced = () => {
   const handleUpdateProgress = useCallback(async (goalId: string, progress: number) => {
     await updateProgress(goalId, progress);
   }, [updateProgress]);
+
+  const handlePresetSelect = useCallback(async (preset: PresetSelection) => {
+    const goalData = convertPresetToGoal(preset);
+    
+    setNewGoal({
+      title: goalData.title,
+      description: goalData.description || '',
+      type: goalData.type || 'personal',
+      priority: goalData.priority || 'medium',
+      targetValue: goalData.targetValue?.toString() || '',
+      currentValue: goalData.currentValue?.toString() || '',
+      unit: goalData.unit || '',
+      startDate: goalData.startDate || new Date().toISOString().split('T')[0],
+      targetDate: goalData.targetDate || '',
+      tags: goalData.tags?.join(', ') || ''
+    });
+    
+    toast({
+      title: "Preset appliqué",
+      description: `Le preset "${preset.preset.title}" a été appliqué à votre objectif.`,
+    });
+  }, [convertPresetToGoal, toast]);
 
   const handleToggleMilestone = useCallback(async (goalId: string, milestoneId: string) => {
     await toggleMilestone(goalId, milestoneId);
@@ -530,6 +561,38 @@ export const GoalManagerEnhanced = () => {
           {showAddForm && (
             <Card className="border-2 border-purple-200 dark:border-purple-800">
               <CardContent className="p-4 space-y-4">
+                {/* Preset Selector */}
+                {!editingGoal && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                        <Sparkles className="w-4 h-4" />
+                        Utiliser un preset
+                      </label>
+                      <Badge variant="secondary" className="text-xs">
+                        Nouveau !
+                      </Badge>
+                    </div>
+                    <PresetSelectorTrigger 
+                      type="objective" 
+                      onSelect={handlePresetSelect}
+                      className="w-full justify-start h-auto p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20 border-dashed hover:from-purple-100 hover:to-indigo-100 dark:hover:from-purple-900/30 dark:hover:to-indigo-900/30"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                          <BookOpen className="w-5 h-5 text-purple-600" />
+                        </div>
+                        <div className="text-left">
+                          <div className="font-medium text-sm">Choisir un preset d'objectif</div>
+                          <div className="text-xs text-muted-foreground">Modèles prédéfinis pour Objectifs</div>
+                        </div>
+                      </div>
+                    </PresetSelectorTrigger>
+                  </div>
+                )}
+                
+                {!editingGoal && <Separator className="my-4" />}
+                
                 <Input
                   placeholder="Titre de l'objectif *"
                   value={newGoal.title}
@@ -582,15 +645,15 @@ export const GoalManagerEnhanced = () => {
                     value={newGoal.currentValue}
                     onChange={(e) => setNewGoal({...newGoal, currentValue: e.target.value})}
                   />
-                  <Input
-                    type="date"
+                  <DatePickerWithPresets
                     value={newGoal.startDate}
-                    onChange={(e) => setNewGoal({...newGoal, startDate: e.target.value})}
+                    onChange={(value) => setNewGoal({...newGoal, startDate: value})}
+                    placeholder="Date de début"
                   />
-                  <Input
-                    type="date"
+                  <DatePickerWithPresets
                     value={newGoal.targetDate}
-                    onChange={(e) => setNewGoal({...newGoal, targetDate: e.target.value})}
+                    onChange={(value) => setNewGoal({...newGoal, targetDate: value})}
+                    placeholder="Date d'échéance"
                   />
                 </div>
                 <Input

@@ -2,8 +2,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Timer, Play, Pause, RotateCcw } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Timer, Play, Pause, RotateCcw, BookOpen, Sparkles } from "lucide-react";
 import { usePomodoroTimer } from "../hooks/usePomodoroTimer";
+import { PresetSelectorTrigger } from "./PresetSelector";
+import { usePresetConverter } from "@/hooks/usePresetLibrary";
+import { useToast } from "@/hooks/use-toast";
+import { PresetSelection } from "@/types/taskPresets";
 
 export const PomodoroTimer = () => {
   const {
@@ -14,10 +19,35 @@ export const PomodoroTimer = () => {
     startPauseTimer,
     resetTimer,
     formatTime,
-    getTodaysStats
+    getTodaysStats,
+    setPomodoroTime,
+    setBreakTime,
+    setLongBreakTime
   } = usePomodoroTimer();
 
+  const { convertPomodoroPreset } = usePresetConverter();
+  const { toast } = useToast();
   const stats = getTodaysStats();
+
+  // Handle preset selection
+  const handlePresetSelect = (selection: PresetSelection) => {
+    if (selection.preset.type !== 'pomodoro') return;
+    
+    const pomodoroData = convertPomodoroPreset(selection.preset as any);
+    
+    // Apply preset configuration
+    setPomodoroTime(pomodoroData.focusDuration * 60);
+    setBreakTime(pomodoroData.breakDuration * 60);
+    setLongBreakTime(pomodoroData.longBreakDuration * 60);
+    
+    // Reset timer with new settings
+    resetTimer();
+    
+    toast({
+      title: "Preset appliqué",
+      description: `Configuration "${selection.preset.title}" appliquée avec succès.`,
+    });
+  };
 
   return (
     <Card>
@@ -28,6 +58,35 @@ export const PomodoroTimer = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="p-4 lg:p-6 text-center space-y-4 lg:space-y-6">
+        {/* Preset Selector */}
+        {!isRunning && (
+          <>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm font-medium text-foreground">Presets Pomodoro</span>
+                <Badge variant="secondary" className="text-xs">
+                  <Sparkles className="w-3 h-3 mr-1" />
+                  Rapide
+                </Badge>
+              </div>
+            </div>
+            
+            <PresetSelectorTrigger
+              type="pomodoro"
+              onSelect={handlePresetSelect}
+              className="w-full mb-4"
+            >
+              <Button variant="outline" className="w-full">
+                <BookOpen className="w-4 h-4 mr-2" />
+                Choisir une configuration
+              </Button>
+            </PresetSelectorTrigger>
+            
+            <Separator className="my-4" />
+          </>
+        )}
+        
         <div className="space-y-3 lg:space-y-4">
           <div className={`text-4xl lg:text-6xl font-mono font-bold transition-colors ${
             currentSession === "work" ? "text-red-600" : "text-green-600"
