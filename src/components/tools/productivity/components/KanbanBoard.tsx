@@ -47,6 +47,8 @@ import AISuggestions from './AISuggestions';
 import { exportKanbanData, ExportOptions } from '../utils/exportUtils';
 import { Download, FileText, FileSpreadsheet } from 'lucide-react';
 import { useMobileResponsive, createTouchFriendlyDragHandlers } from '../hooks/useMobileResponsive';
+import { UserGuide } from '@/components/ui/UserGuide';
+import { getToolGuide } from '@/data/userGuides';
 
 // Interface pour les colonnes Kanban
 interface KanbanColumn {
@@ -395,6 +397,8 @@ export const KanbanBoard: React.FC = () => {
     toggleTask,
     loadTasks
   } = useTaskManager();
+  
+  const kanbanGuide = getToolGuide('kanban');
   
   const { toast } = useToast();
   
@@ -1082,6 +1086,17 @@ export const KanbanBoard: React.FC = () => {
           </div>
         </DialogContent>
       </Dialog>
+      
+      {/* Guide d'utilisation */}
+      {kanbanGuide && (
+        <UserGuide
+          toolName={kanbanGuide.toolName}
+          toolIcon={kanbanGuide.toolIcon}
+          sections={kanbanGuide.sections}
+          quickTips={kanbanGuide.quickTips}
+          shortcuts={kanbanGuide.shortcuts}
+        />
+      )}
     </div>
     </ErrorBoundary>
   );

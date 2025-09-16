@@ -17,6 +17,8 @@ import { fr } from "date-fns/locale";
 import { PresetSelectorTrigger } from "@/components/tools/productivity/components/PresetSelector";
 import { PresetSelection } from "@/types/taskPresets";
 import { usePresetConverter } from "@/hooks/usePresetLibrary";
+import { UserGuide } from "@/components/ui/UserGuide";
+import { getToolGuide } from "@/data/userGuides";
 
 interface Todo {
   id: number;
@@ -237,6 +239,8 @@ export const TodoListEnhanced = () => {
     active: todos.filter(t => !t.completed).length,
     overdue: todos.filter(t => !t.completed && t.dueDate && t.dueDate < new Date()).length,
   };
+
+  const todoGuide = getToolGuide('todo');
 
   return (
     <div className="w-full space-y-6">
@@ -616,6 +620,17 @@ export const TodoListEnhanced = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Guide d'utilisation */}
+      {todoGuide && (
+        <UserGuide
+          toolName={todoGuide.toolName}
+          toolIcon={todoGuide.toolIcon}
+          sections={todoGuide.sections}
+          quickTips={todoGuide.quickTips}
+          shortcuts={todoGuide.shortcuts}
+        />
+      )}
     </div>
   );
 };

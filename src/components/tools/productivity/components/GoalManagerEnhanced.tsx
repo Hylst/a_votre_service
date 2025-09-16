@@ -24,6 +24,8 @@ import { PresetSelectorTrigger } from './PresetSelector';
 import { PresetSelection } from '@/types/taskPresets';
 import { usePresetConverter } from '@/hooks/usePresetLibrary';
 import { useToast } from '@/hooks/use-toast';
+import { UserGuide } from '@/components/ui/UserGuide';
+import { getToolGuide } from '@/data/userGuides';
 
 // Memoized Goal Card Component for better performance
 const GoalCard = memo(({ 
@@ -224,6 +226,7 @@ export const GoalManagerEnhanced = () => {
   // Preset conversion functionality
   const { convertPresetToGoal } = usePresetConverter();
   const { toast } = useToast();
+  const goalsGuide = getToolGuide('goals');
 
   // Local search state with debouncing
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
@@ -810,6 +813,17 @@ export const GoalManagerEnhanced = () => {
         lastSyncTime={lastSyncTime}
         toolName="Objectifs"
       />
+      
+      {/* Guide d'utilisation */}
+      {goalsGuide && (
+        <UserGuide
+          toolName={goalsGuide.toolName}
+          toolIcon={goalsGuide.toolIcon}
+          sections={goalsGuide.sections}
+          quickTips={goalsGuide.quickTips}
+          shortcuts={goalsGuide.shortcuts}
+        />
+      )}
     </div>
   );
 };

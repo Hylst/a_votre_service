@@ -12,6 +12,8 @@ import { TaskFilters } from './TaskFilters';
 import { KeywordAnalysis } from './KeywordAnalysis';
 import { TaskFormSimplified } from './TaskFormSimplified';
 import { TaskList } from './TaskList';
+import { UserGuide } from '@/components/ui/UserGuide';
+import { getToolGuide } from '@/data/userGuides';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export const TaskManagerEnhanced = () => {
@@ -35,6 +37,7 @@ export const TaskManagerEnhanced = () => {
     loadTasks
   } = useTaskManager();
 
+  const tasksGuide = getToolGuide('tasks');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [keywordFilter, setKeywordFilter] = useState('');
@@ -72,6 +75,7 @@ export const TaskManagerEnhanced = () => {
       title: newTask.title,
       description: newTask.description,
       completed: false,
+      status: 'todo' as const,
       priority: newTask.priority,
       category: newTask.category || 'Personnel',
       tags: newTask.tags.split(',').map(tag => tag.trim()).filter(Boolean),
@@ -269,6 +273,17 @@ export const TaskManagerEnhanced = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Guide d'utilisation */}
+      {tasksGuide && (
+        <UserGuide
+          toolName={tasksGuide.toolName}
+          toolIcon={tasksGuide.toolIcon}
+          sections={tasksGuide.sections}
+          quickTips={tasksGuide.quickTips}
+          shortcuts={tasksGuide.shortcuts}
+        />
+      )}
 
       {/* Import/Export */}
       <div className="text-center text-sm text-gray-500">

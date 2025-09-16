@@ -8,9 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { BookOpen, Plus, Search, X } from "lucide-react";
 import { useNoteManager, Note } from "../hooks/useNoteManager";
+import { UserGuide } from "@/components/ui/UserGuide";
+import { getToolGuide } from "@/data/userGuides";
 
 export const NoteManager = () => {
   const { notes, addNote, deleteNote, searchNotes } = useNoteManager();
+  const notesGuide = getToolGuide('notes');
   const [newNote, setNewNote] = useState({
     title: "",
     content: "",
@@ -173,6 +176,17 @@ export const NoteManager = () => {
           )}
         </CardContent>
       </Card>
+      
+      {/* Guide d'utilisation */}
+      {notesGuide && (
+        <UserGuide
+          toolName={notesGuide.toolName}
+          toolIcon={notesGuide.toolIcon}
+          sections={notesGuide.sections}
+          quickTips={notesGuide.quickTips}
+          shortcuts={notesGuide.shortcuts}
+        />
+      )}
     </div>
   );
 };

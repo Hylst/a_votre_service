@@ -174,6 +174,19 @@ export const useTaskManager = () => {
     }
   }, [tasksData.tasks, updateTask]);
 
+  // Update task time spent (for Pomodoro integration)
+  const updateTaskTimeSpent = useCallback(async (taskId: string, additionalMinutes: number) => {
+    const task = tasksData.tasks.find(t => t.id === taskId);
+    if (task) {
+      const currentTimeSpent = task.timeSpent || 0;
+      const newTimeSpent = currentTimeSpent + additionalMinutes;
+      await updateTask(taskId, { 
+        timeSpent: newTimeSpent,
+        actualTime: newTimeSpent // Also update actualTime for compatibility
+      });
+    }
+  }, [tasksData.tasks, updateTask]);
+
   // Chargement initial
   useEffect(() => {
     const initializeData = async () => {
@@ -209,6 +222,7 @@ export const useTaskManager = () => {
     updateTask,
     deleteTask,
     toggleTask,
+    updateTaskTimeSpent,
     searchTerm,
     setSearchTerm,
     filterCategory,

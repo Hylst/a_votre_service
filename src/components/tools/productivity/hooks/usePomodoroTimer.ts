@@ -1,5 +1,9 @@
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { useTaskManager } from './useTaskManager';
+import { usePomodoroDatabase, PomodoroSessionRecord } from '@/hooks/pomodoro/usePomodoroDatabase';
+import { usePomodoroAudio } from '@/hooks/pomodoro/usePomodoroAudio';
 
 export interface PomodoroSession {
   id: string;
@@ -18,33 +22,87 @@ export const usePomodoroTimer = () => {
   const [currentSession, setCurrentSession] = useState<"work" | "break" | "longBreak">("work");
   const [completedPomodoros, setCompletedPomodoros] = useState(0);
   const [sessions, setSessions] = useState<PomodoroSession[]>([]);
+  const [sessionStartTime, setSessionStartTime] = useState<Date | null>(null);
+  const [currentTaskId, setCurrentTaskId] = useState<string | null>(null);
+  
+  const { toast } = useToast();
+  const { updateTaskTimeSpent } = useTaskManager();
+  const { saveSession, loadTodaySessions } = usePomodoroDatabase();
+  const {
+    settings: audioSettings,
+    isPlaying: isAudioPlaying,
+    playStartSound,
+    playEndSound,
+    startFocusNoise,
+    stopFocusNoise,
+    updateSettings: updateAudioSettings
+  } = usePomodoroAudio();
+  
+  // Extract specific property to avoid object reference in dependencies
+  const focusNoiseEnabled = audioSettings.focusNoiseEnabled;
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
+  const handleSessionComplete = useCallback(async () => {
+    setIsRunning(false);
     
-    if (isRunning && currentTime > 0) {
-      interval = setInterval(() => {
-        setCurrentTime(prev => prev - 1);
-      }, 1000);
-    } else if (currentTime === 0) {
-      handleSessionComplete();
+    // Stop focus noise if playing
+    if (isAudioPlaying) {
+      stopFocusNoise();
     }
     
-    return () => clearInterval(interval);
-  }, [isRunning, currentTime]);
-
-  const handleSessionComplete = useCallback(() => {
-    setIsRunning(false);
+    // Play session end sound
+    await playEndSound();
+    
+    const now = new Date();
+    const plannedDuration = currentSession === "work" ? pomodoroTime : 
+                           currentSession === "break" ? breakTime : longBreakTime;
+    const actualDuration = sessionStartTime ? 
+      Math.floor((now.getTime() - sessionStartTime.getTime()) / 1000) : plannedDuration;
     
     const session: PomodoroSession = {
       id: Date.now().toString(),
       type: currentSession,
-      duration: currentSession === "work" ? pomodoroTime : 
-                currentSession === "break" ? breakTime : longBreakTime,
-      completedAt: new Date()
+      duration: plannedDuration,
+      completedAt: now,
+      taskId: currentTaskId || undefined
     };
     
+    // Save to local state
     setSessions(prev => [...prev, session]);
+    
+    try {
+      // Save to database with additional metadata
+      await saveSession({
+        type: currentSession,
+        duration: plannedDuration,
+        completedAt: now,
+        taskId: currentTaskId || undefined,
+        interrupted: actualDuration < plannedDuration * 0.9, // Consider interrupted if <90% completed
+        actualDuration,
+        notes: currentTaskId ? `Linked to task: ${currentTaskId}` : undefined
+      });
+      
+      // Update task time tracking if linked to a task
+      if (currentTaskId && currentSession === "work") {
+        await updateTaskTimeSpent(currentTaskId, Math.floor(actualDuration / 60)); // Convert to minutes
+      }
+      
+      // Show completion notification
+      toast({
+        title: `${currentSession === 'work' ? 'Work' : 'Break'} session completed!`,
+        description: `Duration: ${Math.floor(actualDuration / 60)} minutes`,
+      });
+      
+    } catch (error) {
+      console.error('Error saving session:', error);
+      toast({
+        title: "Error saving session",
+        description: "Session completed but couldn't be saved to database",
+        variant: "destructive"
+      });
+    }
+    
+    // Reset session start time
+    setSessionStartTime(null);
     
     if (currentSession === "work") {
       setCompletedPomodoros(prev => prev + 1);
@@ -59,17 +117,74 @@ export const usePomodoroTimer = () => {
       setCurrentSession("work");
       setCurrentTime(pomodoroTime);
     }
-  }, [currentSession, pomodoroTime, breakTime, longBreakTime, completedPomodoros]);
+  }, [currentSession, pomodoroTime, breakTime, longBreakTime, completedPomodoros, isAudioPlaying, stopFocusNoise, playEndSound, sessionStartTime, currentTaskId, saveSession, updateTaskTimeSpent]);
 
-  const startPauseTimer = useCallback(() => {
+  // Timer effect - runs the countdown
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null;
+    
+    if (isRunning && currentTime > 0) {
+      interval = setInterval(() => {
+        setCurrentTime(prevTime => {
+          if (prevTime <= 1) {
+            handleSessionComplete();
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+    
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isRunning, currentTime, handleSessionComplete]);
+
+  const startPauseTimer = useCallback(async () => {
+    if (!isRunning) {
+      // Starting timer - record start time and play start sound
+      setSessionStartTime(new Date());
+      await playStartSound();
+      
+      // Start focus noise for work sessions
+      if (currentSession === "work" && focusNoiseEnabled) {
+        setTimeout(() => {
+          startFocusNoise();
+        }, 1000); // Start noise 1 second after start sound
+      }
+    } else {
+      // Pausing timer - stop focus noise
+      if (isAudioPlaying) {
+        stopFocusNoise();
+      }
+    }
     setIsRunning(!isRunning);
-  }, [isRunning]);
+  }, [isRunning, playStartSound, currentSession, focusNoiseEnabled, startFocusNoise, isAudioPlaying, stopFocusNoise]);
 
   const resetTimer = useCallback(() => {
     setIsRunning(false);
+    
+    // Stop focus noise if playing
+    if (isAudioPlaying) {
+      stopFocusNoise();
+    }
+    
     setCurrentSession("work");
     setCurrentTime(pomodoroTime);
-  }, [pomodoroTime]);
+    setSessionStartTime(null);
+  }, [pomodoroTime, isAudioPlaying, stopFocusNoise]);
+  
+  // Function to link current session to a task
+  const linkToTask = useCallback((taskId: string) => {
+    setCurrentTaskId(taskId);
+  }, []);
+  
+  // Function to unlink from current task
+  const unlinkFromTask = useCallback(() => {
+    setCurrentTaskId(null);
+  }, []);
 
   const formatTime = useCallback((seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -77,22 +192,34 @@ export const usePomodoroTimer = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }, []);
 
-  const getTodaysStats = useCallback(() => {
-    const today = new Date();
-    const todaysSessions = sessions.filter(s => 
-      s.completedAt.toDateString() === today.toDateString()
-    );
-    
-    const workSessions = todaysSessions.filter(s => s.type === "work").length;
-    const focusTime = workSessions * 25; // minutes
-    
-    return {
-      sessionsToday: todaysSessions.length,
-      workSessions,
-      focusTime,
-      totalSessions: sessions.length
-    };
-  }, [sessions]);
+  const getTodaysStats = useCallback(async () => {
+    try {
+      const todaysSessions = await loadTodaySessions();
+      const workSessions = todaysSessions.filter(s => s.type === "work").length;
+      const totalFocusTime = todaysSessions
+        .filter(s => s.type === "work")
+        .reduce((total, session) => total + Math.floor(session.actualDuration / 60), 0);
+      
+      return {
+        sessionsToday: todaysSessions.length,
+        workSessions,
+        focusTime: totalFocusTime,
+        totalSessions: todaysSessions.length,
+        completionRate: todaysSessions.length > 0 ? 
+          (todaysSessions.filter(s => !s.interrupted).length / todaysSessions.length) * 100 : 0
+      };
+    } catch (error) {
+      console.error('Error loading today\'s stats:', error);
+      // Fallback to empty stats when database fails
+      return {
+        sessionsToday: 0,
+        workSessions: 0,
+        focusTime: 0,
+        totalSessions: 0,
+        completionRate: 0
+      };
+    }
+  }, [loadTodaySessions]);
 
   return {
     currentTime,
@@ -109,6 +236,15 @@ export const usePomodoroTimer = () => {
     longBreakTime,
     setPomodoroTime,
     setBreakTime,
-    setLongBreakTime
+    setLongBreakTime,
+    // New database and task integration features
+    currentTaskId,
+    linkToTask,
+    unlinkFromTask,
+    sessionStartTime,
+    // Audio features
+    audioSettings,
+    isAudioPlaying,
+    updateAudioSettings
   };
 };

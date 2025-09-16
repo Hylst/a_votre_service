@@ -38,6 +38,8 @@ import { useToast } from '@/hooks/use-toast';
 import EisenhowerAnalytics from './EisenhowerAnalytics';
 import AISuggestions from './AISuggestions';
 import { exportEisenhowerData, ExportOptions } from '../utils/exportUtils';
+import { UserGuide } from '@/components/ui/UserGuide';
+import { getToolGuide } from '@/data/userGuides';
 
 // Interface pour les quadrants de la matrice
 interface MatrixQuadrant {
@@ -290,6 +292,8 @@ export const EisenhowerMatrix: React.FC = () => {
     deleteTask,
     loadTasks
   } = useTaskManager();
+  
+  const eisenhowerGuide = getToolGuide('eisenhower');
   
   const { toast } = useToast();
   const [quadrants, setQuadrants] = useState<MatrixQuadrant[]>([]);
@@ -767,6 +771,17 @@ export const EisenhowerMatrix: React.FC = () => {
           </div>
         </DialogContent>
       </Dialog>
+      
+      {/* Guide d'utilisation */}
+      {eisenhowerGuide && (
+        <UserGuide
+          toolName={eisenhowerGuide.toolName}
+          toolIcon={eisenhowerGuide.toolIcon}
+          sections={eisenhowerGuide.sections}
+          quickTips={eisenhowerGuide.quickTips}
+          shortcuts={eisenhowerGuide.shortcuts}
+        />
+      )}
     </div>
   );
 };

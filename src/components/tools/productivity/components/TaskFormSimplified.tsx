@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { DatePickerWithPresets } from '@/components/ui/DatePickerWithPresets';
+import { DurationInputEnhanced } from '@/components/ui/DurationInputEnhanced';
 import { Plus, Scissors, Brain, Calendar, Tag, AlertCircle, Clock, CheckCircle, BookOpen, Sparkles } from 'lucide-react';
 import { Task } from '../hooks/useTaskManager';
 import { useTaskDecomposition } from '../hooks/useTaskDecomposition';
@@ -81,8 +82,10 @@ export const TaskFormSimplified = ({
     
     if (newTask.estimatedDuration) {
       const duration = parseInt(newTask.estimatedDuration);
-      if (isNaN(duration) || duration < 1 || duration > 1440) {
-        errors.push('La durée doit être entre 1 et 1440 minutes');
+      if (isNaN(duration) || duration < 1) {
+        errors.push('La durée doit être supérieure à 0');
+      } else if (duration > 525600) { // 1 year in minutes
+        errors.push('La durée ne peut pas dépasser 1 an');
       }
     }
     
@@ -288,17 +291,10 @@ export const TaskFormSimplified = ({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              Durée estimée (minutes)
-            </label>
-            <Input
-              type="number"
-              min="1"
-              max="1440"
-              placeholder="120"
+            <DurationInputEnhanced
               value={newTask.estimatedDuration}
-              onChange={(e) => setNewTask({ ...newTask, estimatedDuration: e.target.value })}
+              onChange={(value) => setNewTask({ ...newTask, estimatedDuration: value })}
+              placeholder="Durée estimée"
               className="border-blue-200 focus:border-blue-400"
             />
           </div>

@@ -337,6 +337,27 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
     }
   };
 
+  const loadAllData = async (tool: string): Promise<any[]> => {
+    try {
+      const db = await openDB();
+      const transaction = db.transaction([tool], 'readonly');
+      const store = transaction.objectStore(tool);
+
+      const data = await new Promise<StoredItem[]>((resolve, reject) => {
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+
+      db.close();
+      // Extract the actual data from StoredItem wrapper
+      return data.map(item => item.data);
+     } catch (error) {
+       console.error(`Error loading all data from ${tool}:`, error);
+       return [];
+     }
+   };
+
   const exportAllData = async (): Promise<Record<string, any>> => {
     try {
       const db = await openDB();
@@ -437,6 +458,7 @@ export const useIndexedDBManager = (config: DatabaseConfig) => {
     loadData,
     deleteData,
     getAllKeys,
+    loadAllData,
     exportAllData,
     clearAllData,
     getStorageInfo,
