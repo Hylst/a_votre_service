@@ -18,6 +18,10 @@ export interface Task {
   assignedTo?: string; // User assigned to the task
   createdAt: string;
   updatedAt: string;
+  // Additional properties for cross-tool compatibility
+  estimatedTime?: number; // Estimated time in minutes
+  actualTime?: number; // Actual time spent in minutes
+  subtasks?: Task[]; // Nested subtasks
 }
 
 interface TasksData {

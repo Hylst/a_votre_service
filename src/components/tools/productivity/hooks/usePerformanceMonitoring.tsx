@@ -120,9 +120,9 @@ export const usePerformanceMonitoring = (options: {
               setMetrics(prev => ({
                 ...prev,
                 ttfb: navEntry.responseStart - navEntry.requestStart,
-                navigationStart: navEntry.navigationStart,
-                domContentLoaded: navEntry.domContentLoadedEventEnd - navEntry.navigationStart,
-                loadComplete: navEntry.loadEventEnd - navEntry.navigationStart
+                navigationStart: navEntry.fetchStart,
+                domContentLoaded: navEntry.domContentLoadedEventEnd - navEntry.fetchStart,
+                loadComplete: navEntry.loadEventEnd - navEntry.fetchStart
               }));
             }
           });
@@ -261,15 +261,17 @@ export const usePerformanceMonitoring = (options: {
     return { warnings, suggestions };
   }, [finalThresholds]);
 
-  // Créer une entrée de performance
-  const createPerformanceEntry = useCallback(() => {
-    const { warnings, suggestions } = generateInsights(metrics);
-    const score = calculatePerformanceScore(metrics);
+  // Créer une entrée de performance (optimisé pour éviter les boucles)
+  const createPerformanceEntry = useCallback((metricsSnapshot?: PerformanceMetrics) => {
+    // Utiliser le snapshot fourni ou les métriques actuelles
+    const currentMetrics = metricsSnapshot || { ...metrics };
+    const { warnings, suggestions } = generateInsights(currentMetrics);
+    const score = calculatePerformanceScore(currentMetrics);
     
     const entry: PerformanceEntry = {
       id: `perf-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       timestamp: new Date(),
-      metrics: { ...metrics },
+      metrics: currentMetrics,
       context: {
         component,
         userAgent: navigator.userAgent,
@@ -283,11 +285,17 @@ export const usePerformanceMonitoring = (options: {
       suggestions
     };
 
-    setPerformanceEntries(prev => [entry, ...prev.slice(0, 49)]); // Garder 50 entrées max
+    // Utiliser une fonction de mise à jour pour éviter les dépendances circulaires
+    setPerformanceEntries(prev => {
+      const newEntries = [entry, ...prev.slice(0, 49)];
+      return newEntries;
+    });
+    
+    // Mettre à jour le score de manière isolée
     setPerformanceScore(score);
     
     return entry;
-  }, [metrics, generateInsights, calculatePerformanceScore, component]);
+  }, [generateInsights, calculatePerformanceScore, component, metrics]);
 
   // Reporting automatique
   const reportPerformance = useCallback(async (entry: PerformanceEntry) => {
@@ -319,8 +327,8 @@ export const usePerformanceMonitoring = (options: {
     
     return {
       navigation: navigation ? {
-        domContentLoaded: navigation.domContentLoadedEventEnd - navigation.navigationStart,
-        loadComplete: navigation.loadEventEnd - navigation.navigationStart,
+        domContentLoaded: navigation.domContentLoadedEventEnd - navigation.fetchStart,
+        loadComplete: navigation.loadEventEnd - navigation.fetchStart,
         ttfb: navigation.responseStart - navigation.requestStart
       } : null,
       paint: paint.reduce((acc, entry) => {
@@ -368,13 +376,23 @@ export const usePerformanceMonitoring = (options: {
     return () => stopMonitoring();
   }, [startMonitoring, stopMonitoring]);
 
-  // Créer une entrée de performance quand les métriques changent
+  // Debounce pour éviter les rapports trop fréquents
+  const lastReportTime = useRef<number>(0);
+  const REPORT_DEBOUNCE_MS = 1000; // 1 seconde minimum entre les rapports
+
+  // Créer une entrée de performance quand les métriques changent (avec debounce)
   useEffect(() => {
     if (Object.keys(metrics).length > 0) {
-      const entry = createPerformanceEntry();
-      reportPerformance(entry);
+      const now = Date.now();
+      if (now - lastReportTime.current >= REPORT_DEBOUNCE_MS) {
+        lastReportTime.current = now;
+        // Passer un snapshot des métriques pour éviter la dépendance circulaire
+        const metricsSnapshot = { ...metrics };
+        const entry = createPerformanceEntry(metricsSnapshot);
+        reportPerformance(entry);
+      }
     }
-  }, [metrics, createPerformanceEntry, reportPerformance]);
+  }, [metrics, reportPerformance]);
 
   // Composant d'affichage des métriques de performance
   const PerformancePanel = () => {

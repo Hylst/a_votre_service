@@ -20,6 +20,8 @@ export interface Goal {
   tags: string[];
   createdAt: string;
   updatedAt: string;
+  // Additional property for cross-tool compatibility
+  category?: string; // Category for organization
 }
 
 export interface Milestone {
@@ -29,6 +31,10 @@ export interface Milestone {
   completed: boolean;
   targetDate?: string;
   completedDate?: string;
+  // Additional properties for cross-tool compatibility
+  dueDate?: string; // Alternative name for targetDate
+  createdAt?: string; // Creation timestamp
+  updatedAt?: string; // Last update timestamp
 }
 
 interface GoalsData {

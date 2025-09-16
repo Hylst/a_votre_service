@@ -165,9 +165,9 @@ const GoalCard = memo(({
                 </div>
               ))}
               {goal.milestones.length > 3 && (
-                <p className="text-xs text-muted-foreground ml-8">
+                <div className="text-xs text-muted-foreground ml-8">
                   +{goal.milestones.length - 3} autres étapes
-                </p>
+                </div>
               )}
             </div>
           </div>

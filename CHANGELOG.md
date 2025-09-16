@@ -1,5 +1,98 @@
 # Changelog - À Votre Service
 
+## [2024-01-XX] - Corrections DOM Nesting et Import/Export Inter-Outils
+
+### ✅ Terminé
+
+#### Nouvelles fonctionnalités
+- **CrossToolManager.tsx** : Nouveau composant d'interface pour gérer l'import/export entre tous les outils de productivité
+  - Interface utilisateur complète avec onglets (Import/Export, Migration, Analyse)
+  - Sélection d'outils source et cible avec descriptions
+  - Export/Import de fichiers JSON
+  - Migration automatique des anciens formats
+  - Analyse de compatibilité entre outils
+  - Statistiques détaillées des opérations
+
+- **useCrossToolConverter.ts** : Hook personnalisé pour la conversion de données
+  - Conversion automatique entre formats d'outils
+  - Import/Export avec validation
+  - Gestion des erreurs et statistiques
+  - Support pour tous les outils (To-Do, Tâches Pro, Objectifs, Kanban, Eisenhower)
+
+- **crossToolDataConverter.ts** : Utilitaires de conversion de données
+  - Interface unifiée pour tous les types de tâches
+  - Convertisseurs spécialisés pour chaque outil
+  - Validation et nettoyage des données
+  - Gestion de la compatibilité du localStorage
+
+#### Corrections de bugs
+- **Boucle infinie Performance Monitoring** : Résolution de la boucle infinie de rapports de performance dans l'outil Kanban
+  - **usePerformanceMonitoring.tsx** : Ajout d'un système de debounce (1 seconde minimum entre rapports)
+  - Optimisation de `createPerformanceEntry` pour éviter les dépendances circulaires
+  - Utilisation de snapshots de métriques pour éviter les références circulaires
+  - Correction du useEffect qui se déclenchait continuellement sur les changements de métriques
+  - Élimination des effets de bord causés par les mises à jour d'état répétitives
+  - **Correction TypeScript** : Remplacement de `navigationStart` par `fetchStart` dans PerformanceNavigationTiming (propriété obsolète)
+
+- **Erreur DOM Nesting** : Résolution de l'erreur `validateDOMNesting(...): <div> cannot appear as a descendant of <p>`
+  - **TaskCard.tsx** : Remplacement des `<div>` par des `<span>` dans les contextes de paragraphe
+  - **GoalManagerEnhanced.tsx** : Correction des éléments `<p>` contenant des `<div>`
+  - Création d'utilitaires de sécurité DOM dans `domNestingFix.ts`
+
+- **Erreurs TypeScript** : Résolution complète des erreurs de types manquants
+  - **Task interface** : Ajout des propriétés `estimatedTime`, `actualTime`, `subtasks`
+  - **Goal interface** : Ajout de la propriété `category` pour la compatibilité inter-outils
+  - **Milestone interface** : Ajout des propriétés `dueDate`, `createdAt`, `updatedAt`
+  - **crossToolDataConverter.ts** : Ajout de la propriété `status` manquante dans la création d'objets Task
+  - **domNestingFix.tsx** : Correction complète des erreurs de syntaxe et de typage React (renommé de .ts vers .tsx)
+    - Résolution des erreurs JSX : "Cannot find name 'span'" et "Cannot find name 'div'"
+    - Correction des erreurs de parsing syntaxique (tokens manquants, regex non terminées)
+    - Résolution des erreurs de portée pour les propriétés 'children'
+    - Fix des erreurs de types et d'appels invalides
+    - Renommage du fichier .ts vers .tsx pour supporter la syntaxe JSX
+    - Validation TypeScript réussie (exit code 0)
+
+#### Améliorations techniques
+- **domNestingFix.ts** : Nouveaux utilitaires pour éviter les erreurs de nesting DOM
+  - Composants wrapper sécurisés (SafeWrapper, SafeText, FlexibleContainer)
+  - Règles de validation DOM
+  - Composants Badge et CardContent sécurisés
+  - Outils de débogage pour identifier les problèmes de nesting
+
+#### Analyse de compatibilité
+- **Format des données** : Analyse complète des structures de données entre outils
+  - To-Do List : Format simple avec titre, description, statut
+  - Tâches Pro : Format avancé avec priorité, catégorie, tags, dates
+  - Objectifs : Format avec jalons, progrès, valeurs cibles
+  - Kanban : Format avec colonnes et statuts
+  - Eisenhower : Format avec quadrants d'urgence/importance
+
+- **Compatibilité localStorage** : Gestion unifiée du stockage local
+  - Clés standardisées pour chaque outil
+  - Migration automatique des anciens formats
+  - Validation et nettoyage des données corrompues
+
+### 📋 À faire
+
+#### Tests et validation
+- [ ] Tester l'import/export entre tous les outils
+- [ ] Valider la migration des données existantes
+- [ ] Tester l'interface CrossToolManager sur mobile
+- [ ] Vérifier les performances avec de gros volumes de données
+
+#### Améliorations futures
+- [ ] Support d'import/export vers des formats externes (CSV, Excel)
+- [ ] Synchronisation en temps réel entre outils
+- [ ] Historique des migrations et rollback
+- [ ] Interface de mapping personnalisé pour les conversions
+
+#### Documentation
+- [ ] Guide utilisateur pour l'import/export
+- [ ] Documentation technique des formats de données
+- [ ] Exemples d'utilisation des utilitaires DOM
+
+---
+
 ## [Version 2.5.6] - 2025-01-16
 
 ### 🐛 Corrections Majeures - Suite de Productivité

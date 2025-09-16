@@ -71,23 +71,23 @@ export const TaskCard = ({ task, onToggle, onEdit, onDelete }: TaskCardProps) =>
             
             <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
               {task.dueDate && (
-                <div className="flex items-center gap-1">
+                <span className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
-                  {format(new Date(task.dueDate), "dd/MM/yyyy", { locale: fr })}
-                </div>
+                  <span>{format(new Date(task.dueDate), "dd/MM/yyyy", { locale: fr })}</span>
+                </span>
               )}
               {task.tags.length > 0 && (
-                <div className="flex items-center gap-1">
+                <span className="flex items-center gap-1">
                   <Tag className="w-3 h-3" />
                   {task.tags.slice(0, 2).map(tag => (
-                    <Badge key={tag} variant="secondary" className="text-xs px-1 py-0">
+                    <span key={tag} className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-secondary text-secondary-foreground">
                       {tag}
-                    </Badge>
+                    </span>
                   ))}
                   {task.tags.length > 2 && (
                     <span className="text-gray-400">+{task.tags.length - 2}</span>
                   )}
-                </div>
+                </span>
               )}
             </div>
           </div>
