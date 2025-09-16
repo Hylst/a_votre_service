@@ -20,10 +20,10 @@ export interface SavingsGoal {
   name: string;
   targetAmount: number;
   currentAmount: number;
-  targetDate: string;
+  targetDate: Date;
   priority: 'low' | 'medium' | 'high';
   icon?: string;
-  completedAt?: string;
+  completedAt?: Date;
 }
 
 export interface BudgetSummary {

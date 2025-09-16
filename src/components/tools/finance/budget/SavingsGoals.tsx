@@ -71,7 +71,7 @@ export const SavingsGoals: React.FC<SavingsGoalsProps> = ({
         name: newGoal.name,
         targetAmount,
         currentAmount,
-        targetDate: newGoal.targetDate ? newGoal.targetDate.toISOString() : '',
+        targetDate: newGoal.targetDate || new Date(),
         priority: newGoal.priority,
         completedAt: undefined
       };
@@ -111,7 +111,7 @@ export const SavingsGoals: React.FC<SavingsGoalsProps> = ({
         
         // Check if goal is completed
         if (currentAmount >= goal.targetAmount && !goal.completedAt) {
-          updatedGoal.completedAt = new Date().toISOString();
+          updatedGoal.completedAt = new Date();
           toast({
             title: "🎉 Objectif atteint !",
             description: `Félicitations ! Vous avez atteint votre objectif "${goal.name}".`,
@@ -181,7 +181,7 @@ export const SavingsGoals: React.FC<SavingsGoalsProps> = ({
    */
   const getMonthlySavingsNeeded = (goal: SavingsGoal): number => {
     const remaining = goal.targetAmount - goal.currentAmount;
-    const daysRemaining = getDaysRemaining(new Date(goal.targetDate));
+    const daysRemaining = getDaysRemaining(goal.targetDate);
     
     if (!daysRemaining || daysRemaining <= 0) return remaining;
     

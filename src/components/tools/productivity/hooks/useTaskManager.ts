@@ -8,11 +8,14 @@ export interface Task {
   title: string;
   description?: string;
   completed: boolean;
+  status: 'todo' | 'in-progress' | 'review' | 'done' | 'pending';
   priority: 'low' | 'medium' | 'high';
   category: string;
   tags: string[];
   dueDate?: string;
   estimatedDuration?: number;
+  timeSpent?: number; // Time spent in minutes
+  assignedTo?: string; // User assigned to the task
   createdAt: string;
   updatedAt: string;
 }
