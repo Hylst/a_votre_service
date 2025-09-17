@@ -105,7 +105,7 @@ export const AppSidebar = ({ activeSection, setActiveSection }: AppSidebarProps)
       
       <SidebarFooter>
         <div className="p-2 text-center space-y-1">
-          <p className="text-xs text-gray-500">v1.5.8</p>
+          <p className="text-xs text-gray-500">v1.7.2</p>
           <p className="text-xs text-gray-400">Tous droits réservés :</p>
           <p className="text-xs text-gray-400">Geoffroy Streit</p>
         </div>

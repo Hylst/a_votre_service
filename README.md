@@ -1,8 +1,8 @@
 # À Votre Service
 
-🚀 **Une plateforme de productivité web complète offrant plus de 300 fonctions utilitaires réparties en 77 outils intégrés répartis en 10 suites spécialisées**
+🚀 **Une plateforme de productivité web complète offrant plus de 300 fonctions utilitaires réparties en 87 outils intégrés répartis en 11 suites spécialisées**
 
-[![Version](https://img.shields.io/badge/version-1.5.8-blue.svg)](https://github.com/geoffroystreit/a-votre-service)
+[![Version](https://img.shields.io/badge/version-1.7.2-blue.svg)](https://github.com/geoffroystreit/a-votre-service)
 [![React](https://img.shields.io/badge/React-18.3.1-61dafb.svg)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-3178c6.svg)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.4.1-646cff.svg)](https://vitejs.dev/)
@@ -10,7 +10,7 @@
 
 ## 🚀 Points Forts Principaux
 
-- **77 Outils Professionnels** répartis en 10 suites complètes
+- **87 Outils Professionnels** répartis en 11 suites complètes
 - **Design Responsive** avec approche mobile-first
 - **Thème Sombre/Clair** avec détection des préférences système
 - **Capacités Hors Ligne** avec persistance des données locales
@@ -59,13 +59,84 @@
 
 ### 📋 Organisation Productive Complète
 
-**Outils de Productivité Avancés:**
-- **To-Do List Améliorée**: Catégories, priorités et fonctionnalités IA
-- **Gestionnaire de Tâches Pro**: Décomposition automatique des tâches par IA
-- **Suivi d'Objectifs Intelligent**: Suivi d'objectifs à long terme avec gestion des jalons
-- **Timer Pomodoro Avancé**: Cycles travail/pause personnalisables avec statistiques
-- **Gestionnaire de Notes Complet**: Prise de notes organisée avec recherche et catégories
-- **Analytics de Productivité**: Insights d'utilisation et métriques de performance
+**Suite Intégrée de 7 Outils de Productivité avec IA et Analytics Avancés:**
+
+#### 📝 To-Do List Améliorée
+- Catégories intelligentes avec couleurs personnalisables
+- Système de priorités à 3 niveaux avec indicateurs visuels
+- Filtrage avancé multi-critères (statut, priorité, catégorie, tags)
+- Statistiques de productivité en temps réel
+- Export/Import en 5 formats (JSON, CSV, PDF, TXT, XML)
+- Intégration cross-tool avec autres modules
+
+#### 🎯 Gestionnaire de Tâches Pro avec IA
+- **Décomposition automatique de tâches par IA** (LLM intégré)
+- Catégories avancées avec hiérarchie et sous-catégories
+- Système de priorités à 5 niveaux avec scoring intelligent
+- Estimation de durée assistée par IA avec historique
+- Gestion des dépendances entre tâches avec graphique
+- Analytics de performance avec métriques détaillées
+
+#### 🏆 Suivi d'Objectifs SMART Intelligent
+- Assistant IA pour création d'objectifs SMART validés
+- Décomposition automatique en jalons et sous-objectifs
+- Suivi de progression visuel avec graphiques interactifs
+- Coaching IA personnalisé avec recommandations
+- Rappels adaptatifs intelligents basés sur les habitudes
+- Intégration avec calendrier et planification
+
+#### ⏰ Timer Pomodoro Avancé avec Analytics
+- Cycles personnalisables (15-60 min) avec presets intelligents
+- Statistiques détaillées avec graphiques de productivité
+- Historique complet des sessions avec métriques
+- Mode focus avec suggestions de blocage distractions
+- Rapports hebdomadaires/mensuels automatiques
+- Base de données IndexedDB pour persistance locale
+
+#### 📚 Gestionnaire de Notes avec Knowledge Base
+- Organisation avec système de tags hiérarchiques
+- Recherche avancée full-text avec indexation intelligente
+- Éditeur Markdown avec prévisualisation temps réel
+- Système de liens bidirectionnels entre notes
+- Export en 10+ formats (PDF, HTML, Markdown, Word)
+- Templates de notes professionnelles par domaine
+
+#### 📊 Tableau Kanban avec Métriques Avancées
+- Colonnes personnalisables avec limites WIP intelligentes
+- **Métriques de performance** (cycle time, throughput, lead time)
+- Détection automatique de goulots d'étranglement
+- Analytics de flux avec graphiques cumulatifs
+- Templates prédéfinis (Développement, Marketing, Personnel)
+- Export de rapports PDF/CSV avec métriques détaillées
+
+#### 🎯 Matrice d'Eisenhower avec Analytics IA
+- **Classification automatique par IA** des tâches par quadrant
+- Analytics de productivité avec scoring et insights
+- Détection de risque de burnout avec recommandations
+- Métriques de focus et distribution du temps
+- Tendances temporelles avec prédictions de performance
+- Templates par rôle (Manager, Développeur, Étudiant)
+
+**🔗 Fonctionnalités d'Intégration Avancées:**
+- **Cross-tool integration** avec références croisées entre outils
+- Système de notifications en temps réel
+- Timeline d'activité unifiée
+- Commentaires et pièces jointes sur tous les éléments
+- Export de rapports consolidés multi-outils
+
+### 💰 Finance & Budget Suite
+
+**Outils Financiers Professionnels Complets:**
+- **Calculateur de Prêts Avancé**: Calculs d'amortissement, intérêts composés et simulations de remboursement
+- **Planificateur de Budget Intelligent**: Gestion complète des revenus, dépenses et objectifs d'épargne
+- **Calculateur d'Investissements**: ROI, rendements composés et analyses de portefeuille
+- **Simulateur d'Épargne**: Projections d'épargne avec objectifs et échéances personnalisables
+- **Calculateur de Retraite**: Planification retraite avec projections et recommandations
+- **Analyseur de Dettes**: Stratégies de remboursement et optimisation financière
+- **Convertisseur de Devises**: Taux de change en temps réel avec historique et tendances
+- **Tableaux de Bord Financiers**: Visualisation complète de la santé financière
+- **Calculateur d'Assurance**: Évaluation des besoins en assurance vie et habitation
+- **Planificateur Fiscal**: Optimisation fiscale et calculs d'impôts
 
 ### 🔐 Sécurité Avancée
 

@@ -14,7 +14,7 @@ import {
   Scale, Calendar, Brain, Briefcase, FileText, 
   Database, ChevronDown, ChevronRight, 
   Target, Clock, Users, Lightbulb, Activity,
-  Grid3X3, Gauge
+  Grid3X3, Gauge, DollarSign
 } from "lucide-react";
 import { useState } from "react";
 
@@ -265,6 +265,121 @@ export const About = () => {
       ]
     },
     {
+      id: "finance",
+      icon: DollarSign,
+      title: "Finance & Budget Suite",
+      description: "7 outils financiers professionnels pour gérer vos finances personnelles",
+      color: "text-emerald-600 dark:text-emerald-400",
+      bgColor: "bg-emerald-50 dark:bg-emerald-950",
+      tools: [
+        {
+          name: "Calculateur de Prêts Avancé",
+          features: [
+            "Calculs précis d'amortissement avec tableaux détaillés",
+            "Simulation de remboursement anticipé avec économies",
+            "Comparaison de différents scénarios de prêt",
+            "Calcul des intérêts totaux et coût réel du crédit",
+            "Support prêts immobiliers, auto, consommation",
+            "Graphiques d'évolution du capital restant dû",
+            "Export des tableaux d'amortissement (PDF, Excel)",
+            "Calcul de la capacité d'emprunt optimale",
+            "Simulation d'assurance emprunteur intégrée",
+            "Conseils personnalisés selon votre profil"
+          ]
+        },
+        {
+          name: "Planificateur Budget Intelligent",
+          features: [
+            "Catégorisation automatique des dépenses",
+            "Suivi en temps réel avec alertes personnalisées",
+            "Objectifs d'épargne SMART avec progression visuelle",
+            "Analyse prédictive des tendances de dépenses",
+            "Recommandations d'optimisation par IA",
+            "Graphiques interactifs et tableaux de bord",
+            "Comparaison mensuelle avec moyennes historiques",
+            "Planification de projets financiers long terme",
+            "Export de rapports budgétaires détaillés",
+            "Synchronisation sécurisée entre appareils"
+          ]
+        },
+        {
+          name: "Calculateur Épargne & Investissement",
+          features: [
+            "Simulation d'épargne avec intérêts composés",
+            "Calculs de rendement pour différents placements",
+            "Planification retraite avec projections long terme",
+            "Optimisation fiscale des investissements",
+            "Comparaison de produits d'épargne (Livret A, PEL, etc.)",
+            "Simulation de versements programmés",
+            "Calcul de l'inflation sur le pouvoir d'achat",
+            "Stratégies de diversification de portefeuille",
+            "Analyse risque/rendement personnalisée",
+            "Conseils d'allocation d'actifs selon l'âge"
+          ]
+        },
+        {
+          name: "Simulateur Retraite Complet",
+          features: [
+            "Estimation des pensions de retraite françaises",
+            "Calcul des trimestres cotisés et manquants",
+            "Simulation de rachats de trimestres",
+            "Planification de l'épargne retraite complémentaire",
+            "Optimisation de l'âge de départ à la retraite",
+            "Calcul des revenus de remplacement",
+            "Intégration des régimes spéciaux et complémentaires",
+            "Simulation de différents scénarios de carrière",
+            "Conseils personnalisés selon votre situation",
+            "Export de bilans retraite détaillés"
+          ]
+        },
+        {
+          name: "Convertisseur Crypto Temps Réel",
+          features: [
+            "Taux de change en temps réel pour 100+ cryptomonnaies",
+            "Conversion instantanée crypto vers devises mondiales",
+            "Historique des prix avec graphiques interactifs",
+            "Alertes de prix personnalisables par seuils",
+            "Calculateur de gains/pertes sur investissements",
+            "Suivi de portefeuille multi-cryptos",
+            "Analyse technique avec indicateurs avancés",
+            "Comparaison de performance entre cryptos",
+            "Calcul de la DCA (Dollar Cost Averaging)",
+            "Intégration avec principales plateformes d'échange"
+          ]
+        },
+        {
+          name: "Calculateur Taxes Françaises",
+          features: [
+            "Calcul précis de l'impôt sur le revenu français",
+            "Simulation des tranches d'imposition marginales",
+            "Optimisation fiscale avec niches et réductions",
+            "Calcul des prélèvements sociaux (CSG, CRDS)",
+            "Simulation de la taxe foncière et d'habitation",
+            "Calcul des plus-values immobilières et mobilières",
+            "Optimisation de la déclaration fiscale",
+            "Simulation de l'IFI (Impôt sur la Fortune Immobilière)",
+            "Conseils de défiscalisation légale",
+            "Export de simulations pour votre comptable"
+          ]
+        },
+        {
+          name: "Gestionnaire Dépenses Intelligent",
+          features: [
+            "Suivi automatique des dépenses par catégories",
+            "Reconnaissance intelligente des types de dépenses",
+            "Graphiques de répartition et tendances temporelles",
+            "Alertes de dépassement de budget personnalisables",
+            "Analyse comparative mensuelle et annuelle",
+            "Détection d'anomalies dans les habitudes de dépense",
+            "Suggestions d'économies basées sur vos données",
+            "Planification de gros achats avec épargne ciblée",
+            "Export de rapports de dépenses détaillés",
+            "Intégration avec outils de budget et épargne"
+          ]
+        }
+      ]
+    },
+    {
       id: "datetime",
       icon: Calendar,
       title: "Dates & Temps Avancés",
@@ -369,83 +484,113 @@ export const About = () => {
       id: "productivity",
       icon: Target,
       title: "Organisation Productive Complète",
-      description: "5 modules intégrés pour une productivité maximale",
+      description: "Suite intégrée de 7 outils de productivité avec IA et analytics avancés",
       color: "text-green-600 dark:text-green-400",
       bgColor: "bg-green-50 dark:bg-green-950",
       tools: [
         {
           name: "To-Do List Améliorée",
           features: [
-            "Interface intuitive avec drag & drop",
-            "Priorités visuelles avec codes couleur",
-            "Catégories personnalisées illimitées",
-            "Synchronisation temps réel multi-appareils",
-            "Notifications push intelligentes",
-            "Récurrence automatique des tâches",
-            "Sous-tâches avec indentation",
-            "Filtres avancés et recherche instantanée",
-            "Statistiques de productivité quotidienne",
-            "Templates de listes prédéfinies"
+            "Catégories intelligentes avec couleurs personnalisables",
+            "Système de priorités à 3 niveaux avec indicateurs visuels",
+            "Filtrage avancé multi-critères (statut, priorité, catégorie, tags)",
+            "Statistiques de productivité en temps réel",
+            "Synchronisation automatique avec sauvegarde locale",
+            "Export/Import en 5 formats (JSON, CSV, PDF, TXT, XML)",
+            "Mode sombre adaptatif avec thèmes personnalisés",
+            "Raccourcis clavier complets pour navigation rapide",
+            "Notifications intelligentes avec rappels contextuels",
+            "Intégration cross-tool avec autres modules"
           ]
         },
         {
-          name: "Gestionnaire de Tâches Pro",
+          name: "Gestionnaire de Tâches Pro avec IA",
           features: [
-            "Catégories avancées avec hiérarchie",
-            "Système de priorités à 5 niveaux",
-            "IA pour estimation de durée",
-            "Collaboration équipe en temps réel",
-            "Assignation et délégation de tâches",
-            "Dépendances entre tâches",
-            "Calendrier intégré avec vue Gantt",
-            "Rapports de productivité automatiques",
-            "Intégration avec outils externes",
-            "Workflow personnalisables"
+            "Décomposition automatique de tâches par IA (LLM intégré)",
+            "Catégories avancées avec hiérarchie et sous-catégories",
+            "Système de priorités à 5 niveaux avec scoring intelligent",
+            "Estimation de durée assistée par IA avec historique",
+            "Gestion des dépendances entre tâches avec graphique",
+            "Templates de tâches réutilisables par domaine",
+            "Suivi du temps passé avec chronométrage intégré",
+            "Analytics de performance avec métriques détaillées",
+            "Suggestions IA pour optimisation du workflow",
+            "Export de rapports de productivité automatiques"
           ]
         },
         {
-          name: "Suivi d'Objectifs Intelligent",
+          name: "Suivi d'Objectifs SMART Intelligent",
           features: [
-            "Objectifs SMART avec validation",
-            "Jalons intermédiaires automatiques",
-            "Suivi de progression visuel",
-            "Analyses de performance détaillées",
-            "Coaching IA personnalisé",
-            "Métriques de succès personnalisables",
-            "Rappels adaptatifs intelligents",
-            "Visualisation de tendances",
-            "Partage d'objectifs avec mentors",
-            "Célébration automatique des réussites"
+            "Assistant IA pour création d'objectifs SMART validés",
+            "Décomposition automatique en jalons et sous-objectifs",
+            "Suivi de progression visuel avec graphiques interactifs",
+            "Analyses de performance avec tendances temporelles",
+            "Coaching IA personnalisé avec recommandations",
+            "Métriques de succès personnalisables par domaine",
+            "Rappels adaptatifs intelligents basés sur les habitudes",
+            "Visualisation de tendances avec prédictions",
+            "Système de célébration automatique des réussites",
+            "Intégration avec calendrier et planification"
           ]
         },
         {
-          name: "Timer Pomodoro Avancé",
+          name: "Timer Pomodoro Avancé avec Analytics",
           features: [
-            "Cycles personnalisables (15-60 min)",
-            "Statistiques détaillées avec graphiques",
-            "Bibliothèque de sons de notification",
-            "Intégration automatique avec tâches",
-            "Mode focus avec blocage distractions",
-            "Suivi de productivité par projet",
-            "Pauses intelligentes adaptatives",
-            "Synchronisation avec calendrier",
-            "Rapports hebdomadaires automatiques",
-            "Gamification avec badges de réussite"
+            "Cycles personnalisables (15-60 min) avec presets intelligents",
+            "Statistiques détaillées avec graphiques de productivité",
+            "Historique complet des sessions avec métriques",
+            "Bibliothèque de sons d'ambiance et notifications",
+            "Intégration automatique avec tâches en cours",
+            "Mode focus avec suggestions de blocage distractions",
+            "Suivi de productivité par projet et catégorie",
+            "Pauses intelligentes adaptatives selon la fatigue",
+            "Rapports hebdomadaires/mensuels automatiques",
+            "Base de données IndexedDB pour persistance locale"
           ]
         },
         {
-          name: "Gestionnaire de Notes Complet",
+          name: "Gestionnaire de Notes avec Knowledge Base",
           features: [
-            "Organisation avec tags hiérarchiques",
-            "Recherche avancée full-text",
-            "Catégories multiples avec couleurs",
-            "Export en 10+ formats (PDF, Word, etc.)",
-            "Éditeur riche avec formatage",
-            "Collaboration en temps réel",
-            "Historique des versions",
-            "Chiffrement de bout en bout",
-            "Synchronisation cloud sécurisée",
-            "Templates de notes professionnelles"
+            "Organisation avec système de tags hiérarchiques",
+            "Recherche avancée full-text avec indexation intelligente",
+            "Catégories multiples avec couleurs et icônes",
+            "Éditeur Markdown avec prévisualisation temps réel",
+            "Export en 10+ formats (PDF, HTML, Markdown, Word)",
+            "Système de liens bidirectionnels entre notes",
+            "Historique des versions avec diff visuel",
+            "Templates de notes professionnelles par domaine",
+            "Épinglage et favoris avec organisation personnalisée",
+            "Synchronisation sécurisée avec chiffrement local"
+          ]
+        },
+        {
+          name: "Tableau Kanban avec Métriques Avancées",
+          features: [
+            "Colonnes personnalisables avec limites WIP intelligentes",
+            "Drag & drop fluide avec animations et feedback visuel",
+            "Métriques de performance (cycle time, throughput, lead time)",
+            "Détection automatique de goulots d'étranglement",
+            "Analytics de flux avec graphiques cumulatifs",
+            "Templates prédéfinis (Développement, Marketing, Personnel)",
+            "Export de rapports PDF/CSV avec métriques détaillées",
+            "Suggestions IA pour optimisation du workflow",
+            "Intégration cross-tool avec synchronisation des tâches",
+            "Mode mobile responsive avec vue liste adaptative"
+          ]
+        },
+        {
+          name: "Matrice d'Eisenhower avec Analytics IA",
+          features: [
+            "Classification automatique par IA des tâches par quadrant",
+            "Analytics de productivité avec scoring et insights",
+            "Détection de risque de burnout avec recommandations",
+            "Métriques de focus et distribution du temps",
+            "Tendances temporelles avec prédictions de performance",
+            "Templates par rôle (Manager, Développeur, Étudiant)",
+            "Suggestions d'actions prioritaires basées sur l'analyse",
+            "Export de rapports de productivité avec visualisations",
+            "Raccourcis clavier pour navigation rapide entre quadrants",
+            "Intégration complète avec tous les autres outils"
           ]
         }
       ]
@@ -1282,12 +1427,12 @@ export const About = () => {
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-8">
                 <div className="bg-background/50 rounded-lg p-4 text-center">
                   <Target className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-foreground">77</div>
+                  <div className="text-2xl font-bold text-foreground">86</div>
                   <div className="text-sm text-muted-foreground">Outils principaux</div>
                 </div>
                 <div className="bg-background/50 rounded-lg p-4 text-center">
                   <Zap className="w-8 h-8 text-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-foreground">300+</div>
+                  <div className="text-2xl font-bold text-foreground">420+</div>
                   <div className="text-sm text-muted-foreground">Fonctionnalités</div>
                 </div>
                 <div className="bg-background/50 rounded-lg p-4 text-center">
@@ -1314,7 +1459,7 @@ export const About = () => {
               
               {/* Version Badges */}
               <div className="flex justify-center lg:justify-start gap-2 mt-6">
-                <Badge variant="secondary">Version 1.5.8</Badge>
+                <Badge variant="secondary">Version 1.7.2</Badge>
                 <Badge className="bg-gradient-to-r from-primary to-secondary text-primary-foreground">2025</Badge>
               </div>
             </div>
